@@ -1,0 +1,152 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+%%% Examples of Article customizations
+% These packages are optional, depending whether you want the features they provide.
+% See the LaTeX Companion or other references for full information.
+
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+\geometry{letterpaper} % or letterpaper (US) or a5paper or....
+% \geometry{margin=2in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+
+\usepackage{graphicx} % support the \includegraphics command and options
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+\usepackage{ulem}
+\usepackage{hyperref}
+
+
+%%% END Article customizations
+
+%%% The "real" document content comes below...
+
+\title{Heterogeneous Programming for Wirelessly Gesture-Controlled iRobot Create}
+\author{Steve Dai}
+%\date{} % Activate to display a given date or no date (if empty),
+         % otherwise the current date is printed 
+
+\begin{document}
+\maketitle
+
+\section{Overview}
+
+We would like to program an iRobts to sing and dance based on the gestural input from a human conductor. We first use a camera and a laptop to capture and process human gestures and translate them into corresponding iRobot commands. Then these commands are communicated wirelessly from the laptop to a Galileo platform linked to the iRobot. Upon receiving the commands, Galileo in turn controls and coordinates the motion and audio of the iRobot.
+
+\section{Materials}
+This is a summary of items required by this project.
+\begin{itemize}
+\item iRobot Create Programmable Robot with Battery and Fast Charger \$219
+\item USB to RS-232 DB9 Serial Converter \$11 [\href{http://www.amazon.com/TRENDnet-RS-232-Serial-Converter-TU-S9/dp/B0007T27H8/ref=sr_1_1?ie=UTF8&qid=1399704271&sr=8-1&keywords=usb+to+rs232}{link}]
+\item Create BAM! Bluetooth Module \$60 {[optional]}
+\item Galileo development board \sout{\$60}
+\item SanDisk micro SD card with up to 32GByte of Storage \$22 [\href{http://www.amazon.com/SanDisk-MicroSDHC-Frustration-Free-Packaging--SDSDQU-032G-AFFP-A/dp/B009QZH7BU/ref=sr_1_1?ie=UTF8&qid=1399754576&sr=8-1&keywords=micro+sd}{link}]
+\item Battery Holder - 4xAA to Barrel Jack Connector \$3 [preferred] [\href{https://www.sparkfun.com/products/9835}{link}]
+\item 4 AA rechargeable batteries with AA/AAA charger \$16 [preferred] [\href{http://www.amazon.com/Energizer-CHP4WB4-Recharge-Charger-Batteries/dp/B003SP4QAE/ref=sr_1_3?s=hpc&ie=UTF8&qid=1399754201&sr=1-3&keywords=rechargeable+battery}{link}]
+\item Intel N135 Wifi/Bluetooth Combo Adapter \$15 [\href{http://www.amazon.com/135BN-HMWWB-Centrino-802-11n-Express-Bluetooth/dp/B007TGPLHK/ref=sr_1_1?s=electronics&ie=UTF8&qid=1391796848&sr=1-1&keywords=Intel+N-135}{link}]
+\item Half to Full Height Mini PCI-E Card Bracket Adapter \$6
+[\href{http://www.amazon.com/dp/B007VXJ9IS/ref=pe_385040_30332200_pe_309540_26725410_item}{link}]
+\item 2 Omni-Directional 2dB Gain 3800MHz/5875MHz Antennas \$11
+[\href{http://avnetexpress.avnet.com/store/em/EMController/Antenna/TE-Connectivity-AMP/2118060-1/_/R-13956488/A-13956488/An-0?action=part&catalogId=500201&langId=-1&storeId=500201}{link}]
+%\item Xilinx zc-702 evaluation kit \sout{\$895}
+%\item Bluetooth/Wifi module for zc-702 \$30
+%\item HDMI Input/Output FMC Module  \sout{\$250}
+\item Webcam \sout{\$30}
+\item Miscellaneous items: 25-pin male connector (DB25), size M (1.2mm) power plug connector, 22 gauge hookup wire, L7805 voltage regulator, 0.1-uF capacitor, 0.33-uF capacitor, switch, positive temperature coefficient (PTC), LED - Basic Yellow, 1$k\Omega$ resistor, 330$\Omega$ resistor, solderless breadboard, soldering iron, solder \$20 [\href{http://www.instructables.com/id/Voice-Controlled-iRobot-Create/?ALLSTEPS}{pictures}]
+[\href{https://www.sparkfun.com/}{link}]
+\end{itemize}
+
+\section{Steps}
+
+\textbf{Week 1-2}
+\begin{itemize}
+\item Use a laptop to program the iRobot to sing and move around by connecting to the iRobot using the serial interface cable.
+[\href{http://www.irobot.com/filelibrary/pdfs/hrd/create/Create\%20Manual_Final.pdf}{Link to user guide}] [\href{http://www.irobot.com/filelibrary/pdfs/hrd/create/Create\%20Open\%20Interface_v2.pdf}{Link to iRobot open interface manual}]
+
+\item Connect the power and serial communication interface between iRobot and Galileo. [\href{http://www.instructables.com/id/Voice-Controlled-iRobot-Create/?ALLSTEPS}{Link to complete tutorial}] [\href{https://www.sparkfun.com/tutorials/57}{Link to power supply tutorial}]
+
+\item Set up the Arduino development environment and use Galileo to direct the iRobot to sing a short piece of music and move around based on the rhythm of the music.
+[\href{https://communities.intel.com/docs/DOC-21838}{Link to getting started guide}] [\href{https://communities.intel.com/docs/DOC-21824}{Link to reference designs}]
+\end{itemize}
+\textbf{Week 3-4}
+
+\begin{itemize}
+\item Set up wireless connectivity on Intel Galileo and test communication between laptop and Galileo through either WIFI or Bluetooth. [\href{http://ionospherics.com/intel-galileo-setting-up-wifi/}{Link to tutorial}]
+
+\item Investigate available open-source gesture recognition libraries. Check if there are MATLAB gesture recognition toolboxes available.
+[\href{http://www.nickgillian.com/software/grt}{Link to C++ library by Nick Gilliam}]
+[\href{http://www.intorobotics.com/9-opencv-tutorials-hand-gesture-detection-recognition/}{Link to OpenCV tutorials}]
+[\href{http://www.codeproject.com/Articles/26280/Hands-Gesture-Recognition}{Link to C++ library by Andrew Kirillov}]
+
+\item Test gesture recognition on laptop to detect simple hand gestures using webcam. Send detected gestures wirelessly to Galileo.
+\end{itemize}
+\textbf{Week 5-6}
+\begin{itemize}
+\item Program Galileo to receive gestures and react by sending corresponding commands to the iRobot. Create a complete song and dance routine that can be controlled by gestures.
+\end{itemize}
+\textbf{Week 7-8}
+\begin{itemize}
+\item Prepare documentation, presentation, and final report.
+
+
+%\item Become familiar with iRobot controls using the Matlab simulator by experimenting with the introductory projects from CS 1112 course.
+%\item Use Galileo to program the iRobot to play a simple piece of music.
+%\item Use Galileo to program the iRobot to perform simple motions such as moving forward or backward, turning left or right, rotating, etc.
+%\item Study gesture detection from computer vision and write C code to detect simple hand gestures and translate them into iRobot commands.
+%\item Implement the gesture detection algorithm on FPGA using HLS.
+%\item Implement the Bluetooth interface between FPGA and Galileo.
+%\item Modify the program on Galileo to use commands received from the FPGA to control the iRobot.
+\end{itemize}
+
+\section{FAQs}
+\begin{itemize}
+\item \textbf{Why does the iRobot not start moving after I issue a 153 (play script) command in the script?} Your 153 (play script) may have been included as part of your script to make it loop. Check the length of your script to see whether it is included. If so, you need to issue another 153 (play script) command outside of the script to actually execute the script.
+\end{itemize}
+
+\section{Helpful References}
+\begin{itemize}
+\item [\href{http://tronixstuff.com/2014/02/12/review-intel-galileo-arduino-compatible-development-board/}{Review – Intel Galileo Arduino-compatible Development Board}]
+\item [\href{http://www.intel.com/newsroom/kits/quark/galileo/pdfs/Intel_Galileo_Datasheet.pdf}{Intel Galileo Datasheet}]
+\item [\href{http://www.malinov.com/Home/sergey-s-blog/intelgalileo-addingwifi}{Intel Galileo Meets Wireless}]
+\end{itemize}
+
+%test
+
+
+\end{document}
