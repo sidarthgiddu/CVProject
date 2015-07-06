@@ -1,0 +1,219 @@
+import processing.video.*;
+import monclubelec.javacvPro.*;
+import processing.net.*;
+int speedFront = 0;
+int turnLeft = 0;
+int turnRight = 0;
+int speedBack = 0;
+int velocity = 0;
+int turn = 2000;
+
+int MIN_SPEED_FRONT = 0;
+int MIN_SPEED_BACK = 0;
+int MIN_TURN_LEFT = 2000;  // More radius; means less turn
+int MIN_TURN_RIGHT = -2000;  // more radius: means less turning
+
+int MAX_SPEED_FRONT = 500;
+int MAX_SPEED_BACK = -500;
+int MAX_TURN_LEFT = 11;  // with 0 radius, turning will be maximum
+int MAX_TURN_RIGHT = -11;  // with 0 radius, turning will be maximum
+
+boolean isUpPressed = false;
+boolean isDownPressed = false;
+boolean isLeftPressed = false;
+boolean isRightPressed = false;
+
+boolean isCtrlPressed = false;
+boolean isRPressed = false;
+char serialDataOverInternet[] = { 
+  0, 0, 0, 0
+};
+
+void setup() {
+}
+
+
+void draw() {
+  background(0);
+  fill(255);
+  if (isCtrlPressed) background(255, 0, 0);
+  if (isRPressed) background(0, 255, 0);
+  if (isCtrlPressed && isRPressed) background(255, 255, 0);
+
+  if ( isUpPressed && velocity < MAX_SPEED_FRONT) velocity = velocity + 2;
+//  else if ( !(isUpPressed || isDownPressed) ) velocity = MIN_SPEED_FRONT;
+
+  // backwards movement. 
+  if ( isDownPressed && velocity > MAX_SPEED_BACK) velocity = velocity - 2;
+  //  else if ( !isDownPressed ) velocity = MIN_SPEED_BACK;
+
+  if ( isLeftPressed && turn > MAX_TURN_LEFT) turn = turn - 10;
+//  else if ( !(isLeftPressed || isRightPressed) ) turn = MIN_TURN_LEFT;
+
+  if ( isRightPressed && turn < MAX_TURN_RIGHT) turn = turn + 10;
+  //  else if ( !isRightPressed ) turn = MIN_TURN_RIGHT;
+
+  iRobotCommandFormatVelocity();
+
+  // iRobotCommandFormatRadius();
+
+  println( "Velocity = " + velocity + " Turn = " + turn);
+  println( "serialData = " + (int)serialDataOverInternet[0]);
+}
+
+void iRobotCommandFormatVelocity() {
+}
+
+void keyPressed() {
+  if (keyCode == CONTROL && isCtrlPressed == false) isCtrlPressed = true;
+  if (char(keyCode) == 'R') isRPressed = true;
+
+  // Only allow up and down to be pressed once. In draw, we will increment the speed if pressed is true.
+  if (keyCode == UP && isUpPressed == false) {
+    isUpPressed = true;
+    // stop backward movement if up button is pressed.
+    isDownPressed = false;
+    velocity = 0;
+  }
+  if (keyCode == DOWN && isDownPressed == false) {
+    isDownPressed = true;
+    // Stop forward movement if down button is pressed
+    isUpPressed = false;
+    velocity = 0;
+  }
+  if (keyCode == LEFT && isLeftPressed == false) {
+    isLeftPressed = true;
+    // stop right movement if left button is pressed
+    isRightPressed = false;
+    turn = 2000;
+  }
+
+  if (keyCode == RIGHT && isRightPressed == false) {
+    isRightPressed = true;
+    // stop left movement is right button is pressed
+    isLeftPressed = false;
+    turn = -2000;
+  }
+}
+void keyReleased() {
+  if (keyCode == CONTROL) isCtrlPressed = false;
+  if (char(keyCode) == 'R') isRPressed = false;
+
+  if (keyCode == UP) isUpPressed = false;
+  if (keyCode == DOWN) isDownPressed = false;
+  if (keyCode == LEFT) isLeftPressed = false;
+  if (keyCode == RIGHT) isRightPressed = false;
+}
+
+
+
+/*
+void draw() {
+ background(0);
+ fill(255);
+ if (isCtrlPressed) background(255, 0, 0);
+ if (isRPressed) background(0, 255, 0);
+ if (isCtrlPressed && isRPressed) background(255, 255, 0);
+ 
+ if ( isUpPressed && speedFront < MAX_SPEED_FRONT) speedFront = speedFront + 2;
+ else if ( !isUpPressed ) speedFront = MIN_SPEED_FRONT;
+ 
+ // backwards movement. 
+ if ( isDownPressed && speedBack > MAX_SPEED_BACK) speedBack = speedBack - 2;
+ else if ( !isDownPressed ) speedBack = MIN_SPEED_BACK;
+ 
+ if ( isLeftPressed && turnLeft > MAX_TURN_LEFT) turnLeft = turnLeft - 10;
+ else if ( !isLeftPressed ) turnLeft = MIN_TURN_LEFT;
+ 
+ if ( isRightPressed && turnRight < MAX_TURN_RIGHT) turnRight = turnRight + 10;
+ else if ( !isRightPressed ) turnRight = MIN_TURN_RIGHT;
+ 
+ iRobotCommandFormatVelocity();
+ 
+ // iRobotCommandFormatRadius();
+ 
+ println( "UpSpeed = " + speedFront + " DownSpeed = " + speedBack + " LeftSpeed = " + turnLeft + " RightSpeed = " + turnRight);
+ println( "serialData = " + (int)serialDataOverInternet[0]);
+ }
+ 
+ void iRobotCommandFormatVelocity() {
+ 
+ }
+ 
+ void keyPressed() {
+ if (keyCode == CONTROL && isCtrlPressed == false) isCtrlPressed = true;
+ if (char(keyCode) == 'R') isRPressed = true;
+ 
+ // Only allow up and down to be pressed once. In draw, we will increment the speed if pressed is true.
+ if (keyCode == UP && isUpPressed == false) {
+ isUpPressed = true;
+ // stop backward movement if up button is pressed.
+ isDownPressed = false;
+ }
+ if (keyCode == DOWN && isDownPressed == false) {
+ isDownPressed = true;
+ // Stop forward movement if down button is pressed
+ isUpPressed = false;
+ }
+ if (keyCode == LEFT && isLeftPressed == false) {
+ isLeftPressed = true;
+ // stop right movement if left button is pressed
+ isRightPressed = false;
+ }
+ 
+ if (keyCode == RIGHT && isRightPressed == false) {
+ isRightPressed = true;
+ // stop left movement is right button is pressed
+ isLeftPressed = false;
+ }
+ }
+ void keyReleased() {
+ if (keyCode == CONTROL) isCtrlPressed = false;
+ if (char(keyCode) == 'R') isRPressed = false;
+ 
+ if (keyCode == UP) isUpPressed = false;
+ if (keyCode == DOWN) isDownPressed = false;
+ if (keyCode == LEFT) isLeftPressed = false;
+ if (keyCode == RIGHT) isRightPressed = false;
+ }
+ */
+
+
+/*
+void keyPressed(KeyEvent keyEvent) {
+ 
+ if (key == CODED) {
+ if (keyCode == UP && speedFront < MAX_SPEED_FRONT) {
+ speedFront++;
+ println("UP" + speedFront);
+ }
+ 
+ if (keyCode == LEFT && turnLeft < MAX_TURN_LEFT) {
+ turnLeft++;
+ println("Left" + turnLeft);
+ }
+ 
+ if (keyCode == RIGHT && turnRight < MAX_TURN_RIGHT) {
+ turnRight++;
+ println("Right" + turnRight);
+ }
+ 
+ if (keyCode == DOWN && speedBack < MAX_SPEED_BACK)
+ {
+ 
+ speedBack++;
+ println("Down " + speedBack);
+ }
+ }
+ }
+ 
+ 
+ void keyReleased(KeyEvent ke) {
+ println(ke.getKeyCode());;
+ println("Released");
+ speedFront = 0;
+ speedBack = 0; 
+ turnLeft = 0;
+ turnRight = 0;
+ }
+ */
