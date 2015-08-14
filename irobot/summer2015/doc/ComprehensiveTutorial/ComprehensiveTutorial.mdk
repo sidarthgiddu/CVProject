@@ -238,7 +238,7 @@ If you are using other WiFi cards, you have to download drivers separately from 
 [image017]: images/image017.jpg "image017" { width=auto max-width=90% }
 [image040]: images/image040.jpg "image040" { width=auto max-width=90% }
 
-* **SD Card Setup** \
+4. **SD Card Setup** \
 Since the Flash memory on Intel Galileo, holding the version of Linux used when there is no SD card, is too small to include WiFi drivers, you must have an SD card with Linux image to use WiFi.\
 Unzip the Linux image we downloaded in the last section. Plug the SD card into your computer and transfer everything to SD card. Again, preserve the folder structure. \
 ~Center
@@ -260,10 +260,10 @@ Now we are ready to create the wireless access point on your computer to complet
 In order to do that, you have to set up network and upload programs through serial port to make Intel Galileo 
 ready for WiFi. <br> 
 
-* **WPA Network Setup** \
+5. **WPA Network Setup** \
 
 
-1. In Windows, search "cmd" (the command prompt) and right click on the icon to "run as administrator", or you will not be able to set up a new network. 
+i. In Windows, search "cmd" (the command prompt) and right click on the icon to "run as administrator", or you will not be able to set up a new network. 
 ~ Center
 ~~ Figure {caption="A screenshot from Windows 8.1" }
 ![run_as_admin]
@@ -272,9 +272,8 @@ ready for WiFi. <br>
 [run_as_admin]: images/run_as_admin.png "run_as_admin" { width=auto max-width=90% }
 For Windows 7/Vista, find information from here: [Run a Command as Administrator from the Windows 7 / Vista]. 
 [Run a Command as Administrator from the Windows 7 / Vista]: http://www.howtogeek.com/howto/windows-vista/run-a-command-as-administrator-from-the-windows-vista-run-box/
-
-2. In the pop-up window that asks "Do you want to allow the following program to make changes to this computer", click "Yes" to proceed. You will then see the command prompt show up. \
-3. Enter: **netsh wlan set hostednetwork mode=allow ssid=yourssid key=yourkey** <br>
+ii. In the pop-up window that asks "Do you want to allow the following program to make changes to this computer", click "Yes" to proceed. You will then see the command prompt show up. \
+iii. Enter: **netsh wlan set hostednetwork mode=allow ssid=yourssid key=yourkey** <br>
 Change "**yourssid**" above to the name of the network you are setting up. You can name it whatever you want. 
 Change "**yourkey**" above to the password. It should be at least 8 characters long. 
 For example, in my case  I set the ssid to "irobot" and key to "irobotirobot". \
@@ -287,15 +286,14 @@ Then, enter: **netsh wlan start hostednetwork** \
 [image021]: images/image021.jpg "image021" { width=auto max-width=90% }
 Note: after you set up this network once on your computer, you can simply enter the last line 
 to activate the network that you have previously set up in the future. 
-
-4. You can now check status of network in **Network and Sharing Center**. \
+iv. You can now check status of network in **Network and Sharing Center**. \
 ~Center
 ~~ Figure { #fig-design caption="Status of hosted network" }
 ![image023]
 ~~
 ~
 [image023]: images/image023.jpg "image023" { width=auto max-width=90% }
-5. Share WiFi with the network that you just created. \
+v. Share WiFi with the network that you just created. \
 In the left sidebar, choose **Change adapter settings**. Right click on your current network. It is "eduroam 3" WiFi in my case. Click **Properties**. Go to tab **Sharing** and share the network with the network you created. 
 ~Center 
 ~~ Figure { #fig-design caption="Change adapter settings" }
@@ -306,20 +304,18 @@ In the left sidebar, choose **Change adapter settings**. Right click on your cur
 If you run into problems, you can refer to this site for instructions and trouble shooting: 
 [Create WiFi hotspot]. \
 [Create WiFi hotspot]: http://www.talkofweb.com/creating-wi-fi-hotspot-in-windows-8-share-laptop-internet-connection/
-
-5. Open Arduino IDE. Go to **File>Examples>WiFi>ConnectWithWPA** 
+vi. Open Arduino IDE. Go to **File>Examples>WiFi>ConnectWithWPA** 
 In **char ssid[]**, change "yourNetwork" to your ssid of the network we just set up. 
 In **char pass[]**, change "secretPassword" to your password of network. 
+vii. Upload the program to Intel Galileo. Then click on **Serial Monitor** in the upper right corner to check status of connection. 
+viii.	You can find the IP Address in Serial Monitor. It will be used later.
 
-7.	Upload the program to Intel Galileo. Then click on **Serial Monitor** in the upper right corner to check status of connection. 
 
-8.	You can find the IP Address in Serial Monitor. It will be used later. 
-
-* **Static IP Setup** \
+6. **Static IP Setup** \
 As you may notice, the IP address that Intel Galileo obtain varies every time it was printed out in the serial monitor. We want to make it static, since we are sending commands via wireless network to a single IP address specific to the board. In order to do that, you have to download PuTTY (or any SSH client that you prefer). 
 
 
-1. Download PuTTY from [here] and install it. \
+i. Download PuTTY from [here] and install it. \
 [here]: http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html 
 ~Center
 ~~ Figure { #fig-design caption="PuTTY download" }
@@ -327,14 +323,14 @@ As you may notice, the IP address that Intel Galileo obtain varies every time it
 ~~
 ~
 [PuTTY_download]: images/PuTTY_download.jpg "PuTTY_download" { width=auto max-width=90% }
-2. Upload this program to Intel Galileo. \
+ii. Upload this program to Intel Galileo. \
 ~Center
 ~~ Figure { #fig-design caption="Connect Intel Galileo with iRobot" }
 ![image026]
 ~~
 ~
 [image026]: images/image026.jpg "image026" { width=auto max-width=90% }
-3. Then we can use PuTTY for communication between computer and linux image on Intel Galileo. \
+iii. Then we can use PuTTY for communication between computer and linux image on Intel Galileo. \
 We have to first connect an Ethernet cable from computer to Intel Galileo. Next we will open PuTTY to connect to Intel Galileo. Here is a screenshot of my PuTTY configuration:
 ~Center
 ~~Figure  {caption="Configuration of Intel Galileo with PuTTY" }
@@ -343,11 +339,10 @@ We have to first connect an Ethernet cable from computer to Intel Galileo. Next 
 ~
 [PuTTY]: images/PuTTY.png "PuTTY" { width=auto max-width=90% }
 You need to manually type in the IP address 169.254.1.1, save it to "Saved Sessions" and load it.
-4.	Click "Open" and a command shell will pop out. Log in as "root". Create a backup of your 
+iv.	Click "Open" and a command shell will pop out. Log in as "root". Create a backup of your 
 /etc/network/interfaces file by typing: \
 "cp /etc/network/interfaces  /etc/network/interfaces.backup"
-
-5.	Type "vi /etc/network/interfaces". Press "i" to enter edition mode. Change "dhcp" in the 
+v. Type "vi /etc/network/interfaces". Press "i" to enter edition mode. Change "dhcp" in the 
 "iface wlan0 inet dhcp" line to "static". Comment out all the lines below and add the following lines: \
 ~Center
 ~~Figure {caption="A Screenshot of PuTTY" }
@@ -356,7 +351,7 @@ You need to manually type in the IP address 169.254.1.1, save it to "Saved Sessi
 ~
 [image029]: images/image029.jpg "image029" { width=auto max-width=90% }
 In my case, I set the static IP address to be 192.168.137.10 \
-6.	Save the file, and restart the wlan0: \
+vi.	Save the file, and restart the wlan0: \
 ifdown wlan0 \
 ifup wlan0 \
 You can type ":wq" to save and exit vi. 
