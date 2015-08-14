@@ -502,6 +502,7 @@ Combining all these information, the following diagram, which illustrates the ca
 ~~
 ~
 [PWM values]: images/PWM-values.jpg "PWM values" { width=auto max-width=90% }
+
 Based on the diagram, we can use the general idea of ratio to calculate the left and right motor PWM values.
 ~ Equation {#PWM general}
 \frac{distance \ of \ left \ or \ right \ motors \ from \ center \ of \ circle}{distance \ of \ center \ of \ robot \ from \ center \ of \ circle} \cdot PWM \ for \ center \ of \ robot
@@ -538,6 +539,7 @@ To decide whether the red box is rotated to the left or right, we make use of th
 ~~
 ~
 [rotation angle]: images/rotation-angle.jpg "rotation angle" { width=auto max-width=90% }
+
 
 As seen from the diagram, for left rotation, the width is always shorter than the height whereas for right rotation, it is the other way round. Thus, we can compare the width and height of the rotated rectangle to determine if the red box is rotating left or right.
 
