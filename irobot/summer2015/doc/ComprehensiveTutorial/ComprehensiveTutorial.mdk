@@ -517,7 +517,6 @@ However, the difference between the PWM values for the left and right motors is 
 ~
 The results from these equations are assigned to the variables _pwmLeft\_before_ and _pwmRight\_before_. Whenever _radius_ is negative, the fraction in Equation (4) will return a value greater than 1. Whenever _radius_ is positive, the fraction in Equation (5) will return a value greater than 1. If _pwm_ is sufficiently large, there will be the situation when the results calculated from the two equations become greater than 255, which is the maximum PWM value that can be assigned to the motors. We took care of this issue using an if-statement and manually set the PWM value of the motor that exceeded this maximum value to 255. The PWM values for the left and right motors are thus represented by the variables _pwmLeft_ and _pwmRight_ respectively. These values are finally passed in as arguments to set the speed of the motors.
 
-### iRobot
 ##Visual Studio
 
 Visual Studio, together with OpenCV library, is responsible for converting the video captured by the web camera into information about the velocity, denoted by _velocitySpeed_, and rotation angle, denoted by _rotationAngle_, of the robot before sending the data to Intel Galileo over the network. _velocitySpeed_  and _rotationAngle_ are determined by looking at the size and orientation of the red box held by the user with reference to the startup calibration.
