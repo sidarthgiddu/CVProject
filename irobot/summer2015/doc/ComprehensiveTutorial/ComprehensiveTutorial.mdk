@@ -255,7 +255,7 @@ commands are then transmitted to the iRobot via serial communication. \
 ![image004]
 ~~
 ~
-[image004]: images/image004.gif "image004" { width=auto max-width=90% }
+[image004]: images/image004.jpg "image004" { width=auto max-width=90% }
 Now we are ready to create the wireless access point on your computer to complete this communication flow. 
 In order to do that, you have to set up network and upload programs through serial port to make Intel Galileo 
 ready for WiFi. <br> 
