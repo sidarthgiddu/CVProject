@@ -44,11 +44,12 @@ The incremental development approach from pure software to software-hardware co-
 [figure2]: images/figure2.jpg "figure2" { width=auto max-width=90% }
 
 <div>
-In the follwing sections, you will see detailed instructions on how to proceed from each step to the next, including how to download and setup the required softwares and hardwares, how to operate on them, how to run the codes, along with screenshots and important notices for troubleshooting. 
+In the following sections, you will see detailed instructions on how to proceed from each step to the next, including how to download and setup the required softwares and hardwares, how to operate on them, how to run the codes, along with screenshots and important notices for troubleshooting. 
 </div>
 
 # Tutorials
 ## Direct communication between iRobot and Computer
+
 Before using Intel Galileo to control the iRobot, we can first use a serial cable to control iRobot directly from our laptop by using Open Interface commands of iRobot. This will help you become familiar with the serial codes used for iRobot.
 
 1. Read [Owner's guide] and [Open Interface] to learn OI commands in iRobot. \
