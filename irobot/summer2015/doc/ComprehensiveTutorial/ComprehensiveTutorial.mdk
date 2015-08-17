@@ -574,7 +574,7 @@ power on the board.
 In our project, bootloader is automatically created by SDSoC when we build the project. This flow indicates that we can essentially run most of all the program which are supported by normal linux OS. With this information, we have decided to implement video frame management, ethernet programming and trigonometric arithmetic calculation on PS using ARM core. When we execute our .elf file from PetaLinux, the application starts acquiring HDMI frame from input and starts storing it into one of the three video frame buffers of main memory in circular fashion (explained in next subsection). After storing a frame, it invokes PL to start doing processing. Once PL is done processing the video and has written output video into one of the frame buffer, PS acquires the corner of the detected object from PL. PS then calculates the inclination of the detected object using basic trigonometric equation shown in Equation [#eq-angle]. The visualization of the &theta; value can be interpreted from Figure [#fig-ObjIncline]. This value of &theta; is used to decide the turning radius of iRobot.
 
 ~ Equation {#eq-angle}
-\theta = \tan^{-1} 
+\theta = \tan^{-1} \frac{(y_1 - y_2)} {(x_1 - x_2)}
 ~
 
 ~Center
