@@ -471,26 +471,26 @@ Combining all these information, Figure [#fig-PWMvalues], which illustrates the 
 ~~
 ~
 [PWMvalues]: images/PWMvalues.jpg "PWMvalues" { width=auto max-width=90% }
-Based on Figure [#fig-PWMvalues], we can use the general idea of ratio to calculate the left and right motor PWM values.
-~ Equation {#PWM general}
+Based on Figure [#fig-PWMvalues], we can use the general idea of ratio to calculate the left and right motor PWM values, as shown in Equation [#eq-PWMgeneral].
+~ Equation {#eq-PWMgeneral}
 \frac{distance \ of \ left \ or \ right \ motors \ from \ center \ of \ circle}{distance \ of \ center \ of \ robot \ from \ center \ of \ circle} \cdot PWM \ for \ center \ of \ robot
 ~
-Hence, to calculate the PWM for the left motors, we have
-~ Equation {#PWM Left no scale}
+Hence, to calculate the PWM for the left motors, we use Equation [#eq-PWMLeftnoscale].
+~ Equation {#eq-PWMLeftnoscale}
 \frac{(radius - ROBOT\_HALF\_WIDTH)} {radius} \cdot pwm
 ~
-Similarly, to calculate the PWM for the right motors, we use
-~ Equation {#PWM Right no scale}
+Similarly, to calculate the PWM for the right motors, we use Equation [#eq-PWMRightnoscale].
+~ Equation {#eq-PWMRightnoscale}
 \frac{(radius \ + \ ROBOT\_HALF\_WIDTH)} {radius} \cdot pwm
 ~
-However, the difference between the PWM values for the left and right motors is not significant to let the robot make a distinct turn. Hence, we scale the difference and the corresponding final equations for calculating the PWM of the left and right motors are
-~ Equation {#PWM Left scale}
+However, the difference between the PWM values for the left and right motors is not significant to let the robot make a distinct turn. Hence, we scale the difference and the corresponding final equations for calculating the PWM of the left and right motors are given by Equations [#eq-PWMLeftscale] and [#eq-PWMRightscale].
+~ Equation {#eq-PWMLeftscale}
 \frac{(radius \ - \ 2 \cdot ROBOT\_HALF\_WIDTH)} {radius} \cdot pwm
 ~
-~ Equation {#PWM Right scale}
+~ Equation {#eq-PWMRightscale}
 \frac{(radius \ + \ 2 \cdot ROBOT\_HALF\_WIDTH)} {radius} \cdot pwm
 ~
-The results from these equations are assigned to the variables _pwmLeft\_before_ and _pwmRight\_before_. Whenever _radius_ is negative, the fraction in Equation (4) will return a value greater than 1. Whenever _radius_ is positive, the fraction in Equation (5) will return a value greater than 1. If _pwm_ is sufficiently large, there will be the situation when the results calculated from the two equations become greater than 255, which is the maximum PWM value that can be assigned to the motors. We took care of this issue using an if-statement and manually set the PWM value of the motor that exceeded this maximum value to 255. The PWM values for the left and right motors are thus represented by the variables _pwmLeft_ and _pwmRight_ respectively. These values are finally passed in as arguments to set the speed of the motors.
+The results from these equations are assigned to the variables _pwmLeft\_before_ and _pwmRight\_before_. Whenever _radius_ is negative, the fraction in Equation [#eq-PWMLeftscale] will return a value greater than 1. Whenever _radius_ is positive, the fraction in Equation [#eq-PWMRightscale] will return a value greater than 1. If _pwm_ is sufficiently large, there will be the situation when the results calculated from the two equations become greater than 255, which is the maximum PWM value that can be assigned to the motors. We took care of this issue using an if-statement and manually set the PWM value of the motor that exceeded this maximum value to 255. The PWM values for the left and right motors are thus represented by the variables _pwmLeft_ and _pwmRight_ respectively. These values are finally passed in as arguments to set the speed of the motors.
 
 ##Visual Studio
 
@@ -513,17 +513,17 @@ With information about the rotation angle and direction, we can now convert _l_ 
 
 Moving on, in order to gather the above information, we need to detect only the red box from the captured video and eliminate all other distractions in the surrounding.
 
-Firstly, our program will convert the captured video from the RGB color space into the YCbCr color space. YCbCr is a color space that separates the luminance, i.e. light intensity, component of a frame from the hue components. Working in this color space is advantageous over the RGB color space because colors in YCbCr are represented independently from their relative brightness. Note that in a decoded 3-channel image, the channels are stored in the order B, G, R and Y, Cr, Cb. The standard equations for converting an 8-bit image from RGB to YCbCr is given by
+Firstly, our program will convert the captured video from the RGB color space into the YCbCr color space. YCbCr is a color space that separates the luminance, i.e. light intensity, component of a frame from the hue components. Working in this color space is advantageous over the RGB color space because colors in YCbCr are represented independently from their relative brightness. Note that in a decoded 3-channel image, the channels are stored in the order B, G, R and Y, Cr, Cb. The standard equations for converting an 8-bit image from RGB to YCbCr are given by Equations [#eq-Y], [#eq-Cr] and [#eq-Cb].
 
-~ Equation {#Y}
+~ Equation {#eq-Y}
 Y = 0.299 \cdot R + 0.587 \cdot G + 0.114 \cdot B
 ~
 
-~ Equation {#Cr}
+~ Equation {#eq-Cr}
 Cr = (R-Y) \cdot 0.713 + 128
 ~
 
-~Equation {#Cb}
+~Equation {#eq-Cb}
 Cb = (B-Y) \cdot 0.564 + 128
 ~
 
@@ -571,7 +571,7 @@ power on the board.
 
 * Bootloader will signal PS to boot the PetaLinux OS which is hosted purely on ARM.
 
-In our project, bootloader is automatically created by SDSoC when we build the project. This flow indicates that we can essentially run most of all the program which are supported by normal linux OS. With this information, we have decided to implement video frame management, ethernet programming and trigonometric arithmetic calculation on PS using ARM core. When we execute our .elf file from PetaLinux, the application starts acquiring HDMI frame from input and starts storing it into one of the three video frame buffers of main memory in circular fashion (explained in next subsection). After storing a frame, it invokes PL to start doing processing. Once PL is done processing the video and has written output video into one of the frame buffer, PS acquires the corner of the detected object from PL. PS then calculates the inclination of the detected object using basic trigonometric equation shown in Equation [#eq-angle]. The visualization of the θ value can be interpreted from Figure 4. This value of &Theta; is used to decide the turning radius of iRobot.
+In our project, bootloader is automatically created by SDSoC when we build the project. This flow indicates that we can essentially run most of all the program which are supported by normal linux OS. With this information, we have decided to implement video frame management, ethernet programming and trigonometric arithmetic calculation on PS using ARM core. When we execute our .elf file from PetaLinux, the application starts acquiring HDMI frame from input and starts storing it into one of the three video frame buffers of main memory in circular fashion (explained in next subsection). After storing a frame, it invokes PL to start doing processing. Once PL is done processing the video and has written output video into one of the frame buffer, PS acquires the corner of the detected object from PL. PS then calculates the inclination of the detected object using basic trigonometric equation shown in Equation [#eq-angle]. The visualization of the &theta; value can be interpreted from Figure 4. This value of &theta; is used to decide the turning radius of iRobot.
 
 ~ Equation {#eq-angle}
 \theta = 
