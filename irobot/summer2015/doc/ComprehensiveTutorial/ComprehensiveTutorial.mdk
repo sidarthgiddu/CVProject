@@ -8,9 +8,11 @@ Author        : Zhengning Han, Danlu Huang
 
 # Introduction
 ## Motivation
+
 The motivation of this project is to explore the field of heterogeneous computing using High-Level Digital Synthesis (HLS). We wanted to build a system which can use FPGA as an accelerator along with the main processor and communicate with the outside world. As a specific application, we have programmed the FPGA to detect the video gesture from HDMI camera and send the commands to iRobot to drive in desired direction. As video processing on real-time HD video stream is slow on normal processor, we used FPGA as an accelerator to offload some of the work from processor. This project involves many aspects of hardware-software co-designing like HLS, Embedded Programming, Computer Vision and FPGA prototyping, making it an ideal project for students in Electrical and Computer Engineering field. 
 
 ## Overview
+
 In this design, the camera input is fed to the processing unit which can either be a computer, running software or an FPGA running heterogenous programs. The processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to Intel Galileo. Intel Galileo has an wireless receptor named Intel N135, which is responsible to receive the commands sent by access point. Intel Galileo receives the command from the wireless receptor and sends it to the iRobot over UART serial link operating at 57600 baud rate. The overall high-level design of the project is shown in Figure [#fig-designflow].
 ~ Center
 ~~ Figure { #fig-designflow caption="Abstract Design of Project Objective." }
@@ -34,6 +36,7 @@ system of requirements which we targeted throughout the project.
 * iRobot should be controlled smoothly and intuitively based on the gesture provided by user
 
 # Development Approach
+
 We followed hierarchical and modular development approach. As the project involved fair amount of complexity, we divided the project into 2 major categories: Software Design and Hardware Design. Software Design was meant to develop software version of entire project. This includes camera capture, gesture recognition and command sending on Intel i3 processor, programming Intel Galileo to receive the command and send it to iRobot for driving. The hardware design was meant to develop heterogeneous core which replaces software version of video capture, gesture recognition and command sending units. We managed to finish software design in Fall semester and hardware development in Spring semester. As the software version is relatively easier than developing project on hardware, our approach helped us unblock major issues of the project earlier in the design cycle.
 The incremental development approach from pure software to software-hardware co-design is demonstrated in Figure [#fig-figure2]:
 ~ Center
@@ -43,9 +46,7 @@ The incremental development approach from pure software to software-hardware co-
 ~
 [figure2]: images/figure2.jpg "figure2" { width=auto max-width=90% }
 
-<div>
-In the following sections, you will see detailed instructions on how to proceed from each step to the next, including how to download and setup the required softwares and hardwares, how to operate on them, how to run the codes, along with screenshots and important notices for troubleshooting. 
-</div>
+In the following sections, you will see detailed instructions on how to proceed from each step to the next, including how to download and setup the required softwares and hardwares, how to operate on them, how to run the codes, along with screenshots and important notices for troubleshooting.
 
 # Tutorials
 ## Direct communication between iRobot and Computer
@@ -60,9 +61,9 @@ Owner's guide provides some general introduction of iRobots and have some sa
 
 2. Connect iRobot to your computer. \
 In order to connect iRobot with the computer, we need to use the serial cable that comes with iRobot. \
-If your laptop can only  connect to an USB port, you will need to connect the serial cable with another USB to RS-232 DB9 Serial Converter. The USB port should be connected with the Serial Port of iRobot, which is shown in Figure 3.
+If your laptop can only  connect to an USB port, you will need to connect the serial cable with another USB to RS-232 DB9 Serial Converter. The USB port should be connected with the Serial Port of iRobot, which is shown in Figure [#fig-iRobot_top_view].
 ~ Center
-~~Figure { #fig-design caption="Top View of iRobot" }
+~~Figure { #fig-iRobot_top_view caption="Top View of iRobot" }
 ![iRobot_top_view]
 ~~
 ~
@@ -70,9 +71,9 @@ If your laptop can only  connect to an USB port, you will need to connect the se
 
 3. Download [Realterm] for serial port control. 
 [Realterm]: http://sourceforge.net/projects/realterm/files/
-_Realterm_ is a serial terminal used for debugging and development of external devices. Here is a screenshot of the window:
+_Realterm_ is a serial terminal used for debugging and development of external devices. Figure [#fig-realterm] is a screenshot of the window:
 ~ Center
-~~ Figure { #fig-design caption="Realterm Window" }
+~~ Figure { #fig-realterm caption="Realterm Window" }
 ![realterm]
 ~~
 ~
