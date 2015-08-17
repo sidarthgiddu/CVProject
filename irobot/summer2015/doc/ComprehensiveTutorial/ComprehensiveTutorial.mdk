@@ -82,9 +82,9 @@ _Realterm_ is a serial terminal used for debugging and development of external d
 4. Go to **Port** tab and select the port that iRobot is connected to. 
 5. Configure the serial settings to 57600 baud, 8 data bits, 1 stop bit and no flow control. 
 Note: 57600 baud is the default baud rate for iRobot.
-6. Go to **Send** tab to enter OI commands as shown below:
+6. Go to **Send** tab to enter OI commands as shown in Figure [#fig-realterm2]:
 ~ Center
-~~ Figure { #fig-design caption="Sending OI Commands" }
+~~ Figure { #fig-realterm2 caption="Sending OI Commands" }
 ![realterm2]
 ~~
 ~
