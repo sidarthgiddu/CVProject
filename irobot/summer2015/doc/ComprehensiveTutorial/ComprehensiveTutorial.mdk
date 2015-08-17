@@ -571,8 +571,111 @@ power on the board.
 
 * Bootloader will signal PS to boot the PetaLinux OS which is hosted purely on ARM.
 
-In our project, bootloader is automatically created by SDSoC when we build the project. This flow indicates that we can essentially run most of all the program which are supported by normal linux OS. With this information, we have decided to implement video frame management, ethernet programming and trigonometric arithmetic calculation on PS using ARM core. When we execute our .elf file from PetaLinux, the application starts acquiring HDMI frame from input and starts storing it into one of the three video frame buffers of main memory in circular fashion (explained in next subsection). After storing a frame, it invokes PL to start doing processing. Once PL is done processing the video and has written output video into one of the frame buffer, PS acquires the corner of the detected object from PL. PS then calculates the inclination of the detected object using basic trigonometric equation shown in Equation [#eq-angle]. The visualization of the &theta; value can be interpreted from Figure 4. This value of &theta; is used to decide the turning radius of iRobot.
+In our project, bootloader is automatically created by SDSoC when we build the project. This flow indicates that we can essentially run most of all the program which are supported by normal linux OS. With this information, we have decided to implement video frame management, ethernet programming and trigonometric arithmetic calculation on PS using ARM core. When we execute our .elf file from PetaLinux, the application starts acquiring HDMI frame from input and starts storing it into one of the three video frame buffers of main memory in circular fashion (explained in next subsection). After storing a frame, it invokes PL to start doing processing. Once PL is done processing the video and has written output video into one of the frame buffer, PS acquires the corner of the detected object from PL. PS then calculates the inclination of the detected object using basic trigonometric equation shown in Equation [#eq-angle]. The visualization of the &theta; value can be interpreted from Figure [#fig-ObjIncline]. This value of &theta; is used to decide the turning radius of iRobot.
 
 ~ Equation {#eq-angle}
 \theta = 
 ~
+
+~Center
+~~ Figure { #fig-ObjIncline caption="Object inclination Calculation using θ. Red object is the object which controls the iRobot." }
+![ObjIncline]
+~~
+~
+[ObjIncline]: images/ObjIncline.jpg "ObjIncline" { width=auto max-width=90% }
+
+The calculated &theta; value ranges is between ­-90 to 90 degree. This range is mapped into the actual turning radius required to control the Robot's direction (for further information about iRobot command structure, refer to Appendix X). The conversion from (­90, 90) degrees to (MAX_RIGHT_RADIUS, MAX_LEFT_RADIUS) is done via Equation [#eq-anglemap], [7].
+~ Equation {#eq-anglemap}
+\beta = \beta_{min} + \frac{(\beta_{max} - \beta_{min})(L - L_{min})} {(L_{max} - L_{min})}
+~
+where, \
+&beta;~min~ = MAX_RIGHT_RADIUS \
+&beta;~max~ = MAX_RIGHT_RADIUS \
+L~min~ = ­-90 \
+L~max~ = +90
+
+Similarly, to calculate the iRobot’s front or backward speed, we are considering the area of the red object. If the area increases over time, then we increase the speed of iRobot in frontal direction. If the area decreases over time, then we decrease the speed of iRobot in frontal direction and eventually, we start issuing backward commands (iRobot commands are explained in Appendix X). The visual representation of this situation is represented in Figure [#fig-frontback] where the object is coming closer to the camera and hence we are increasing the speed of the iRobot. Here also, we are using Equation [#eq-anglemap], to map max and min area of object to the maximum speed of iRobot in front to back direction.
+~Center
+~~ Figure { #fig-frontback caption="Object movement in front and back direction corresponds to iRobot’s speed in front and back direction. (a) Area a1 = AB*AC of red object on any timestamp n, (b) Area a2 = AB*AC of red object on the next timestamp n+1. If a2 > a1 then object is coming closer to the camera and hence it should issue front driving direction command to iRobot" }
+![frontback]
+~~
+~
+[frontback]: images/frontback.jpg "frontback" { width=auto max-width=90% }
+
+## Xilinx FPGA fabric (PL)
+Programmable logic is developed to work as an video accelerator. The video with resolution 1920*1080 is fed into the PL module. PL logic is fully pipelined and it processes 1 pixel per cycle with Initiation Interval (II) = 1.The hardware modules for video processing is shown in Figure [#fig-cornerdetect]. Detailed explanation of each of the module is described in following sub sections.
+~Center
+~~ Figure { #fig-cornerdetect caption="Corner Detection Algorithm on PL" }
+![cornerdetect]
+~~
+~
+[cornerdetect]: images/cornerdetect.jpg "cornerdetect" { width=auto max-width=90% }
+
+_Color Conversion_: ​Color conversion is the first module in the pipeline chain. It’s function is to convert the RGB color space into the YCbCr color space. YCbCr is a color space that separates the luminance (ie. light intensity) component of a frame from the hue components. Working in this color space is advantageous over the RGB color space because colors in YCbCr are represented independently from their relative brightnesses.The next step of this module is to threshold the red color and reject any color other than Red.
+
+_Median Filter over Space_: In any video processing application, noise is the major component which we have to deal with. As we are dealing with HD videos with 60 frames per second, noisy red pixels in the video drastically deteriorates the corner detection algorithm’s accuracy. To overcome this issue, we implemented median filter over space and median filter over time (next sub topic). Median filter over space uses 5x5 median filter window to reject the spurious red pixel on the screen. As median filter requires information of nearby pixels within 5x5 window, we had to come up with a way to store the history. Naive way of doing this would be to store all the content of the input video frame and then iterate over entire frame to do the median filtering. But as it slows down the performance significantly, we didn’t use this approach. Instead, we used a concept of line buffering [12], [13] and windowing [14] to implement median filter in efficient manner, which not only saves the space for frame but also maintains II = 1. We kept the size of line buffer as 4 i.e. we store only last 4 rows of the frame from the current pixel. By doing that, we only require 4 * 1920 pixel line buffer and 5*5 pixel window buffer. The visual representation of how line buffering and windowing works for median filter is shown in Figure [#fig-spacemfilter]. Here, we keep on shifting line buffer down and window to the right side as and when the new input pixel keep on appending.
+~Center
+~~ Figure { #fig-spacemfilter caption="Line Buffering and 5x5 Windowing to process real­time video stream" }
+![spacemfilter]
+~~
+~
+[spacemfilter]: images/spacemfilter.jpg "spacemfilter" { width=auto max-width=90% }
+
+_Median Filter over Time_: M​edian filter over space was not enough to get rid of most of the noise. So, we implemented median filter over time. In this filtering, we store the previous 8 frames of thresholded video on BRAM. While giving output from this module, we check the pixel value of past 8 frames at pixel (x, y) location. If majority of the pixels of last 8 frames is 1 then we output 1 otherwise we output 0. As an illustration, Figure [#fig-spacetfilter] displays median filtering over 4 frames. Current pixel under consideration is (x, y) and the past4 values of pixel (x, y) was 1, 1, 1, 0 respectively. So the output of the median filter over time module will be 1 for pixel (x, y), as there are majority of 1’s in the history.
+~Center
+~~ Figure { #fig-spacetfilter caption="Median Filtering over 4 frames for pixel (x, y). If the pattern is 1110 for last 4 frames, then output will be 1." }
+![spacetfilter]
+~~
+~
+[spacetfilter]: images/spacetfilter.jpg "spacetfilter" { width=auto max-width=90% }
+
+_History Buffer_: ​History buffer is responsible for storing previous 8 frames on BRAM. The frames are stored in FIFO order.
+
+_Corner Detection_: ​Corner detection module detects the extreme corners of the frame by finding X_min, X_max, Y_min and Y_max. It is also responsible to send output video back to PS along with detected corners. To reject the outlier corners within the frame, we are maintaining 8 frames’ corner history and doing bubble sorting on those 8 frames’ corners. The mid point of all sorted corners (which is the median filter of corners) is given as an output corner along with video output.
+
+## DDR Memory and Controller
+The purpose of DDR memory is to (1) load the PetaLinux boot image after booting up from SD card and (2) maintain the video frame buffer which stores video frames coming from camera and going to monitor. In our design, we are using 3 video frame buffers to circulate the read/write access [15]. 3 frame buffers are used in such a way that while the PS is writing video frame into one buffer, PL will read the video frame from the previous buffer. Frame buffers, implemented in this way assures that there is not read/write contention between FPGA and ARM processor. To manage the DDR memory access HLS uses Memory controller which arbitrates reads/writes to the physical DDR memory when asked for data.
+
+## Video DMA
+Xilinx LogiCORE IP AXI DMA is a soft IP provided by Xilinx to manage high­bandwidth direct memory access between memory and AXI4­stream video specific target peripherals [16]. The high level block diagram of AXI VDMA is shown in Figure [#fig-AXIVDMA]. The Memory mapped DMA access gets initialized by ARM processor over AXI4­Lite bus. After ARM has registered all necessary data for transfer, Control and Status Module will start following orders by doing the data transfer to/from AXI4 Memory map to AXI­4 Stream.
+~Center
+~~ Figure { #fig-AXIVDMA caption="AXI VDMA Block Diagram. Adopted from Ref [16]." }
+![AXIVDMA]
+~~
+~
+[AXIVDMA]: images/AXIVDMA.jpg "AXIVDMA" { width=auto max-width=90% }
+
+In the Write path, the AXI VDMA accepts frames on the AXI4­Stream Slave interface and writes it to system memory using the AXI4 Master interface.In the Read path, the AXI VDMA uses the AXI4 Master interface for reading frames from system memory and outputs it on the AXI4­Stream Master interface. Both write and read paths operate independently. The AXI VDMA also provides an option to synchronize the incoming/outgoing frames with an external synchronization signal.
+
+## Video Output Screen
+Once PL has written back the processed frame onto the video frame buffer, PS instructs VDMA to stream video frame to the output. As a result, the frame is transferred to the video output screen via HDMI port.
+
+## Network
+Once the PS is done calculating the orientation and speed of the iRobot, we use a​rpa [17] library and sys/socket.h header file to send a packet to the network. This code is executed on PetaLinux hosted on PS, so it’s similar to writing C++ code for sending network packets on linux. The network packets are sent to the TP­Link wireless access point using Ethernet connection. We hosted a private network for our communication on wireless access point. (See Appendix E.4 for further instruction on setting up network on TP­Link).
+
+## Design, Compilation and System Linking Flow
+We used Xilinx SDSoC Design suite to develop the application which can exploit both ARM core and FPGA. The design flow for developing heterogeneous system on SDSoC is summarized in Figure [#fig-SDSoC]. The step wise instruction for development is mentioned below.
+
+* Write normal C/C++ code which implements the functionality.
+
+* Offload some of the work load to FPGA by providing appropriate compilation flags in the makefile. It would be prudent to offload only the work which is more efficient on FPGA and not on ARM.
+
+* Compile the code using make script. On compilation, SDSoC invokes Xilinx Vivado HLS to cross compile the FPGA code. It compiles ARM code in native gcc compiler. If any error is found in the code, compilation exits with an error.
+
+* Once all the errors(if any arise) are fixed, compilation succeeds and then SDSoC does the code analysis and determines the communication and data pattern between FPGA and main memory.
+
+* After code analysis, it implements proprietary stub function to establish communication.
+
+* After stub implementation, SDSoC calls system linker which links appropriate IP modules and invokes Xilinx Vivado for synthesis.
+
+* After the successful synthesis, SDSoC places the final package including bootloader, .elf executable file on the sd_card folder.
+
+* We can copy the content of this folder onto SD card and boot Xilinx Zynq from SD card to run the application.
+
+* Based on the performance of the application, we can do further HLS optimization (more details in Appendix A) as well as function distribution between ARM and FPGA.
+~Center
+~~ Figure { #fig-SDSoC caption="Development Flow of Heterogeneous core using SDSoC." }
+![SDSoC]
+~~
+~
+[SDSoC]: images/SDSoC.jpg "SDSoC" { width=auto max-width=90% }
