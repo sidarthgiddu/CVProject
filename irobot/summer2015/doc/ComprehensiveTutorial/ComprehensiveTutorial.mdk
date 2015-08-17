@@ -46,7 +46,6 @@ In the following sections, you will see detailed instructions on how to proceed 
 
 # Tutorials
 ## Direct communication between iRobot and Computer
-
 Before using Intel Galileo to control the iRobot, we can first use a serial cable to control iRobot directly from our laptop by using Open Interface commands of iRobot. This will help you become familiar with the serial codes used for iRobot.
 
 1. Read [Owner's guide] and [Open Interface] to learn OI commands in iRobot. \
@@ -65,8 +64,8 @@ If your laptop can only  connect to an USB port, you will need to connect the se
 ~
 [iRobot_top_view]: images/iRobot_top_view.jpg "iRobot_top_view" { width=auto max-width=90% }
 
-3. Download [Realterm] for serial port control. 
-[Realterm]: http://sourceforge.net/projects/realterm/files/
+3. Download [Realterm] for serial port control.
+[Realterm]: http://sourceforge.net/projects/realterm/files/ 
 _Realterm_ is a serial terminal used for debugging and development of external devices. Figure [#fig-realterm] is a screenshot of the window:
 ~ Center
 ~~ Figure { #fig-realterm caption="Realterm Window" }
@@ -100,23 +99,21 @@ To begin with, you might find it very helpful to learn about the basics of your 
 [image008]: images/image008.jpg "image008" { width=auto max-width=90% }
 Intel Galileo is a microcontroller board based on Intel x86 architecture and featuring the Intel Quark SoC X1000 Application Processor. Developed by Intel Corporation, Galileo is the first Arduino-certified development board that combines Intel technology and the support for Arduino hardware expansion cards called "sheilds" designed for the Arduino Uno R3. From a hardware perspective, this means that all of its major pins and headers are in the same locations as on the Arduino Uno R3; from a software perspective, this means that Intel Galileo, running an open-source Linux operating system, can be programmed through the Arduino Integrated Development Environment (IDE) and make use of the existing libraries and software programs (usually called "sketches"). A full-sized mini-PCI Express slot, 100 Mb Ethernet port, Micro-SD slot, 6-pin 3.3V USB TTL UART header, USB host port, USB client port, and 8 Mbyte NOR Flash come standard on the board. Galileo has a number of facilities for communicating with a computer, another Arduino, or other microcontrollers. Galileo provides UART TTL (5V/3.3V) serial communication, which is available on digital pin 0 (RX) and 1 (TX). In addition, a second UART provides RS-232 support and is connected via a 3.5mm jack. The USB Device ports allows for serial (CDC) communications over USB. This provides a serial connection to the Serial Monitor or other applications on your computer. 
 
-You can find some important information about its properties from here: 
-
-General Overview: [Arduino - Intel Galileo] <br>
-Datasheet and Schematics: [Galileo Schematic] <br>
+You can find some important information about its properties from here: \
+General Overview: [Arduino - Intel Galileo] \
+Datasheet and Schematics: [Galileo Schematic] \
 Starter Guide: [Galileo Getting Started Guide]
 [Arduino - Intel Galileo]: http://www.arduino.cc/en/ArduinoCertified/IntelGalileo 
 [Galileo Schematic]: http://download.intel.com/support/galileo/sb/galileo_schematic.pdf
 [Galileo Getting Started Guide]: https://learn.sparkfun.com/tutorials/galileo-getting-started-guide#software-downloadsetup
 
 ### Software Setup: Arduino IDE
-In order to upload Arduino sketches to Intel Galileo, we need the Arduino IDE (integrated development environment). Unfortunately, the Galileo will not work with the standard IDEs, so we will have to download and install one of the specialized versions that is compatible with Galileo. Qualified versions include 1.5.3 and 1.6.0 or newer ones. \
+In order to upload Arduino sketches to Intel Galileo, we need the Arduino IDE (integrated development environment). Unfortunately, the Galileo will not work with the standard IDEs, so we will have to download and install one of the specialized versions that is compatible with Galileo. Qualified versions include 1.5.3 and 1.6.0 or newer ones.
 
 The tutorial below is mainly based on Windows system. You can see a comprehensive collection of instructions for all OS and IDE in the [Getting Started Guide] on the website of Intel. Once you open this website, choose your OS in the first drop-down menu and select "Arduino" as IDE in the second drop-down menu to proceed. 
 [Getting Started Guide]: https://software.intel.com/en-us/iot/library/galileo-getting-started 
 
-1. Go to the [download center]. Select the download option for one of the qualified versions mentioned above and 
-your computer's operating system. \
+1. Go to the [download center]. Select the download option for one of the qualified versions mentioned above and your computer's operating system. \
 Note: version 1.5.3 has a limitation with the language of OS. If your computer is running on an OS that uses a language other than English, try changing it to English from Control Panel, or you can download version 1.6.0 or newer, as shown in Figure [#fig-arduino_ide_download].
 
 [download center]: http://www.intel.com/support/galileo/sb/CS-035101.htm
@@ -162,8 +159,7 @@ Choose "**Browse my computer for driver software**". Navigate to **hardware/ardu
 ~~
 ~
 [image010]: images/image010.jpg "image010" { width=auto max-width=90% }
-
-You can also find more information from this link: "[Intel Galileo Board Assembly using Arduino]"
+You can also find more information from this link: "[Intel Galileo Board Assembly using Arduino]".
 [Intel Galileo Board Assembly using Arduino]: https://software.intel.com/en-us/articles/intel-galileo-board-assembly 
 
 6. Update firmware. \
@@ -176,7 +172,7 @@ Launch the Arduino IDE. It is under the directory "C:\arduino-1.6.0+Intel" (or a
 [arduino_interface]: images/arduino_interface.jpg "arduino_interface" { width=auto max-width=90% }
 Under **Help** tab, select "**Firmware Update**". It will take few minutes to update firmware on board, and you should have power connected all the time. The board itself usually comes with an older version, which may have unexpected outcomes in the future if you do not update it. 
 
-7. Upload programs\
+7. Upload programs \
 Under the **Tools** tab, select the type of board you are using (in this case, Intel Galileo) in **Board** and "COMx" ("x"" is a number depending on the USB port on your computer that the serial cable is plugged into) in **Port** . 
 You can go to "**Files > Examples**" for numerous sample sketches including helpful comments already provided for you. You can also upload them to Intel Galileo in order to see how things work if you are not familiar with Arduino IDE yet. It is a great way to introduce yourself to Arduino. With reference to Figure [#fig-arduino_upload]: To upload, click on the **Upload** button. Programs will automatically compile. To compile without uploading, click on the **Verify** button instead. 
 ~Center
@@ -190,9 +186,9 @@ Note: If you want to add libraries to Arduino IDE, you can just download librari
 
 Note: Intel Galileo has more than one Serial ports. \
 Serial refers to USB Client port. It is responsible to send programs from other devices to Intel Galileo board, and Serial.write() will print out results in Serial Monitor, which can be found in the upper right corner of Arduino IDE. \
-Serial1 refers to Pin 0 and Pin 1 in Intel Galileo digital pins. Therefore, when you are programming iRobot using wires connecting Pin 0 and Pin 1 for TX and RX, you have to use Serial1 to talk to iRobot, while you need Serial to enable communication between computer and Intel Galileo. This can be better seen from the chart below:
+Serial1 refers to Pin 0 and Pin 1 in Intel Galileo digital pins. Therefore, when you are programming iRobot using wires connecting Pin 0 and Pin 1 for TX and RX, you have to use Serial1 to talk to iRobot, while you need Serial to enable communication between computer and Intel Galileo. This can be better seen from the chart in Figure [#fig-image012]:
 ~Center
-~~Figure { #fig-design caption="Corresponding Names of Serial Ports in Arduino IDE" }
+~~Figure { #fig-image012 caption="Corresponding Names of Serial Ports in Arduino IDE" }
 ![image012]
 ~~
 ~
@@ -217,44 +213,40 @@ Note: WiFi card N-135 and N-6205 already has their drivers included in the Linux
 If you are using other WiFi cards, you have to download drivers separately from [here].
 [here]: http://wireless.kernel.org/en/users/Drivers/iwlwifi 
 2. When your download is complete, Unpack with "tar -xvzf iwlwifi-XXX.tgz", then copy files from your PC to the SD card.
-3. Insert card into PCIE connector slot 45 degrees up. Press gently but firmly on the N135 Adapter to seat it on the two hooks on the PCI Connector. Attach antennas to the WiFi card. Insert card into PCIE connector slot 45 degrees up and then pull all the way down.  \
+3. Insert card into PCIE connector slot 45 degrees up. Press gently but firmly on the N135 Adapter to seat it on the two hooks on the PCI Connector. Attach antennas to the WiFi card. Insert card into PCIE connector slot 45 degrees up and then pull all the way down. These steps are shown in Figures [#fig-image017] and [#fig-image040].
 ~ Center
-~~ Figure { #fig-design caption="WiFi card Setup" }
+~~ Figure { #fig-image017 caption="WiFi card Setup" }
 ![image017]
-![image040]
 ~~
 ~
 [image017]: images/image017.jpg "image017" { width=auto max-width=90% }
+~ Center
+~~ Figure { #fig-image040 caption="Attach Antennas" }
+![image040]
+~~
+~
 [image040]: images/image040.jpg "image040" { width=auto max-width=90% }
 
 4. **SD Card Setup** \
-Since the Flash memory on Intel Galileo, holding the version of Linux used when there is no SD card, is too small to include WiFi drivers, you must have an SD card with Linux image to use WiFi.\
-Unzip the Linux image we downloaded in the last section. Plug the SD card into your computer and transfer everything to SD card. Again, preserve the folder structure. \
+Since the Flash memory on Intel Galileo, holding the version of Linux used when there is no SD card, is too small to include WiFi drivers, you must have an SD card with Linux image to use WiFi. \
+Unzip the Linux image we downloaded in the last section. Plug the SD card into your computer and transfer everything to SD card. Again, preserve the folder structure as shown in Figure [#fig-image018]. \
 ~Center
-~~ Figure { #fig-design caption="SD Card Setup" }
+~~ Figure { #fig-image018 caption="SD Card Setup" }
 ![image018]
 ~~
 ~ 
 [image018]: images/image018.jpg "image018" { width=auto max-width=90% }
 After booting SD card, we can plug it into Intel Galileo, and then we can power on the board through 5V power cable. \
-The figure below shows how the commands generated by the processing unit are received over the wireless network using the Intel N-135 wireless receptor that is connected to the Galileo board (Ref. to appendix E.3) and these 
-commands are then transmitted to the iRobot via serial communication. \
-~Center 
-~~Figure { #fig-design caption="Overview of the Data Transfer Flow" }
-![image004]
-~~
-~
-[image004]: images/image004.jpg "image004" { width=auto max-width=90% }
+As mentioned in Section [#sec-overview], Figure [#fig-designflow] shows how the commands generated by the processing unit are received over the wireless network using the Intel N-135 wireless receptor that is connected to the Galileo board (Ref. to appendix E.3) and these commands are then transmitted to the iRobot via serial communication. \
 Now we are ready to create the wireless access point on your computer to complete this communication flow. 
-In order to do that, you have to set up network and upload programs through serial port to make Intel Galileo 
-ready for WiFi. <br> 
+In order to do that, you have to set up network and upload programs through serial port to make Intel Galileo ready for WiFi.
 
 5. **WPA Network Setup** \
 
 
-i. In Windows, search "cmd" (the command prompt) and right click on the icon to "run as administrator", or you will not be able to set up a new network. 
+i. In Windows, as shown in Figure [#fig-run_as_admin], search "cmd" (the command prompt) and right click on the icon to "run as administrator", or you will not be able to set up a new network. 
 ~ Center
-~~ Figure {caption="A screenshot from Windows 8.1" }
+~~ Figure {#fig-run_as_admin caption="A screenshot from Windows 8.1" }
 ![run_as_admin]
 ~~
 ~
@@ -267,25 +259,25 @@ Change "**yourssid**" above to the name of the network you are setting up. You c
 Change "**yourkey**" above to the password. It should be at least 8 characters long. 
 For example, in my case  I set the ssid to "irobot" and key to "irobotirobot". \
 Then, enter: **netsh wlan start hostednetwork** \
+Refer to Figure [#fig-image021] for more details.
 ~Center
-~~ Figure { #fig-design caption="Setup hosted network" }
+~~ Figure { #fig-image021 caption="Setup hosted network" }
 ![image021]
 ~~
 ~
 [image021]: images/image021.jpg "image021" { width=auto max-width=90% }
-Note: after you set up this network once on your computer, you can simply enter the last line 
-to activate the network that you have previously set up in the future. 
-iv. You can now check status of network in **Network and Sharing Center**. \
+Note: after you set up this network once on your computer, you can simply enter the last line to activate the network that you have previously set up in the future. 
+iv. You can now check status of network in **Network and Sharing Center**, as shown in Figure [#fig-image023]. \
 ~Center
-~~ Figure { #fig-design caption="Status of hosted network" }
+~~ Figure { #fig-image023 caption="Status of hosted network" }
 ![image023]
 ~~
 ~
 [image023]: images/image023.jpg "image023" { width=auto max-width=90% }
-v. Share WiFi with the network that you just created. \
+v. Share WiFi with the network that you just created, as shown in Figure [#fig-image025]. \
 In the left sidebar, choose **Change adapter settings**. Right click on your current network. It is "eduroam 3" WiFi in my case. Click **Properties**. Go to tab **Sharing** and share the network with the network you created. 
 ~Center 
-~~ Figure { #fig-design caption="Change adapter settings" }
+~~ Figure { #fig-image025 caption="Change adapter settings" }
 ![image025]
 ~~
 ~
@@ -304,25 +296,25 @@ viii.	You can find the IP Address in Serial Monitor. It will be used later.
 As you may notice, the IP address that Intel Galileo obtain varies every time it was printed out in the serial monitor. We want to make it static, since we are sending commands via wireless network to a single IP address specific to the board. In order to do that, you have to download PuTTY (or any SSH client that you prefer). 
 
 
-i. Download PuTTY from [here] and install it. \
+i. Download PuTTY from [here] and install it as shown in Figure [#fig-PuTTY_download]. \
 [here]: http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html 
 ~Center
-~~ Figure { #fig-design caption="PuTTY download" }
+~~ Figure { #fig-PuTTY_download caption="PuTTY download" }
 ![PuTTY_download]
 ~~
 ~
 [PuTTY_download]: images/PuTTY_download.jpg "PuTTY_download" { width=auto max-width=90% }
-ii. Upload this program to Intel Galileo. \
+ii. Upload this program to Intel Galileo. The connection between Intel Galileo and iRobot is shown in Figure [#fig-image026]. \
 ~Center
-~~ Figure { #fig-design caption="Connect Intel Galileo with iRobot" }
+~~ Figure { #fig-image026 caption="Connect Intel Galileo with iRobot" }
 ![image026]
 ~~
 ~
 [image026]: images/image026.jpg "image026" { width=auto max-width=90% }
 iii. Then we can use PuTTY for communication between computer and linux image on Intel Galileo. \
-We have to first connect an Ethernet cable from computer to Intel Galileo. Next we will open PuTTY to connect to Intel Galileo. Here is a screenshot of my PuTTY configuration:
+We have to first connect an Ethernet cable from computer to Intel Galileo. Next we will open PuTTY to connect to Intel Galileo. Figure [#fig-PuTTY] is a screenshot of my PuTTY configuration.
 ~Center
-~~Figure  {caption="Configuration of Intel Galileo with PuTTY" }
+~~Figure  {#fig-PuTTY caption="Configuration of Intel Galileo with PuTTY" }
 ![PuTTY]
 ~~
 ~
@@ -332,9 +324,9 @@ iv.	Click "Open" and a command shell will pop out. Log in as "root". Create 
 /etc/network/interfaces file by typing: \
 "cp /etc/network/interfaces  /etc/network/interfaces.backup"
 v. Type "vi /etc/network/interfaces". Press "i" to enter edition mode. Change "dhcp" in the 
-"iface wlan0 inet dhcp" line to "static". Comment out all the lines below and add the following lines: \
+"iface wlan0 inet dhcp" line to "static". Comment out all the lines below and add the following lines as shown in Figure [#fig-image029]. \
 ~Center
-~~Figure {caption="A Screenshot of PuTTY" }
+~~Figure {#fig-image029 caption="A Screenshot of PuTTY" }
 ![image029]
 ~~
 ~
@@ -356,9 +348,9 @@ model, to serve as the processing unit that generates the keyboard commands. As 
 
 Let's first setup Processing. \
 [Connecting Arduino to Processing]: https://learn.sparkfun.com/tutorials/connecting-arduino-to-processing/introduction 
-1. Download and install [Processing]. \
+1. Download and install [Processing] as shown in Figure [#fig-image030]. \
 ~Center 
-~~ Figure { #fig-design caption="Processing download" }
+~~ Figure { #fig-image030 caption="Processing download" }
 ![image030]
 ~~
 ~
@@ -371,24 +363,24 @@ The installation is similar to that of the Arduino IDE. Simply unzip all files t
 Now you should be able to run the Processing code we provided. 
 
 ### Connecting Intel Galileo to iRobot
-First, we will provide you a high-level interpretation of the data propagation. 
+First, we will provide you a high-level interpretation of the data propagation shown in Figure [#fig-image041]. 
 ~Center
-~~Figure {caption="Command propagation from the wireless network to the iRobot via the Intel N 135 wireless receptor connected to Galileo board" }
+~~Figure {#fig-image041 caption="Command propagation from the wireless network to the iRobot via the Intel N 135 wireless receptor connected to Galileo board" }
 ![image041]
 ~~
 ~
 [image041]: images/image041.png "image041" { width=auto max-width=90% }
 For Intel Galileo, the pins are divided into several sections such as DIGITAL, ANALOG, etc. 
-If you refer to the picture in the first section, Pin 0 (RXD) and Pin 1 (TXD) are located in DIGITAL section, while the ground power pin is located Pin 6 or Pin 7 of the Power section. You can see these from the datasheet attached below. \
+If you refer to the picture in the first section, Pin 0 (RXD) and Pin 1 (TXD) are located in DIGITAL section, while the ground power pin is located Pin 6 or Pin 7 of the Power section. You can see these from the datasheet attached in Figure [#fig-image015]. \
 ~Center
-~~Figure {caption="iRobot Datasheet" }
+~~Figure {#fig-image015 caption="iRobot Datasheet" }
 ![image015]
 ~~
 ~
 [image015]: images/image015.jpg "image015" { width=auto max-width=90% }
-There are 25 pins on iRobot as shown below. 
+There are 25 pins on iRobot as shown in Figure [#fig-image013]. 
 ~Center
-~~Figure {caption="iRobot Pins" }
+~~Figure {#fig-image013 caption="iRobot Pins" }
 ![image013]
 ~~
 ~
@@ -398,22 +390,16 @@ Connect Pin 0 (RXD) on Galileo to Pin 2 on iRobot (Pin 0 on Galileo receives dat
 Connect Pin 1 (TXD) on Galileo to Pin 1 on iRobot (Pin 1 on Galileo sends data, while Pin 1 on iRobot receives data). \
 Connect the GND pin on Galileo to Pin 14 (GND) on iRobot. \
 Note: Pins on iRobot range from Pin 1 to Pin 25, while digital pins on Galileo start with Pin 0.\
-There are more than 1 GND pins on iRobot. Both of them work.
-~Center
-~~Figure {caption="Pin Connections between Galileo and iRobot" }
-![galileo_irobot_pin_connection]
-~~
-~
-[galileo_irobot_pin_connection]: images/galileo_irobot_pin_connection.jpg "galileo_irobot_pin_connection" { width=auto max-width=90% }
+There are more than 1 GND pins on iRobot. Both of them work. The connection between Galileo and iRobot is the same as that shown in Section [#sec-wifi-setup], Step 6.
 
 ### Running the program
 Now we are ready to run the program. 
 
 1. Connect Intel Galileo to your computer with a serial cable. Upload the file 
-"*arduinokeyboardControlReception_revised.ino*" to it. (refer to section **3.2.2** above)\
+"*arduinokeyboardControlReception_revised.ino*" to it. (refer to **Section [#sec-software-setup--arduino-ide] Step 7**)\
 The board will always remember the most recently uploaded sketch. You only need to upload the same file to the board once, if you don't overwrite the sketch afterwards. Every time you power the board on, it starts running the stored sketch. 
-2. Unplug Intel Galileo from your computer and connect it to the iRobot. (refer to section **3.2.5** above) \
-3. Start the hosted WPA network on your computer (be sure to run the command prompt as Administrator to do so). (refer to section **3.2.5 - WPA network setup - 3** above)\
+2. Unplug Intel Galileo from your computer and connect it to the iRobot. (refer to **Section [#sec-wifi-setup], Step 6**) \
+3. Start the hosted WPA network on your computer (be sure to run the command prompt as Administrator to do so). (refer to **Section [#sec-wifi-setup], Step 5**)\
 4. Power on the iRobot. You will see the power light blink and turn green, with a beep sound. \
 5. Power on the Intel Galileo. \
 _Important Notice_: When the Galileo board is powered on, it automatically starts to run the sketch uploaded to it most recently. 
@@ -431,12 +417,12 @@ You might want to check the status of the WiFi connection when you try this for 
 2. Download [OpenCV] and extract to C:\ directory. \
 [OpenCV]: http://opencv.org/downloads.html
 ~Center
-~~ Figure { #fig-design caption="OpenCV library download" }
+~~ Figure { #fig-image031 caption="OpenCV library download" }
 ![image031]
 ~~
 ~
 [image031]: images/image031.jpg "image031" { width=auto max-width=90% }
-We suggest that you download this version of OpenCV, since the code we provide along with this tutorial is configured with OpenCV files in this version of release. If you choose to download another version, make sure to change the "Path" property (which tells the program how to find the library files) before running it. 
+We suggest that you download the version of OpenCV shown in Figure [#fig-image031], since the code we provide along with this tutorial is configured with OpenCV files in this version of release. If you choose to download another version, make sure to change the "Path" property (which tells the program how to find the library files) before running it. 
 
 For the following steps, you can also refer to this tutorial "[OpenCV on Visual Studio 2013]". \
 [OpenCV on Visual Studio 2013]: http://blog.amastaneh.com/2014/03/opencv-on-visual-studio-2013.html 
@@ -478,14 +464,14 @@ The magnitude of _radius_ determines the turning angle. A smaller _radius_ magni
 
 The sign of _radius_ determines the direction of the turn. If the value of _radius_ is positive, the robot is turning left and if it is negative, the robot is turning right.
 
-Combining all these information, the following diagram, which illustrates the case of a robot moving forward and turning left, will help to clarify the calculation of the PWM values for left and right motors.
+Combining all these information, Figure [#fig-PWMvalues], which illustrates the case of a robot moving forward and turning left, will help to clarify the calculation of the PWM values for left and right motors.
 ~Center
-~~ Figure { #fig-design caption="Example of robot moving forward and turning left" }
-![PWM values]
+~~ Figure { #fig-PWMvalues caption="Example of robot moving forward and turning left" }
+![PWMvalues]
 ~~
 ~
-[PWM values]: images/PWM-values.jpg "PWM values" { width=auto max-width=90% }
-Based on the diagram, we can use the general idea of ratio to calculate the left and right motor PWM values.
+[PWMvalues]: images/PWMvalues.jpg "PWMvalues" { width=auto max-width=90% }
+Based on Figure [#fig-PWMvalues], we can use the general idea of ratio to calculate the left and right motor PWM values.
 ~ Equation {#PWM general}
 \frac{distance \ of \ left \ or \ right \ motors \ from \ center \ of \ circle}{distance \ of \ center \ of \ robot \ from \ center \ of \ circle} \cdot PWM \ for \ center \ of \ robot
 ~
@@ -514,14 +500,14 @@ For calculating _velocitySpeed_, the area of the red box is converted to the ran
 
 For calculating the rotation angle and direction, we made use of OpenCV’s RotatedRect class. The angle, denoted by _l_, is measured from the positive x-axis anti-clockwise to the closest side. This angle increases from -89 to -1 when the box is being rotated left and decreases from -1 to -89 when the box is being rotated right. However, this angle does not tell us the direction of the rotation.
 
-To decide whether the red box is rotated to the left or right, we make use of the width and height of the rotated rectangle. The width of the rotated rectangle does not necessarily correspond to the longer side, but rather, OpenCV sets the side closest to the positive x-axis as the width and the other side as the height by default. Hence, when rotating left, the shorter side is set as the width but when rotating right, the longer side is set as the width. The diagram below illustrates the cases for left and right rotation. 
+To decide whether the red box is rotated to the left or right, we make use of the width and height of the rotated rectangle. The width of the rotated rectangle does not necessarily correspond to the longer side, but rather, OpenCV sets the side closest to the positive x-axis as the width and the other side as the height by default. Hence, when rotating left, the shorter side is set as the width but when rotating right, the longer side is set as the width. Figure [#fig-rotationangle] illustrates the cases for left and right rotation. 
 ~Center
-~~ Figure { #fig-design caption="Left and Right rotation" }
-![rotation angle]
+~~ Figure { #fig-rotationangle caption="Left and Right rotation" }
+![rotationangle]
 ~~
 ~
-[rotation angle]: images/rotation-angle.jpg "rotation angle" { width=auto max-width=90% }
-As seen from the diagram, for left rotation, the width is always shorter than the height whereas for right rotation, it is the other way round. Thus, we can compare the width and height of the rotated rectangle to determine if the red box is rotating left or right.
+[rotationangle]: images/rotationangle.jpg "rotationangle" { width=auto max-width=90% }
+As seen from Figure [#fig-rotationangle], for left rotation, the width is always shorter than the height whereas for right rotation, it is the other way round. Thus, we can compare the width and height of the rotated rectangle to determine if the red box is rotating left or right.
 
 With information about the rotation angle and direction, we can now convert _l_ from the range of -89 to -1 to a value in the range of either MIN_TURN_LEFT=550 to MAX_TURN_LEFT=201 or MIN_TURN_RIGHT=-550 to MAX_TURN_RIGHT=-201 based on the rotation direction. The chosen range is assigned to the variables _betaMax_ and _betaMin_. For example, if the width of the rectangle is shorter than the height, we know that it is a left rotation. Thus, we would set _betaMin_ to MIN_TURN_LEFT and _betaMax_ to MAX_TURN_LEFT. Angle _l_ is then converted to a value between these two numbers and sent to Intel Galileo.
 
@@ -556,19 +542,37 @@ Using the median blurred threshold image, we called the findContours function in
 ## High Level Design
 
 Our heterogeneous platform uses ARM Cortex 9 (@667 MHz) as the host processor and FPGA fabric as a video accelerator. The input frame from HDMI camera is first stored into video buffer hosted in main memory of FPGA. After the frame buffer is filled, PS invokes the FPGA fabric by passing the starting address of the frame. FPGA behaves as an accelerator and the moment PS gives a signal to FPGA, FPGA start processing the frame data in pixel­by­pixel manner. Once PL is done processing the whole frame, it raises a ready signal to PS informing that it’s done with the processing and PS can take the data from PL. (Note that in our design, PL is taking video frame as an input and gives detected corners as well as video frame as an output.) The PS senses the flag and starts receiving corners and video out information from PL. The video out of PL is written into the video frame buffer, which will be read by Video DMA to output into HDMI screen. The corners sent by the PL is consumed by the PS and it generates command out of it.
-
 ~Center
-~~ Figure { #fig-design caption="High level design of Heterogeneous core on Xilinx Zynq 702 FPGA" }
-![HLS Design]
+~~ Figure { #fig-HLSDesign caption="High level design of Heterogeneous core on Xilinx Zynq 702 FPGA" }
+![HLSDesign]
 ~~
 ~
-[HLS Design]: images/HLS-Design.jpg "HLS Design" { width=auto max-width=90% vertical-align=middle}
-
+[HLSDesign]: images/HLSDesign.jpg "HLSDesign" { width=auto max-width=90% }
 ~Center
-~~ Figure { #fig-design caption="System Architecture of PS and PL in Xilinx Zynq FPGA. Adopted from Ref [15]." }
+~~ Figure { #fig-PSPL caption="System Architecture of PS and PL in Xilinx Zynq FPGA. Adopted from Ref [15]." }
 ![PSPL]
 ~~
 ~
 [PSPL]: images/PSPL.jpg "PSPL" { width=auto max-width=90% vertical-align=middle}
 
-Figure [HLS Design] shows the high level design which are connected with FPGA. In Figure 3, the detail structure of the Xilinx FPGA is mentioned [15]. The processing system consists of DDR Processor, Memory controller and IO including Gigabit Ethernet. AMBA Switches are used for high speed interconnect between ARM Processor, PL and DDR Memory. Functionality of each of the components of Figure 2 is explained in following sub topics.
+Figure [#fig-HLSDesign] shows the high level design which are connected with FPGA. In Figure [#fig-PSPL], the detail structure of the Xilinx FPGA is mentioned [15]. The processing system consists of DDR Processor, Memory controller and IO including Gigabit Ethernet. AMBA Switches are used for high speed interconnect between ARM Processor, PL and DDR Memory. Functionality of each of the components of Figure [#fig-HLSDesign] is explained in following sub topics.
+
+## HDMI Input Camera
+Our implementation supports HDMI 1920 x 1080 resolution with 60 frames per seconds. As an HDMI input, any source which can support that resolution can be considered. We have considered the HDMI output of laptop screen share to behave as a source of video, but it can be HDMI camera as well.
+3.3 ARM Cortex 9 (PS)
+Xilinx Zynq 702 evaluation board supports dual ARM Cortex 9 as an embedded processor which runs at 667 MHz clock [3]. Processor is capable of running PetaLinux operating system [4]. The high level flow of running PetaLinux on ARM is as follows:
+
+* Store *.elf executable file along with the bootloader onto SD card [5].
+
+* Insert SD card into Zynq board, configure Zynq board to load image from SD card [6] and
+power on the board.
+
+* After power up, first stage boot loader will load the PetaLinux from SD card to RAM of FPGA. 
+
+* Bootloader will signal PS to boot the PetaLinux OS which is hosted purely on ARM.
+
+In our project, bootloader is automatically created by SDSoC when we build the project. This flow indicates that we can essentially run most of all the program which are supported by normal linux OS. With this information, we have decided to implement video frame management, ethernet programming and trigonometric arithmetic calculation on PS using ARM core. When we execute our .elf file from PetaLinux, the application starts acquiring HDMI frame from input and starts storing it into one of the three video frame buffers of main memory in circular fashion (explained in next subsection). After storing a frame, it invokes PL to start doing processing. Once PL is done processing the video and has written output video into one of the frame buffer, PS acquires the corner of the detected object from PL. PS then calculates the inclination of the detected object using basic trigonometric equation shown in Equation [#eq-angle]. The visualization of the θ value can be interpreted from Figure 4. This value of &Theta; is used to decide the turning radius of iRobot.
+
+~ Equation {#eq-angle}
+\theta = 
+~
