@@ -34,7 +34,6 @@ system of requirements which we targeted throughout the project.
 * iRobot should be controlled smoothly and intuitively based on the gesture provided by user
 
 # Development Approach
-
 We followed hierarchical and modular development approach. As the project involved fair amount of complexity, we divided the project into 2 major categories: Software Design and Hardware Design. Software Design was meant to develop software version of entire project. This includes camera capture, gesture recognition and command sending on Intel i3 processor, programming Intel Galileo to receive the command and send it to iRobot for driving. The hardware design was meant to develop heterogeneous core which replaces software version of video capture, gesture recognition and command sending units. We managed to finish software design in Fall semester and hardware development in Spring semester. As the software version is relatively easier than developing project on hardware, our approach helped us unblock major issues of the project earlier in the design cycle.
 The incremental development approach from pure software to software-hardware co-design is demonstrated in Figure [#fig-figure2]:
 ~ Center
@@ -43,7 +42,6 @@ The incremental development approach from pure software to software-hardware co-
 ~~
 ~
 [figure2]: images/figure2.jpg "figure2" { width=auto max-width=90% }
-
 In the following sections, you will see detailed instructions on how to proceed from each step to the next, including how to download and setup the required softwares and hardwares, how to operate on them, how to run the codes, along with screenshots and important notices for troubleshooting.
 
 # Tutorials
