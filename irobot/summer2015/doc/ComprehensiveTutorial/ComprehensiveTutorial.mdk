@@ -12,8 +12,6 @@ The motivation of this project is to explore the field of heterogeneous computin
 
 ## Overview
 <p>
-In this design, the camera input is fed to the processing unit which can either be a computer, running software or an FPGA running heterogenous programs. The processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to Intel Galileo. Intel Galileo has an wireless receptor named Intel N135, which is responsible to receive the commands sent by access point. Intel Galileo receives the command from the wireless receptor and sends it to the iRobot over UART serial link operating at 57600 baud rate. The overall high-level design of the project is shown in Figure [#fig-designflow].
-~ End Remote
 In this design, the camera input is fed to the processing unit which can either be a computer, running software or an FPGA running heterogenous programs. The processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to Intel Galileo. Intel Galileo has an wireless receptor named Intel N135, which is responsible to receive the commands sent by access point. Intel Galileo receives the command from the wireless receptor and sends it to the iRobot over UART serial link operating at 57600 baud rate.
 </p>
 The overall high-level design of the project is shown in Figure [#fig-designflow].
