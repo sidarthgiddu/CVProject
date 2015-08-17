@@ -567,9 +567,19 @@ Using the median blurred threshold image, we called the findContours function in
 ## High Level Design
 
 Our heterogeneous platform uses ARM Cortex 9 (@667 MHz) as the host processor and FPGA fabric as a video accelerator. The input frame from HDMI camera is first stored into video buffer hosted in main memory of FPGA. After the frame buffer is filled, PS invokes the FPGA fabric by passing the starting address of the frame. FPGA behaves as an accelerator and the moment PS gives a signal to FPGA, FPGA start processing the frame data in pixel­by­pixel manner. Once PL is done processing the whole frame, it raises a ready signal to PS informing that it’s done with the processing and PS can take the data from PL. (Note that in our design, PL is taking video frame as an input and gives detected corners as well as video frame as an output.) The PS senses the flag and starts receiving corners and video out information from PL. The video out of PL is written into the video frame buffer, which will be read by Video DMA to output into HDMI screen. The corners sent by the PL is consumed by the PS and it generates command out of it.
+
 ~Center
 ~~ Figure { #fig-design caption="High level design of Heterogeneous core on Xilinx Zynq 702 FPGA" }
 ![HLS Design]
 ~~
 ~
-[HLS Design]: images/HLS-Design.jpg "HLS Design" { width=auto max-width=90% }
+[HLS Design]: images/HLS-Design.jpg "HLS Design" { width=auto max-width=90% vertical-align=middle}
+
+~Center
+~~ Figure { #fig-design caption="System Architecture of PS and PL in Xilinx Zynq FPGA. Adopted from Ref [15]." }
+![PSPL]
+~~
+~
+[PSPL]: images/PSPL.jpg "PSPL" { width=auto max-width=90% vertical-align=middle}
+
+Figure [HLS Design] shows the high level design which are connected with FPGA. In Figure 3, the detail structure of the Xilinx FPGA is mentioned [15]. The processing system consists of DDR Processor, Memory controller and IO including Gigabit Ethernet. AMBA Switches are used for high speed interconnect between ARM Processor, PL and DDR Memory. Functionality of each of the components of Figure 2 is explained in following sub topics.
