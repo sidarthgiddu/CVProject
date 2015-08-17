@@ -12,15 +12,14 @@ The motivation of this project is to explore the field of heterogeneous computin
 
 ## Overview
 <p>
-In this design, the camera input is fed to the processing unit which can either be a computer, running software or an FPGA running heterogenous programs. The processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to Intel Galileo. Intel Galileo has an wireless receptor named Intel N135, which is responsible to receive the commands sent by access point. Intel Galileo receives the command from the wireless receptor and sends it to the iRobot over UART serial link operating at 57600 baud rate. The overall high-level design of the project is shown in Figure 1.
+In this design, the camera input is fed to the processing unit which can either be a computer, running software or an FPGA running heterogenous programs. The processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to Intel Galileo. Intel Galileo has an wireless receptor named Intel N135, which is responsible to receive the commands sent by access point. Intel Galileo receives the command from the wireless receptor and sends it to the iRobot over UART serial link operating at 57600 baud rate. The overall high-level design of the project is shown in Figure [#fig-designflow].
 </p>
 ~ Center
-~~ Figure { #fig-design caption="Abstract Design of Project Objective." }
-![design_flow]
+~~ Figure { #fig-designflow caption="Abstract Design of Project Objective." }
+![designflow]
 ~~
 ~
-[design_flow]: images/design_flow.jpg "design_flow" { width=auto max-width=90% }
-
+[designflow]: images/designflow.jpg "designflow" { width=auto max-width=90% }
 ## System of Requirements
 Heterogeneous programming on FPGA using HLS is the priority of the project. Following were the
 system of requirements which we targeted throughout the project.
@@ -76,9 +75,9 @@ If your laptop can only  connect to an USB port, you will need to connect the se
 
 3. Download [Realterm] for serial port control. 
 [Realterm]: http://sourceforge.net/projects/realterm/files/
-_Realterm_ is a serial terminal used for debugging and development of external devices. Here is a screenshot of the window:
+_Realterm_ is a serial terminal used for debugging and development of external devices. Figure [#fig-realterm] is a screenshot of the window:
 ~ Center
-~~ Figure { #fig-design caption="Realterm Window" }
+~~ Figure { #fig-realterm caption="Realterm Window" }
 ![realterm]
 ~~
 ~
@@ -569,7 +568,7 @@ Using the median blurred threshold image, we called the findContours function in
 Our heterogeneous platform uses ARM Cortex 9 (@667 MHz) as the host processor and FPGA fabric as a video accelerator. The input frame from HDMI camera is first stored into video buffer hosted in main memory of FPGA. After the frame buffer is filled, PS invokes the FPGA fabric by passing the starting address of the frame. FPGA behaves as an accelerator and the moment PS gives a signal to FPGA, FPGA start processing the frame data in pixel­by­pixel manner. Once PL is done processing the whole frame, it raises a ready signal to PS informing that it’s done with the processing and PS can take the data from PL. (Note that in our design, PL is taking video frame as an input and gives detected corners as well as video frame as an output.) The PS senses the flag and starts receiving corners and video out information from PL. The video out of PL is written into the video frame buffer, which will be read by Video DMA to output into HDMI screen. The corners sent by the PL is consumed by the PS and it generates command out of it.
 
 ~Center
-~~ Figure { #fig-design caption="High level design of Heterogeneous core on Xilinx Zynq 702 FPGA" }
+~~ Figure { #fig-HLS Design caption="High level design of Heterogeneous core on Xilinx Zynq 702 FPGA" }
 ![HLS Design]
 ~~
 ~
@@ -582,4 +581,4 @@ Our heterogeneous platform uses ARM Cortex 9 (@667 MHz) as the host processor an
 ~
 [PSPL]: images/PSPL.jpg "PSPL" { width=auto max-width=90% vertical-align=middle}
 
-Figure [HLS Design] shows the high level design which are connected with FPGA. In Figure 3, the detail structure of the Xilinx FPGA is mentioned [15]. The processing system consists of DDR Processor, Memory controller and IO including Gigabit Ethernet. AMBA Switches are used for high speed interconnect between ARM Processor, PL and DDR Memory. Functionality of each of the components of Figure 2 is explained in following sub topics.
+Figure [#fig-HLS Design] shows the high level design which are connected with FPGA. In Figure 3, the detail structure of the Xilinx FPGA is mentioned [15]. The processing system consists of DDR Processor, Memory controller and IO including Gigabit Ethernet. AMBA Switches are used for high speed interconnect between ARM Processor, PL and DDR Memory. Functionality of each of the components of Figure 2 is explained in following sub topics.
