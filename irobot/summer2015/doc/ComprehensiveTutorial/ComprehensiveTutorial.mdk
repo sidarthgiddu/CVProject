@@ -8,11 +8,9 @@ Author        : Zhengning Han, Danlu Huang
 
 # Introduction
 ## Motivation
-
 The motivation of this project is to explore the field of heterogeneous computing using High-Level Digital Synthesis (HLS). We wanted to build a system which can use FPGA as an accelerator along with the main processor and communicate with the outside world. As a specific application, we have programmed the FPGA to detect the video gesture from HDMI camera and send the commands to iRobot to drive in desired direction. As video processing on real-time HD video stream is slow on normal processor, we used FPGA as an accelerator to offload some of the work from processor. This project involves many aspects of hardware-software co-designing like HLS, Embedded Programming, Computer Vision and FPGA prototyping, making it an ideal project for students in Electrical and Computer Engineering field. 
 
 ## Overview
-
 In this design, the camera input is fed to the processing unit which can either be a computer, running software or an FPGA running heterogenous programs. The processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to Intel Galileo. Intel Galileo has an wireless receptor named Intel N135, which is responsible to receive the commands sent by access point. Intel Galileo receives the command from the wireless receptor and sends it to the iRobot over UART serial link operating at 57600 baud rate. The overall high-level design of the project is shown in Figure [#fig-designflow].
 ~ Center
 ~~ Figure { #fig-designflow caption="Abstract Design of Project Objective." }
@@ -95,16 +93,14 @@ You can always refer to Open Interface for complete explanations of all serial c
 ## Smooth controlling of iRobot with keyboard
 In this section, we are going to incorporate the Intel Galileo board and a local WPA network to control the iRobot with the direction keys on your keyboard and send commands wirelessly. 
 ### Getting to know your board
-To begin with, you might find it very helpful to learn about the basics of your board before we start. \
+To begin with, you might find it very helpful to learn about the basics of your board before we start. Figure [#fig-image008] shows an overview of Intel Galileo.
 ~ Center
-~~ Figure { #fig-design caption="Overview of Intel Galileo" }
+~~ Figure { #fig-image008 caption="Overview of Intel Galileo" }
 ![image008]
 ~~
 ~
 [image008]: images/image008.jpg "image008" { width=auto max-width=90% }
-
-Intel Galileo is a microcontroller board based on Intel x86 architecture and featuring the Intel 
-Quark SoC X1000 Application Processor. Developed by Intel Corporation, Galileo is the first Arduino-certified development board that combines Intel technology and the support for Arduino hardware expansion cards called "sheilds" designed for the Arduino Uno R3. From a hardware perspective, this means that all of its major pins and headers are in the same locations as on the Arduino Uno R3; from a software perspective, this means that Intel Galileo, running an open-source Linux operating system, can be programmed through the Arduino Integrated Development Environment (IDE) and make use of the existing libraries and software programs (usually called "sketches"). A full-sized mini-PCI Express slot, 100 Mb Ethernet port, Micro-SD slot, 6-pin 3.3V USB TTL UART header, USB host port, USB client port, and 8 Mbyte NOR Flash come standard on the board. Galileo has a number of facilities for communicating with a computer, another Arduino, or other microcontrollers. Galileo provides UART TTL (5V/3.3V) serial communication, which is available on digital pin 0 (RX) and 1 (TX). In addition, a second UART provides RS-232 support and is connected via a 3.5mm jack. The USB Device ports allows for serial (CDC) communications over USB. This provides a serial connection to the Serial Monitor or other applications on your computer. 
+Intel Galileo is a microcontroller board based on Intel x86 architecture and featuring the Intel Quark SoC X1000 Application Processor. Developed by Intel Corporation, Galileo is the first Arduino-certified development board that combines Intel technology and the support for Arduino hardware expansion cards called "sheilds" designed for the Arduino Uno R3. From a hardware perspective, this means that all of its major pins and headers are in the same locations as on the Arduino Uno R3; from a software perspective, this means that Intel Galileo, running an open-source Linux operating system, can be programmed through the Arduino Integrated Development Environment (IDE) and make use of the existing libraries and software programs (usually called "sketches"). A full-sized mini-PCI Express slot, 100 Mb Ethernet port, Micro-SD slot, 6-pin 3.3V USB TTL UART header, USB host port, USB client port, and 8 Mbyte NOR Flash come standard on the board. Galileo has a number of facilities for communicating with a computer, another Arduino, or other microcontrollers. Galileo provides UART TTL (5V/3.3V) serial communication, which is available on digital pin 0 (RX) and 1 (TX). In addition, a second UART provides RS-232 support and is connected via a 3.5mm jack. The USB Device ports allows for serial (CDC) communications over USB. This provides a serial connection to the Serial Monitor or other applications on your computer. 
 
 You can find some important information about its properties from here: 
 
@@ -123,35 +119,35 @@ The tutorial below is mainly based on Windows system. You can see a comprehensiv
 
 1. Go to the [download center]. Select the download option for one of the qualified versions mentioned above and 
 your computer's operating system. \
-Note: version 1.5.3 has a limitation with the language of OS. If your computer is running on an OS that uses a language other than English, try changing it to English from Control Panel, or you can download version 1.6.0 or newer. 
+Note: version 1.5.3 has a limitation with the language of OS. If your computer is running on an OS that uses a language other than English, try changing it to English from Control Panel, or you can download version 1.6.0 or newer, as shown in Figure [#fig-arduino_ide_download].
 
 [download center]: http://www.intel.com/support/galileo/sb/CS-035101.htm
 ~ Center
-~~ Figure { #fig-design caption="Arduino Software download" }
+~~ Figure { #fig-arduino_ide_download caption="Arduino Software download" }
 ![arduino_ide_download]
 ~~
 ~
 [arduino_ide_download]: images/arduino_ide_download.jpg "arduino_ide_download" { width=auto max-width=90% }
 
-2. To enable the Wi-Fi drivers and sketch persistent, download the software for SD-card Linux Image from here: <br><br>
+2. To enable the Wi-Fi drivers and sketch persistent, download the software for SD-card Linux Image as shown in Figure [#fig-linuxcard]:
 ~ Center 
-~~ Figure { #fig-design caption="Software for SD-card Linux Image" }
+~~ Figure { #fig-linuxcard caption="Software for SD-card Linux Image" }
 ![linuxcard]
 ~~
 ~
 [linuxcard]: images/linuxcard.jpg "linuxcard" { width=auto max-width=90%}
 
-3. To install Arduino IDE, we need to unzip all files to C:\ directory. Make sure to preserve the folder structure. Here is a screenshot based on Windows machine: <br><br>
+3. To install Arduino IDE, we need to unzip all files to C:\ directory. Make sure to preserve the folder structure. Figure [#fig-arduinofolder] is a screenshot based on Windows machine: <br><br>
 ~ Center
-~~ Figure { #fig-design caption="Install Arduino IDE" }
+~~ Figure { #fig-arduinofolder caption="Install Arduino IDE" }
 ![arduinofolder]
 ~~
 ~
 [arduinofolder]: images/arduinofolder.jpg "arduinofolder" { width=auto max-width=90% }
 
-4. Now we are connecting the board to your computer. If you have a micro-SD card in your board, remove it. Connect the power and USB Client port (the USB port closest to Ethernet) to your computer through serial cable, as shown below. Remember to always plug in the power supply before the USB cable, and wait until USB LED lights up to connect the cable, otherwise you may damage the board.
+4. Now we are connecting the board to your computer. If you have a micro-SD card in your board, remove it. Connect the power and USB Client port (the USB port closest to Ethernet) to your computer through serial cable, as shown in Figure [#fig-setup_plug]. Remember to always plug in the power supply before the USB cable, and wait until USB LED lights up to connect the cable, otherwise you may damage the board.
 ~ Center
-~~Figure { #fig-design caption="Connecting Intel Galileo to Your Computer" }
+~~Figure { #fig-setup_plug caption="Connecting Intel Galileo to Your Computer" }
 ![setup_plug]
 ~~
 ~
@@ -161,21 +157,21 @@ Note: version 1.5.3 has a limitation with the language of OS. If your computer i
 In your computer, follow **Start > Control Panel > System > Device Manager**. \
 Go down to find **Ports (COM & LPT)**. If not, go to **Other Devices**. \
 You should see an open port named **Gadget Serial V2.4** (if the board contains an old release like v0.7.5), or simply **Galileo** on newer releases. Right click and select "**Update Driver Software**". \
-Choose "**Browse my computer for driver software**". Navigate to **hardware/arduino/x86/tools** directory. Once it is installed properly, you should see something similar to the following screenshot: \
+Choose "**Browse my computer for driver software**". Navigate to **hardware/arduino/x86/tools** directory. Once it is installed properly, you should see something similar to Figure [#fig-image010]: \
 ~Center
-~~ Figure { #fig-design caption="Update Driver Software" }
+~~ Figure { #fig-image010 caption="Update Driver Software" }
 ![image010]
 ~~
 ~
 [image010]: images/image010.jpg "image010" { width=auto max-width=90% }
 
-You can also find more information from this link: "[IntelÂ® Galileo Board Assembly using Arduino]"
-[IntelÂ® Galileo Board Assembly using Arduino]: https://software.intel.com/en-us/articles/intel-galileo-board-assembly 
+You can also find more information from this link: "[Intel Galileo Board Assembly using Arduino]"
+[Intel Galileo Board Assembly using Arduino]: https://software.intel.com/en-us/articles/intel-galileo-board-assembly 
 
 6. Update firmware. \
-Launch the Arduino IDE. It is under the directory "C:\arduino-1.6.0+Intel" (or a similar name if you have a different version installed), double click "**arduino.exe**"". You should see the following interface: \
+Launch the Arduino IDE. It is under the directory "C:\arduino-1.6.0+Intel" (or a similar name if you have a different version installed), double click "**arduino.exe**"". You should see the interface shown in Figure [#fig-arduino_interface]: \
 ~Center 
-~~ Figure { #fig-design caption="Firmware Update" }
+~~ Figure { #fig-arduino_interface caption="Firmware Update" }
 ![arduino_interface]
 ~~
 ~
@@ -184,15 +180,15 @@ Under **Help** tab, select "**Firmware Update**". It will take few minutes to up
 
 7. Upload programs\
 Under the **Tools** tab, select the type of board you are using (in this case, Intel Galileo) in **Board** and "COMx" ("x"" is a number depending on the USB port on your computer that the serial cable is plugged into) in **Port** . 
-You can go to "**Files > Examples**" for numerous sample sketches inlcuding helpful comments already provided for you. You can also upload them to Intel Galileo in order to see how things work if you are not familiar with Arduino IDE yet. It is a great way to introduce yourself to Arduino. To upload, click on the **Upload** button. Programs will automatically compile. To compile without uploading, click on the **Verify** button instead. <br><br>
+You can go to "**Files > Examples**" for numerous sample sketches including helpful comments already provided for you. You can also upload them to Intel Galileo in order to see how things work if you are not familiar with Arduino IDE yet. It is a great way to introduce yourself to Arduino. With reference to Figure [#fig-arduino_upload]: To upload, click on the **Upload** button. Programs will automatically compile. To compile without uploading, click on the **Verify** button instead. 
 ~Center
-~~ Figure { #fig-design caption="Upload programs onto Arduino Board" }
+~~ Figure { #fig-arduino_upload caption="Upload programs onto Arduino Board" }
 ![arduino_upload]
 ~~
 ~
 [arduino_upload]: images/arduino_upload.jpg "arduino_upload" { width=auto max-width=90% }
 
-Note: If you want to add libraries to Arduino IDE, you can just download libraries in a zip file and add libraries by Sketch>Import Library>Add Library. You can use either zip file or folders. If you need more detailed information about how to add additional libraries, you can refer go here. <br> 
+Note: If you want to add libraries to Arduino IDE, you can just download libraries in a zip file and add libraries by Sketch>Import Library>Add Library. You can use either zip file or folders. If you need more detailed information about how to add additional libraries, you can refer go here.
 
 Note: Intel Galileo has more than one Serial ports. \
 Serial refers to USB Client port. It is responsible to send programs from other devices to Intel Galileo board, and Serial.write() will print out results in Serial Monitor, which can be found in the upper right corner of Arduino IDE. \
