@@ -11,8 +11,8 @@ Author        : Zhengning Han, Danlu Huang
 The motivation of this project is to explore the field of heterogeneous computing using High-Level Digital Synthesis (HLS). We wanted to build a system which can use FPGA as an accelerator along with the main processor and communicate with the outside world. As a specific application, we have programmed the FPGA to detect the video gesture from HDMI camera and send the commands to iRobot to drive in desired direction. As video processing on real-time HD video stream is slow on normal processor, we used FPGA as an accelerator to offload some of the work from processor. This project involves many aspects of hardware-software co-designing like HLS, Embedded Programming, Computer Vision and FPGA prototyping, making it an ideal project for students in Electrical and Computer Engineering field. 
 
 ## Overview
-In our design, the camera input is fed to the processing unit, which can either be a computer running software or an FPGA running heterogeneous programs. This processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to Intel Galileo. Intel Galileo has a wireless receptor named Intel N135, which is responsible to receive the commands sent by access point. Intel Galileo receives the command from the wireless receptor and sends it to the robot over UART serial link operating at 57600 baud rate for iRobot and 9600 for the small robot. 
-
+In our design, the camera input is fed to the processing unit, which can either be a computer running software or an FPGA running heterogeneous programs. This processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to Intel Galileo. Intel Galileo has a wireless receptor named Intel N135, which is responsible to receive the commands sent by access point. Intel Galileo receives the command from the wireless receptor and sends it to the robot over UART serial link operating at 57600 baud rate for iRobot and 9600 for the small robot.
+<br><br>
 The overall high-level design of the project is shown in Figure [#fig-overview].
 ~ Center
 ~~ Figure { #fig-overview caption="Abstract Design of Project Objective." }
@@ -20,7 +20,6 @@ The overall high-level design of the project is shown in Figure [#fig-overview].
 ~~
 ~
 [overview]: images/overview.jpg "overview" { width=auto max-width=90% }
-
 As the processing unit can either be a computer or an FPGA, which involves fair amount of complexity, we divided the project into 2 major categories: (1) Software Implementation and (2) Hardware Implementation. We first successfully carried out both implementations on the iRobot before continuing with the small robot, on which we managed to complete the software implementation.
 
 Software Implementation was meant to develop the software version of camera capture, gesture recognition and command sending on Intel i3 processor. The hardware implementation was meant to develop heterogeneous core, which replaces software version of video capture, gesture recognition and command sending units. 
