@@ -11,13 +11,31 @@ Author        : Zhengning Han, Danlu Huang
 The motivation of this project is to explore the field of heterogeneous computing using High-Level Digital Synthesis (HLS). We wanted to build a system which can use FPGA as an accelerator along with the main processor and communicate with the outside world. As a specific application, we have programmed the FPGA to detect the video gesture from HDMI camera and send the commands to iRobot to drive in desired direction. As video processing on real-time HD video stream is slow on normal processor, we used FPGA as an accelerator to offload some of the work from processor. This project involves many aspects of hardware-software co-designing like HLS, Embedded Programming, Computer Vision and FPGA prototyping, making it an ideal project for students in Electrical and Computer Engineering field. 
 
 ## Overview
-In this design, the camera input is fed to the processing unit which can either be a computer, running software or an FPGA running heterogenous programs. The processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to Intel Galileo. Intel Galileo has an wireless receptor named Intel N135, which is responsible to receive the commands sent by access point. Intel Galileo receives the command from the wireless receptor and sends it to the iRobot over UART serial link operating at 57600 baud rate. The overall high-level design of the project is shown in Figure [#fig-designflow].
+In our design, the camera input is fed to the processing unit, which can either be a computer running software or an FPGA running heterogeneous programs. This processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to Intel Galileo. Intel Galileo has a wireless receptor named Intel N135, which is responsible to receive the commands sent by access point. Intel Galileo receives the command from the wireless receptor and sends it to the robot over UART serial link operating at 57600 baud rate for iRobot and 9600 for the small robot. 
+
+The overall high-level design of the project is shown in Figure [#fig-designflow].
 ~ Center
 ~~ Figure { #fig-designflow caption="Abstract Design of Project Objective." }
 ![designflow]
 ~~
 ~
 [designflow]: images/design_flow.jpg "design_flow" { width=auto max-width=90% }
+
+As the processing unit can either be a computer or an FPGA, which involves fair amount of complexity, we divided the project into 2 major categories: (1) Software Implementation and (2) Hardware Implementation. Software Implementation was meant to develop the software version of camera capture, gesture recognition and command sending on Intel i3 processor. The hardware implementation was meant to develop heterogeneous core, which replaces software version of video capture, gesture recognition and command sending units. 
+
+The incremental development approach from pure software to software-hardware co-design is demonstrated in Figure [#fig-figure2]:
+~ Center
+~~ Figure  { #fig-figure2 caption="Incremental Development Approach" } 
+![figure2]
+~~
+~
+[figure2]: images/figure2.jpg "figure2" { width=auto max-width=90% }
+
+For both cases, the camera capture, gesture recognition and command sending algorithms are coded in Visual Studio while programming Intel Galileo to receive the command and send it to the robots for driving are done in the Arduino IDE. As the steps in both the software and hardware implementations are the same, the algorithms involve a significant share of similarities. 
+
+We first successfully carried out both implementations on the iRobot before continuing with the small robot, on which we managed to complete the software implementation.
+
+In the following sections, you will see detailed instructions on how to proceed from each step to the next, including how to download and setup the required softwares and hardwares, how to operate on them, how to run the codes, along with screenshots and important notices for troubleshooting.
 
 ## System of Requirements
 Heterogeneous programming on FPGA using HLS is the priority of the project. Following were the
@@ -33,18 +51,9 @@ system of requirements which we targeted throughout the project.
 * iRobot should be controlled by Intel Galileo microcontroller to take in the commands
 * iRobot should be controlled smoothly and intuitively based on the gesture provided by user
 
-# Development Approach
-We followed hierarchical and modular development approach. As the project involved fair amount of complexity, we divided the project into 2 major categories: Software Design and Hardware Design. Software Design was meant to develop software version of entire project. This includes camera capture, gesture recognition and command sending on Intel i3 processor, programming Intel Galileo to receive the command and send it to iRobot for driving. The hardware design was meant to develop heterogeneous core which replaces software version of video capture, gesture recognition and command sending units. We managed to finish software design in Fall semester and hardware development in Spring semester. As the software version is relatively easier than developing project on hardware, our approach helped us unblock major issues of the project earlier in the design cycle.
-The incremental development approach from pure software to software-hardware co-design is demonstrated in Figure [#fig-figure2]:
-~ Center
-~~ Figure  { #fig-figure2 caption="Incremental Development Approach" } 
-![figure2]
-~~
-~
-[figure2]: images/figure2.jpg "figure2" { width=auto max-width=90% }
-In the following sections, you will see detailed instructions on how to proceed from each step to the next, including how to download and setup the required softwares and hardwares, how to operate on them, how to run the codes, along with screenshots and important notices for troubleshooting.
-
 # Tutorials
+Before we proceed to explain the algorithms involved in the software and hardware implementations. This section will guide you through how to set up the various programs needed for this project.
+
 ## Direct communication between iRobot and Computer
 Before using Intel Galileo to control the iRobot, we can first use a serial cable to control iRobot directly from our laptop by using Open Interface commands of iRobot. This will help you become familiar with the serial codes used for iRobot.
 
@@ -440,11 +449,17 @@ PS: for Visual Studio 2012 add "_;%OPENCV_DIR%\x86\vc11\bin_" \
 
 4. \
 
-# Software Implementation
-## Arduino
-### SmallRobot
+# Implementation
+For both software and hardware implementations, algorithms are separated into the Arduino code, as well as the Visual Studio code. 
 
-For the Arduino code, we installed an additional Adafruit (AF) Motor Shield V2 library, which interfaces with the motor hardware.
+For Arduino, the code for both the software and hardware implementation remains unchanged. Hence, we will only cover it in Section [#sec-arduino]. However, the Arduino code for iRobot and small robot differs slightly and the right set of code needs to be uploaded onto Intel Arduino depending on the robot being driven. This is because the former has built-in commands and we simply need to program Intel Galileo to send the respective drive command codes. For the latter, the Arduino code is slightly more involved as we need to individually configure 4 motors connected to the robot’s 4 wheels.
+
+For Visual Studio, although the code for both implementations differ slightly, the fundamental idea behind the algorithms are essentially the same. Hence, we will cover the broader ideas in Section [#sec-software-implementation] and mention the differences for hardware implementation in Section [#sec-hls-implementation]. The same set of code works for both the iRobot and the small robot. 
+
+## Software Implementation
+### Arduino
+
+As the Arduino code for the small robot is more involved, we will be explaining the Arduino code for the small robot in this section. For the Arduino code, we installed an additional Adafruit (AF) Motor Shield V2 library, which interfaces with the motor hardware.
 
 In our code, server refers to Intel Galileo while client may refer to Processing, Visual Studio or FPGA. Both the server and the client are connected to the same access point with the client continuously sending data to Intel Galileo over this network. The data sent will be used to set the robot’s speed, direction and turning, and 4 bytes of the data will be needed per configuration. As the data is read byte by byte, the bytes are stored in an array and only used when we have received 4 bytes. After the necessary information to configure the motor is extracted, the data will be replaced by the new data sent by the client.
 
@@ -492,13 +507,28 @@ However, the difference between the PWM values for the left and right motors is 
 ~
 The results from these equations are assigned to the variables _pwmLeft\_before_ and _pwmRight\_before_. Whenever _radius_ is negative, the fraction in Equation [#eq-PWMLeftscale] will return a value greater than 1. Whenever _radius_ is positive, the fraction in Equation [#eq-PWMRightscale] will return a value greater than 1. If _pwm_ is sufficiently large, there will be the situation when the results calculated from the two equations become greater than 255, which is the maximum PWM value that can be assigned to the motors. We took care of this issue using an if-statement and manually set the PWM value of the motor that exceeded this maximum value to 255. The PWM values for the left and right motors are thus represented by the variables _pwmLeft_ and _pwmRight_ respectively. These values are finally passed in as arguments to set the speed of the motors.
 
-##Visual Studio
+###Visual Studio
 
 Visual Studio, together with OpenCV library, is responsible for converting the video captured by the web camera into information about the velocity, denoted by _velocitySpeed_, and rotation angle, denoted by _rotationAngle_, of the robot before sending the data to Intel Galileo over the network. _velocitySpeed_  and _rotationAngle_ are determined by looking at the size and orientation of the red box held by the user with reference to the startup calibration.
 
-For calculating _velocitySpeed_, the area of the red box is converted to the range of speed that the robot can move at. During the startup calibration, when the user places the red box close to the camera, the area of the red box, _mMax_, is mapped to _alphaMax_, which has the same value as the constant MAX_SPEED_FRONT = 500. Similarly, when the user places the red box further from the camera, the area of the red box, which is now smaller and denoted by _mMin_, is mapped to _alphaMin_, which has the same value as the constant MAX_SPEED_BACK = -500. Later on, when the user moves the box forward and backward to control the robot, the area of the box will be between _mMin_ and _mMax_, and is then converted into a value in the range of _alphaMin_ and _alphaMax_. This value is assigned to _velocitySpeed_ and sent over to Intel Galileo.
+For calculating _velocitySpeed_, we are considering the area of the red object and this is converted to the range of speed that the robot can move at. During the startup calibration, when the user places the red box close to the camera, the area of the red box, _mMax_, is mapped to _alphaMax_, which has the same value as the constant MAX_SPEED_FRONT = 500. Similarly, when the user places the red box further from the camera, the area of the red box, which is now smaller and denoted by _mMin_, is mapped to _alphaMin_, which has the same value as the constant MAX_SPEED_BACK = -500. Later on, when the user moves the box forward and backward to control the robot, the area of the box will be between _mMin_ and _mMax_ and is then converted into a value in the range of _alphaMin_ and _alphaMax_. If the area increases over time, then we increase the speed of the robot in frontal direction. If the area decreases over time, then we decrease the speed of the robot in frontal direction and eventually, we start issuing backward commands. The visual representation of this situation is represented in Figure [#fig-frontback] where the object is coming closer to the camera and hence we are increasing the speed of the robot. 
 
-For calculating the rotation angle and direction, we made use of OpenCV’s RotatedRect class. The angle, denoted by _l_, is measured from the positive x-axis anti-clockwise to the closest side. This angle increases from -89 to -1 when the box is being rotated left and decreases from -1 to -89 when the box is being rotated right. However, this angle does not tell us the direction of the rotation.
+~Center
+~~ Figure { #fig-frontback caption="Object movement in front and back direction corresponds to the robot's speed in front and back direction. (a) Area a1 = AB*AC of red object on any timestamp n, (b) Area a2 = AB*AC of red object on the next timestamp n+1. If a2 > a1 then object is coming closer to the camera and hence it should issue front driving direction command to the robot" }
+![frontback]
+~~
+~
+[frontback]: images/frontback.jpg "frontback" { width=auto max-width=90% }
+
+The conversion from (_mMin_, _mMax_) to (_alphaMin_, _alphaMax_) is done via Equation [#eq-anglemap], [7].
+~ Equation {#eq-anglemap}
+velocitySpeed = \alpha_{min} + \frac{(\alpha_{max} - \alpha_{min})(L - mMin)} {(mMax - mMin)}
+~
+where, \
+&alpha;~min~ = MAX_SPEED_BACK \
+&alpha;~max~ = MAX_SPEED_FRONT \
+
+For calculating the rotation angle and direction, we made use of OpenCV’s RotatedRect class. The calculated angle, denoted by _l_, is measured from the positive x-axis anti-clockwise to the closest side. This angle increases from -90 to 0 when the box is being rotated left and decreases from 0 to -90 when the box is being rotated right. However, this angle does not tell us the direction of the rotation.
 
 To decide whether the red box is rotated to the left or right, we make use of the width and height of the rotated rectangle. The width of the rotated rectangle does not necessarily correspond to the longer side, but rather, OpenCV sets the side closest to the positive x-axis as the width and the other side as the height by default. Hence, when rotating left, the shorter side is set as the width but when rotating right, the longer side is set as the width. Figure [#fig-rotationangle] illustrates the cases for left and right rotation. 
 ~Center
@@ -509,7 +539,7 @@ To decide whether the red box is rotated to the left or right, we make use of th
 [rotationangle]: images/rotationangle.jpg "rotationangle" { width=auto max-width=90% }
 As seen from Figure [#fig-rotationangle], for left rotation, the width is always shorter than the height whereas for right rotation, it is the other way round. Thus, we can compare the width and height of the rotated rectangle to determine if the red box is rotating left or right.
 
-With information about the rotation angle and direction, we can now convert _l_ from the range of -89 to -1 to a value in the range of either MIN_TURN_LEFT=550 to MAX_TURN_LEFT=201 or MIN_TURN_RIGHT=-550 to MAX_TURN_RIGHT=-201 based on the rotation direction. The chosen range is assigned to the variables _betaMax_ and _betaMin_. For example, if the width of the rectangle is shorter than the height, we know that it is a left rotation. Thus, we would set _betaMin_ to MIN_TURN_LEFT and _betaMax_ to MAX_TURN_LEFT. Angle _l_ is then converted to a value between these two numbers and sent to Intel Galileo.
+With information about the rotation angle and direction, we can now convert _l_ to a value in the range of either MIN_TURN_LEFT=550 to MAX_TURN_LEFT=201 or MIN_TURN_RIGHT=-550 to MAX_TURN_RIGHT=-201 based on the rotation direction. The chosen range is assigned to the variables _betaMax_ and _betaMin_. For example, if the width of the rectangle is shorter than the height, we know that it is a left rotation. Thus, we would set _betaMin_ to MIN_TURN_LEFT and _betaMax_ to MAX_TURN_LEFT. Angle _l_ is then converted to a value between these two numbers using Equation [#eq-anglemap] but with _alphaMin_, _alphaMax_, _mMin_, _mMax_ and m replaced by _betaMin_, _betaMax_, -90, 0, and _l_ respectively. This converted value is then sent to Intel Galileo. 
 
 Moving on, in order to gather the above information, we need to detect only the red box from the captured video and eliminate all other distractions in the surrounding.
 
@@ -538,8 +568,8 @@ In any video processing application, noise is the major component, which we have
 [medianfilter]: images/medianfilter.jpg "medianfilter" { width=auto max-width=90% }
 Using the median blurred threshold image, we called the findContours function in OpenCV to detect the largest contour found in the image. The largest contour is chosen to ensure that we are analyzing the red box, and not any other objects of similar color that might be present in the background. From the contour, we used the minAreaRect function to return the minimum-area bounding rectangle, possibly rotated, and subsequently apply the aforementioned analysis to extract the details about the size and orientation of the rotated rectangle representing the red box.
 
-# HLS Implementation
-## High Level Design
+## HLS Implementation
+### High Level Design
 
 Our heterogeneous platform uses ARM Cortex 9 (@667 MHz) as the host processor and FPGA fabric as a video accelerator. The input frame from HDMI camera is first stored into video buffer hosted in main memory of FPGA. After the frame buffer is filled, PS invokes the FPGA fabric by passing the starting address of the frame. FPGA behaves as an accelerator and the moment PS gives a signal to FPGA, FPGA start processing the frame data in pixel­by­pixel manner. Once PL is done processing the whole frame, it raises a ready signal to PS informing that it’s done with the processing and PS can take the data from PL. (Note that in our design, PL is taking video frame as an input and gives detected corners as well as video frame as an output.) The PS senses the flag and starts receiving corners and video out information from PL. The video out of PL is written into the video frame buffer, which will be read by Video DMA to output into HDMI screen. The corners sent by the PL is consumed by the PS and it generates command out of it.
 ~Center
@@ -557,7 +587,7 @@ Our heterogeneous platform uses ARM Cortex 9 (@667 MHz) as the host processor an
 
 Figure [#fig-HLSDesign] shows the high level design which are connected with FPGA. In Figure [#fig-PSPL], the detail structure of the Xilinx FPGA is mentioned [15]. The processing system consists of DDR Processor, Memory controller and IO including Gigabit Ethernet. AMBA Switches are used for high speed interconnect between ARM Processor, PL and DDR Memory. Functionality of each of the components of Figure [#fig-HLSDesign] is explained in following sub topics.
 
-## HDMI Input Camera
+### HDMI Input Camera
 Our implementation supports HDMI 1920 x 1080 resolution with 60 frames per seconds. As an HDMI input, any source which can support that resolution can be considered. We have considered the HDMI output of laptop screen share to behave as a source of video, but it can be HDMI camera as well.
 3.3 ARM Cortex 9 (PS)
 Xilinx Zynq 702 evaluation board supports dual ARM Cortex 9 as an embedded processor which runs at 667 MHz clock [3]. Processor is capable of running PetaLinux operating system [4]. The high level flow of running PetaLinux on ARM is as follows:
@@ -571,10 +601,11 @@ power on the board.
 
 * Bootloader will signal PS to boot the PetaLinux OS which is hosted purely on ARM.
 
-In our project, bootloader is automatically created by SDSoC when we build the project. This flow indicates that we can essentially run most of all the program which are supported by normal linux OS. With this information, we have decided to implement video frame management, ethernet programming and trigonometric arithmetic calculation on PS using ARM core. When we execute our .elf file from PetaLinux, the application starts acquiring HDMI frame from input and starts storing it into one of the three video frame buffers of main memory in circular fashion (explained in next subsection). After storing a frame, it invokes PL to start doing processing. Once PL is done processing the video and has written output video into one of the frame buffer, PS acquires the corner of the detected object from PL. PS then calculates the inclination of the detected object using basic trigonometric equation shown in Equation [#eq-angle]. The visualization of the &theta; value can be interpreted from Figure [#fig-ObjIncline]. This value of &theta; is used to decide the turning radius of iRobot.
+
+The inclination of the detected object can be calculated using basic trigonometric equation shown in Equation [#eq-angle]. The visualization of the _l_ value can be interpreted from Figure [#fig-ObjIncline]. This value of _l_ is used to decide the turning radius of the robot.
 
 ~ Equation {#eq-angle}
-\theta = \tan^{-1} \frac{(y_1 - y_2)} {(x_1 - x_2)}
+l = \tan^{-1} \frac{(y_1 - y_2)} {(x_1 - x_2)}
 ~
 
 ~Center
@@ -584,26 +615,12 @@ In our project, bootloader is automatically created by SDSoC when we build the p
 ~
 [ObjIncline]: images/ObjIncline.jpg "ObjIncline" { width=auto max-width=90% }
 
-The calculated &theta; value ranges is between ­-90 to 90 degree. This range is mapped into the actual turning radius required to control the Robot's direction (for further information about iRobot command structure, refer to Appendix X). The conversion from (-­90, 90) degrees to (MAX_RIGHT_RADIUS, MAX_LEFT_RADIUS) is done via Equation [#eq-anglemap], [7].
-~ Equation {#eq-anglemap}
-\beta = \beta_{min} + \frac{(\beta_{max} - \beta_{min})(L - L_{min})} {(L_{max} - L_{min})}
-~
-where, \
-&beta;~min~ = MAX_RIGHT_RADIUS \
-&beta;~max~ = MAX_RIGHT_RADIUS \
-L~min~ = ­-90 \
-L~max~ = +90
 
-Similarly, to calculate the iRobot’s front or backward speed, we are considering the area of the red object. If the area increases over time, then we increase the speed of iRobot in frontal direction. If the area decreases over time, then we decrease the speed of iRobot in frontal direction and eventually, we start issuing backward commands (iRobot commands are explained in Appendix X). The visual representation of this situation is represented in Figure [#fig-frontback] where the object is coming closer to the camera and hence we are increasing the speed of the iRobot. Here also, we are using Equation [#eq-anglemap], to map max and min area of object to the maximum speed of iRobot in front to back direction.
-~Center
-~~ Figure { #fig-frontback caption="Object movement in front and back direction corresponds to iRobot’s speed in front and back direction. (a) Area a1 = AB*AC of red object on any timestamp n, (b) Area a2 = AB*AC of red object on the next timestamp n+1. If a2 > a1 then object is coming closer to the camera and hence it should issue front driving direction command to iRobot" }
-![frontback]
-~~
-~
-[frontback]: images/frontback.jpg "frontback" { width=auto max-width=90% }
+In our project, bootloader is automatically created by SDSoC when we build the project. This flow indicates that we can essentially run most of all the program which are supported by normal linux OS. With this information, we have decided to implement video frame management, ethernet programming and trigonometric arithmetic calculation on PS using ARM core. When we execute our .elf file from PetaLinux, the application starts acquiring HDMI frame from input and starts storing it into one of the three video frame buffers of main memory in circular fashion (explained in next subsection). After storing a frame, it invokes PL to start doing processing. Once PL is done processing the video and has written output video into one of the frame buffer, PS acquires the corner of the detected object from PL. 
 
-## Xilinx FPGA fabric (PL)
-Programmable logic is developed to work as an video accelerator. The video with resolution 1920*1080 is fed into the PL module. PL logic is fully pipelined and it processes 1 pixel per cycle with Initiation Interval (II) = 1.The hardware modules for video processing is shown in Figure [#fig-cornerdetect]. Detailed explanation of each of the module is described in following sub sections.
+### Xilinx FPGA fabric (PL)
+Programmable logic is developed to work as an video accelerator. The video with resolution 1920*1080 is fed into the PL module. PL logic is fully pipelined and it processes 1 pixel per cycle with Initiation Interval (II) = 1.The hardware modules for video processing is shown in Figure [#fig-cornerdetect]. The color conversion step is the same as the software implementation. The median filter over space is used in software implementation and the same idea is applied in hardware implementation albeit a little more complicated. Corner detect step serves the same function as OpenCV's findcontours function but in hardware, we coded our own corner detect class. Median filter over time and history buffer are not involved in software implementation and will be elaborated more extensively in this section.
+
 ~Center
 ~~ Figure { #fig-cornerdetect caption="Corner Detection Algorithm on PL" }
 ![cornerdetect]
@@ -611,9 +628,7 @@ Programmable logic is developed to work as an video accelerator. The video with 
 ~
 [cornerdetect]: images/cornerdetect.jpg "cornerdetect" { width=auto max-width=90% }
 
-_Color Conversion_: ​Color conversion is the first module in the pipeline chain. It’s function is to convert the RGB color space into the YCbCr color space. YCbCr is a color space that separates the luminance (ie. light intensity) component of a frame from the hue components. Working in this color space is advantageous over the RGB color space because colors in YCbCr are represented independently from their relative brightnesses.The next step of this module is to threshold the red color and reject any color other than Red.
-
-_Median Filter over Space_: In any video processing application, noise is the major component which we have to deal with. As we are dealing with HD videos with 60 frames per second, noisy red pixels in the video drastically deteriorates the corner detection algorithm’s accuracy. To overcome this issue, we implemented median filter over space and median filter over time (next sub topic). Median filter over space uses 5x5 median filter window to reject the spurious red pixel on the screen. As median filter requires information of nearby pixels within 5x5 window, we had to come up with a way to store the history. Naive way of doing this would be to store all the content of the input video frame and then iterate over entire frame to do the median filtering. But as it slows down the performance significantly, we didn’t use this approach. Instead, we used a concept of line buffering [12], [13] and windowing [14] to implement median filter in efficient manner, which not only saves the space for frame but also maintains II = 1. We kept the size of line buffer as 4 i.e. we store only last 4 rows of the frame from the current pixel. By doing that, we only require 4 * 1920 pixel line buffer and 5*5 pixel window buffer. The visual representation of how line buffering and windowing works for median filter is shown in Figure [#fig-spacemfilter]. Here, we keep on shifting line buffer down and window to the right side as and when the new input pixel keep on appending.
+_Median Filter over Space_: Median filter over space uses 5x5 median filter window to reject the spurious red pixel on the screen. As median filter requires information of nearby pixels within 5x5 window, we had to come up with a way to store the history. Naive way of doing this would be to store all the content of the input video frame and then iterate over entire frame to do the median filtering. But as it slows down the performance significantly, we didn’t use this approach. Instead, we used a concept of line buffering [12], [13] and windowing [14] to implement median filter in efficient manner, which not only saves the space for frame but also maintains II = 1. We kept the size of line buffer as 4 i.e. we store only last 4 rows of the frame from the current pixel. By doing that, we only require 4 * 1920 pixel line buffer and 5*5 pixel window buffer. The visual representation of how line buffering and windowing works for median filter is shown in Figure [#fig-spacemfilter]. Here, we keep on shifting line buffer down and window to the right side as and when the new input pixel keep on appending.
 ~Center
 ~~ Figure { #fig-spacemfilter caption="Line Buffering and 5x5 Windowing to process real­time video stream" }
 ![spacemfilter]
@@ -636,7 +651,7 @@ _Corner Detection_: ​Corner detection module detects the extreme corners of th
 ## DDR Memory and Controller
 The purpose of DDR memory is to (1) load the PetaLinux boot image after booting up from SD card and (2) maintain the video frame buffer which stores video frames coming from camera and going to monitor. In our design, we are using 3 video frame buffers to circulate the read/write access [15]. 3 frame buffers are used in such a way that while the PS is writing video frame into one buffer, PL will read the video frame from the previous buffer. Frame buffers, implemented in this way assures that there is not read/write contention between FPGA and ARM processor. To manage the DDR memory access HLS uses Memory controller which arbitrates reads/writes to the physical DDR memory when asked for data.
 
-## Video DMA
+### Video DMA
 Xilinx LogiCORE IP AXI DMA is a soft IP provided by Xilinx to manage high­bandwidth direct memory access between memory and AXI4­stream video specific target peripherals [16]. The high level block diagram of AXI VDMA is shown in Figure [#fig-AXIVDMA]. The Memory mapped DMA access gets initialized by ARM processor over AXI4­Lite bus. After ARM has registered all necessary data for transfer, Control and Status Module will start following orders by doing the data transfer to/from AXI4 Memory map to AXI­4 Stream.
 ~Center
 ~~ Figure { #fig-AXIVDMA caption="AXI VDMA Block Diagram. Adopted from Ref [16]." }
@@ -647,13 +662,13 @@ Xilinx LogiCORE IP AXI DMA is a soft IP provided by Xilinx to manage high­bandw
 
 In the Write path, the AXI VDMA accepts frames on the AXI4­Stream Slave interface and writes it to system memory using the AXI4 Master interface.In the Read path, the AXI VDMA uses the AXI4 Master interface for reading frames from system memory and outputs it on the AXI4­Stream Master interface. Both write and read paths operate independently. The AXI VDMA also provides an option to synchronize the incoming/outgoing frames with an external synchronization signal.
 
-## Video Output Screen
+### Video Output Screen
 Once PL has written back the processed frame onto the video frame buffer, PS instructs VDMA to stream video frame to the output. As a result, the frame is transferred to the video output screen via HDMI port.
 
-## Network
+### Network
 Once the PS is done calculating the orientation and speed of the iRobot, we use a​rpa [17] library and sys/socket.h header file to send a packet to the network. This code is executed on PetaLinux hosted on PS, so it’s similar to writing C++ code for sending network packets on linux. The network packets are sent to the TP­Link wireless access point using Ethernet connection. We hosted a private network for our communication on wireless access point. (See Appendix E.4 for further instruction on setting up network on TP­Link).
 
-## Design, Compilation and System Linking Flow
+### Design, Compilation and System Linking Flow
 We used Xilinx SDSoC Design suite to develop the application which can exploit both ARM core and FPGA. The design flow for developing heterogeneous system on SDSoC is summarized in Figure [#fig-SDSoC]. The step wise instruction for development is mentioned below.
 
 * Write normal C/C++ code which implements the functionality.
