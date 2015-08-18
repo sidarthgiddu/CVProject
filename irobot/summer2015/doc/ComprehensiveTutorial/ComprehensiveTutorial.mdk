@@ -13,13 +13,13 @@ The motivation of this project is to explore the field of heterogeneous computin
 ## Overview
 In our design, the camera input is fed to the processing unit, which can either be a computer running software or an FPGA running heterogeneous programs. This processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to Intel Galileo. Intel Galileo has a wireless receptor named Intel N135, which is responsible to receive the commands sent by access point. Intel Galileo receives the command from the wireless receptor and sends it to the robot over UART serial link operating at 57600 baud rate for iRobot and 9600 for the small robot. 
 
-The overall high-level design of the project is shown in Figure [#fig-designflow].
+The overall high-level design of the project is shown in Figure [#fig-overview].
 ~ Center
-~~ Figure { #fig-designflow caption="Abstract Design of Project Objective." }
-![designflow]
+~~ Figure { #fig-overview caption="Abstract Design of Project Objective." }
+![overview]
 ~~
 ~
-[designflow]: images/design_flow.jpg "design_flow" { width=auto max-width=90% }
+[overview]: images/overview.jpg "overview" { width=auto max-width=90% }
 
 As the processing unit can either be a computer or an FPGA, which involves fair amount of complexity, we divided the project into 2 major categories: (1) Software Implementation and (2) Hardware Implementation. Software Implementation was meant to develop the software version of camera capture, gesture recognition and command sending on Intel i3 processor. The hardware implementation was meant to develop heterogeneous core, which replaces software version of video capture, gesture recognition and command sending units. 
 
@@ -336,10 +336,8 @@ For more information, you can look at "[How to setup your galileo to have a stat
 [How to setup your galileo to have a static IP on a LAN]: https://communities.intel.com/thread/49348 
 
 ### Software Setup: Processing and the OpenCV library
-As explained in Figure 8 above, we send the keyboard commands from a processing unit on the computer, which is then fetched by Intel Galileo and transfered to iRobot to make it moving. 
-Here we will be using Processing, an open source programming language and integrated development 
-environment (IDE) built on the Java language but with a simplified syntax and graphics programming 
-model, to serve as the processing unit that generates the keyboard commands. As you might have noticed from the startup window of the Arduino IDE software, its design is actually based on Processing, and their user interface is very similar, which makes it very convenient for you to use once you know about Arduino. You can refer to this site "[Connecting Arduino to Processing]"to familiarize yourself with the communication between Arduino IDE and Processing. 
+As explained in Figure [#fig-designflow], we send the keyboard commands from a processing unit on the computer, which is then fetched by Intel Galileo and transfered to iRobot to make it moving. 
+Here we will be using Processing, an open source programming language and integrated development environment (IDE) built on the Java language but with a simplified syntax and graphics programming model, to serve as the processing unit that generates the keyboard commands. As you might have noticed from the startup window of the Arduino IDE software, its design is actually based on Processing, and their user interface is very similar, which makes it very convenient for you to use once you know about Arduino. You can refer to this site "[Connecting Arduino to Processing]"to familiarize yourself with the communication between Arduino IDE and Processing. 
 
 Let's first setup Processing. \
 [Connecting Arduino to Processing]: https://learn.sparkfun.com/tutorials/connecting-arduino-to-processing/introduction 
