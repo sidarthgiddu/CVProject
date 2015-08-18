@@ -37,22 +37,8 @@ We first successfully carried out both implementations on the iRobot before cont
 
 In the following sections, you will see detailed instructions on how to proceed from each step to the next, including how to download and setup the required softwares and hardwares, how to operate on them, how to run the codes, along with screenshots and important notices for troubleshooting.
 
-## System of Requirements
-Heterogeneous programming on FPGA using HLS is the priority of the project. Following were the
-system of requirements which we targeted throughout the project.
-
-* All hardware programming should be done in high-level programming language like C++ without Verilog coding involved
-* FPGA fabric should be used as an accelerator along with the main processor
-* Significant workload has to be given to FPGA so that the computation supersedes the communication overhead between processor and FPGA.
-* Vision based gesture recognition algorithm should be implemented on Xilinx Zynq FPGA.
-* FPGA should be able to process HDMI video frames in real-time.
-* The heterogeneous core on FPGA should be able to communicate with iRobot over wireless channel.
-* Performance of the heterogeneous system should be faster than that of software implementation.
-* iRobot should be controlled by Intel Galileo microcontroller to take in the commands
-* iRobot should be controlled smoothly and intuitively based on the gesture provided by user
-
 # Tutorials
-Before we proceed to explain the algorithms involved in the software and hardware implementations. This section will guide you through how to set up the various programs needed for this project.
+Before we proceed to explain the algorithms involved in the software and hardware implementations, this section will guide you through how to set up the various programs needed for this project.
 
 ## Direct communication between iRobot and Computer
 Before using Intel Galileo to control the iRobot, we can first use a serial cable to control iRobot directly from our laptop by using Open Interface commands of iRobot. This will help you become familiar with the serial codes used for iRobot.
@@ -559,17 +545,18 @@ Cb = (B-Y) \cdot 0.564 + 128
 
 Next, we will calculate the threshold image using a range of Y, Cb and Cr values that our red box falls within and reject any color other than red.  In this case, the most suitable range for detecting the red box is 0<=Y<=255, 169<=Cr<=255 and 0<=Cb<=255. The input image will be the YCbCr image, which is a 3-channel 8-bit image. Our output image will be the threshold image, which is a 1-channel 8-bit image. This simply means that the output image will be gray scale. In our case, the output image will only consist of either black or white pixels. To find the threshold image, we extracted the YCbCr values of the individual pixels in the input image and compared them with the range of YCbCr values we wanted. If the pixel values fulfill the range, we set its corresponding pixel in the output image to white, represented by the value 255. If it does not fall within the given range, we set the corresponding output pixel to 0, which is black.
 
-In any video processing application, noise is the major component, which we have to deal with. As we are dealing with HD videos with 60 frames per second, noisy red pixels in the video drastically deteriorates the corner detection algorithm’s accuracy. To overcome this issue, we implemented median blur to reject the spurious red pixel on the screen. This time, the input image will be the 1-channel threshold image and the output will also be a 1-channel image. The median blur is achieved by taking the median value of a particular pixel and its neighboring 8 pixels. Since our input image is black and white, the median value will be either 0 or 255. We then assign this median value to the corresponding pixel in the output image. Whenever we encounter a corner pixel or a pixel along the borders, we take the nonexistent neighboring pixel values to be 0 before taking the median. This process is illustrated below.
+In any video processing application, noise is the major component, which we have to deal with. As we are dealing with HD videos with 60 frames per second, noisy red pixels in the video drastically deteriorates the corner detection algorithm’s accuracy. To overcome this issue, we implemented median filter using a 5x5 window to reject the spurious red pixel on the screen. This time, the input image will be the 1-channel threshold image and the output will also be a 1-channel image. The median blur is achieved by taking the median value of a particular pixel and its neighboring 8 pixels. Since our input image is black and white, the median value will be either 0 or 255. We then assign this median value to the corresponding pixel in the output image. Whenever we encounter a corner pixel or a pixel along the borders, we take the nonexistent neighboring pixel values to be 0 before taking the median. This process is illustrated in Figure [#fig-medianfilter5].
 ~Center
-~~ Figure { #fig-design caption="Median blur" }
-![medianfilter]
+~~ Figure { #fig-medianfilter5 caption="Median blur" }
+![medianfilter5]
 ~~
 ~
-[medianfilter]: images/medianfilter.jpg "medianfilter" { width=auto max-width=90% }
-Using the median blurred threshold image, we called the findContours function in OpenCV to detect the largest contour found in the image. The largest contour is chosen to ensure that we are analyzing the red box, and not any other objects of similar color that might be present in the background. From the contour, we used the minAreaRect function to return the minimum-area bounding rectangle, possibly rotated, and subsequently apply the aforementioned analysis to extract the details about the size and orientation of the rotated rectangle representing the red box.
+[medianfilter5]: images/medianfilter5.jpg "medianfilter5" { width=auto max-width=90% }
+
+Using the median filtered threshold image, we called the findContours function in OpenCV to detect the largest contour found in the image. The largest contour is chosen to ensure that we are analyzing the red box, and not any other objects of similar color that might be present in the background. From the contour, we used the minAreaRect function to return the minimum-area bounding rectangle, possibly rotated, and subsequently apply the aforementioned analysis to extract the details about the size and orientation of the rotated rectangle representing the red box.
 
 ## HLS Implementation
-For the hardware implementation, we carried it out on the iRobot and it involves codes both on Arduino as well as Visual Studio. The Arduino code remains unchanged for the hardware implementation whereas some parts of the Visual Studio code is slightly altered. Algorithms in Visual Studio that are similar to those in the software implementation will only be briefly mentioned while those that more different will be elaborated.
+For the hardware implementation, we carried it out on the iRobot and it involves codes both on Arduino as well as Visual Studio. The Arduino code remains unchanged for the hardware implementation whereas some parts of the Visual Studio code are slightly altered. Algorithms in Visual Studio that are similar to those in the software implementation will only be briefly mentioned while those that more different will be elaborated.
 
 ### High Level Design
 Our heterogeneous platform uses ARM Cortex 9 (@667 MHz) as the host processor and FPGA fabric as a video accelerator. The input frame from HDMI camera is first stored into video buffer hosted in main memory of FPGA. After the frame buffer is filled, PS invokes the FPGA fabric by passing the starting address of the frame. FPGA behaves as an accelerator and the moment PS gives a signal to FPGA, FPGA start processing the frame data in pixel­by­pixel manner. Once PL is done processing the whole frame, it raises a ready signal to PS informing that it’s done with the processing and PS can take the data from PL. (Note that in our design, PL is taking video frame as an input and gives detected corners as well as video frame as an output.) The PS senses the flag and starts receiving corners and video out information from PL. The video out of PL is written into the video frame buffer, which will be read by Video DMA to output into HDMI screen. The corners sent by the PL is consumed by the PS and it generates command out of it.
@@ -590,7 +577,8 @@ Figure [#fig-HLSDesign] shows the high level design which are connected with FPG
 
 ### HDMI Input Camera
 Our implementation supports HDMI 1920 x 1080 resolution with 60 frames per seconds. As an HDMI input, any source which can support that resolution can be considered. We have considered the HDMI output of laptop screen share to behave as a source of video, but it can be HDMI camera as well.
-3.3 ARM Cortex 9 (PS)
+
+### ARM Cortex 9 (PS)
 Xilinx Zynq 702 evaluation board supports dual ARM Cortex 9 as an embedded processor which runs at 667 MHz clock [3]. Processor is capable of running PetaLinux operating system [4]. The high level flow of running PetaLinux on ARM is as follows:
 
 * Store *.elf executable file along with the bootloader onto SD card [5].
@@ -602,7 +590,7 @@ power on the board.
 
 * Bootloader will signal PS to boot the PetaLinux OS which is hosted purely on ARM.
 
-In our project, bootloader is automatically created by SDSoC when we build the project. This flow indicates that we can essentially run most of all the program which are supported by normal linux OS. With this information, we have decided to implement video frame management, ethernet programming and trigonometric arithmetic calculation on PS using ARM core. When we execute our .elf file from PetaLinux, the application starts acquiring HDMI frame from input and starts storing it into one of the three video frame buffers of main memory in circular fashion (explained in next subsection). After storing a frame, it invokes PL to start doing processing. Once PL is done processing the video and has written output video into one of the frame buffer, PS acquires the corner of the detected object from PL. PS then calculates the inclination of the detected object using basic trigonometric equation shown in Equation [#eq-angle]. This is slightly different from the angle _l_ calculation in the software implementation. In this case, we are always considering side AB whereas OpenCV measures the angle made by the side anticlockwise nearest the x-axis. The visualization of the &theta; value can be interpreted from Figure [#fig-ObjIncline]. This value of &theta; is used to decide the turning radius of the robot.
+In our project, bootloader is automatically created by SDSoC when we build the project. This flow indicates that we can essentially run most of all the program which are supported by normal linux OS. With this information, we have decided to implement video frame management, ethernet programming and trigonometric arithmetic calculation on PS using ARM core. When we execute our .elf file from PetaLinux, the application starts acquiring HDMI frame from input and starts storing it into one of the three video frame buffers of main memory in circular fashion (explained in next subsection). After storing a frame, it invokes PL to start doing processing. Once PL is done processing the video and has written output video into one of the frame buffer, PS acquires the corner of the detected object from PL. PS then calculates the inclination of the detected object using basic trigonometric equation shown in Equation [#eq-angle]. This is slightly different from the angle _l_ calculation in the software implementation. In this case, we are always considering side AB whereas OpenCV measures the angle made by the side anticlockwise nearest the positive x-axis. The visualization of the &theta; value can be interpreted from Figure [#fig-ObjIncline]. This value of &theta; is used to decide the turning radius of the robot.
 
 ~ Equation {#eq-angle}
 \theta = \tan^{-1} \frac{(y_1 - y_2)} {(x_1 - x_2)}
@@ -617,8 +605,10 @@ In our project, bootloader is automatically created by SDSoC when we build the p
 
 The calculated &theta; value ranges is between -­90 to 90 degree. This range is mapped into the actual turning radius required to control the robot's direction (for further information about iRobot command structure, refer to Appendix X). The conversion from (­-90, 90) degrees to (MAX_RIGHT_RADIUS, MAX_LEFT_RADIUS) is the same as Equation [#eq-anglemap] but with the respective variables changed accordingly.
 
+For the calculation of the robot's front and back speed, the method is the same as that of the software implementation.
+
 ### Xilinx FPGA fabric (PL)
-Programmable logic is developed to work as an video accelerator. The video with resolution 1920*1080 is fed into the PL module. PL logic is fully pipelined and it processes 1 pixel per cycle with Initiation Interval (II) = 1.The hardware modules for video processing is shown in Figure [#fig-cornerdetect]. The color conversion step is the same as the software implementation. The median filter over space is used in software implementation and the same idea is applied in hardware implementation albeit a little more complicated. Corner detect step serves the same function as OpenCV's findcontours function but in hardware, we coded our own corner detect class. Median filter over time and history buffer are not involved in software implementation and will be elaborated more extensively in this section.
+Programmable logic is developed to work as an video accelerator. The video with resolution 1920*1080 is fed into the PL module. PL logic is fully pipelined and it processes 1 pixel per cycle with Initiation Interval (II) = 1. The hardware modules for video processing is shown in Figure [#fig-cornerdetect]. The color conversion step is the same as the software implementation and will not be repeated in this section. The median filter over space is used in software implementation and the same idea is applied in hardware implementation albeit a little more complicated. Corner detect step serves the same function as OpenCV's findContours function but in hardware, we coded our own corner detect class. Median filter over time and history buffer are not involved in software implementation and will be elaborated more extensively in this section.
 
 ~Center
 ~~ Figure { #fig-cornerdetect caption="Corner Detection Algorithm on PL" }
@@ -627,7 +617,7 @@ Programmable logic is developed to work as an video accelerator. The video with 
 ~
 [cornerdetect]: images/cornerdetect.jpg "cornerdetect" { width=auto max-width=90% }
 
-_Median Filter over Space_: Median filter over space uses 5x5 median filter window to reject the spurious red pixel on the screen. As median filter requires information of nearby pixels within 5x5 window, we had to come up with a way to store the history. Naive way of doing this would be to store all the content of the input video frame and then iterate over entire frame to do the median filtering. But as it slows down the performance significantly, we didn’t use this approach. Instead, we used a concept of line buffering [12], [13] and windowing [14] to implement median filter in efficient manner, which not only saves the space for frame but also maintains II = 1. We kept the size of line buffer as 4 i.e. we store only last 4 rows of the frame from the current pixel. By doing that, we only require 4 * 1920 pixel line buffer and 5*5 pixel window buffer. The visual representation of how line buffering and windowing works for median filter is shown in Figure [#fig-spacemfilter]. Here, we keep on shifting line buffer down and window to the right side as and when the new input pixel keep on appending.
+_Median Filter over Space_: As in the case for software implementation, median filter over space in hardware also uses a 5x5 median filter window. However, in hardware, as median filter requires information of nearby pixels within the 5x5 window, we had to come up with a way to store the history. Naive way of doing this would be to store all the content of the input video frame and then iterate over entire frame to do the median filtering. But as it slows down the performance significantly, we did not use this approach. Instead, we used a concept of line buffering [12], [13] and windowing [14] to implement median filter in efficient manner, which not only saves the space for frame but also maintains II = 1. We kept the size of line buffer as 4 i.e. we store only last 4 rows of the frame from the current pixel. By doing that, we only require 4 * 1920 pixel line buffer and 5*5 pixel window buffer. The visual representation of how line buffering and windowing works for median filter is shown in Figure [#fig-spacemfilter]. Here, we keep on shifting line buffer down and window to the right side as and when the new input pixel keep on appending.
 ~Center
 ~~ Figure { #fig-spacemfilter caption="Line Buffering and 5x5 Windowing to process real­time video stream" }
 ![spacemfilter]
@@ -647,7 +637,7 @@ _History Buffer_: ​History buffer is responsible for storing previous 8 frames
 
 _Corner Detection_: ​Corner detection module detects the extreme corners of the frame by finding X_min, X_max, Y_min and Y_max. It is also responsible to send output video back to PS along with detected corners. To reject the outlier corners within the frame, we are maintaining 8 frames’ corner history and doing bubble sorting on those 8 frames’ corners. The mid point of all sorted corners (which is the median filter of corners) is given as an output corner along with video output.
 
-## DDR Memory and Controller
+### DDR Memory and Controller
 The purpose of DDR memory is to (1) load the PetaLinux boot image after booting up from SD card and (2) maintain the video frame buffer which stores video frames coming from camera and going to monitor. In our design, we are using 3 video frame buffers to circulate the read/write access [15]. 3 frame buffers are used in such a way that while the PS is writing video frame into one buffer, PL will read the video frame from the previous buffer. Frame buffers, implemented in this way assures that there is not read/write contention between FPGA and ARM processor. To manage the DDR memory access HLS uses Memory controller which arbitrates reads/writes to the physical DDR memory when asked for data.
 
 ### Video DMA
