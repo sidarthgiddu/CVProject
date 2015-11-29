@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xd:data xmlns:xd="http://www.xilinx.com/xd">
+  <xd:source name="test.cpp" compiler="g++" objfile="test.o" srcpath="/home/student/sbm99/hldda_project/code/gatesrec_hw3" flags="-I/home/student/sbm99/hldda_project/code/gatesrec_hw3  -Wall -O3 -MMD -MP -D __SDSCC__"/>
+</xd:data>

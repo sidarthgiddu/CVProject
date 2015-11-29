@@ -1,0 +1,17 @@
+(c) Copyright 2012-2015 Xilinx, Inc. All Rights Reserved.
+#-----------------------------------------------------------
+# Tool version  : sds++ 2015.2.1 20150925
+# Start time    : Sat Nov 28 21:07:30 EST 2015
+# Command line  : sds++ -sds-pf zc702 -sds-hw cnn cnn.cpp -sds-end -poll-mode 1 -Wall -O3 -c -MMD -MP -MFtest.d test.cpp -o test.o
+# Log file      : /home/student/sbm99/hldda_project/code/gatesrec_hw3/_sds/reports/sds_test.log
+# Journal file  : /home/student/sbm99/hldda_project/code/gatesrec_hw3/_sds/reports/sds_test.jou
+# Report file   : /home/student/sbm99/hldda_project/code/gatesrec_hw3/_sds/reports/sds_test.rpt
+#-----------------------------------------------------------
+
+INFO: [SDSoC 0-0] Create data motion intermediate representation
+clang_wrapper -target arm-xilinx-linux-gnueabi -mcpu=cortex-a9 -mfpu=vfp -O0 -g     -I /work/zhang/common/tools/xilinx/SDSoC/2015.2.1/arm-xilinx-linux-gnueabi/include  -I /work/zhang/common/tools/xilinx/SDSoC/2015.2.1/Vivado_HLS/2015.2/include   -I/work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/include/c++/4.9.1  -I/work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/include/c++/4.9.1/arm-xilinx-linux-gnueabi  -I/work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/include/c++/4.9.1/backward   -I/work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/lib/gcc/arm-xilinx-linux-gnueabi/4.9.1/include  -I/work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/lib/gcc/arm-xilinx-linux-gnueabi/4.9.1/include-fixed  -I/work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/include  -I/work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/libc/usr/include  -Wall -MMD -MP -D __SDSCC__ -emit-llvm -S /home/student/sbm99/hldda_project/code/gatesrec_hw3/test.cpp -o /home/student/sbm99/hldda_project/code/gatesrec_hw3/_sds/.llvm/test.s
+INFO: [SDSoC 0-0] Compiling /home/student/sbm99/hldda_project/code/gatesrec_hw3/test.cpp
+arm-xilinx-linux-gnueabi-g++ -c  -Wall -O3 -MMD -MP -D __SDSCC__ -MF/home/student/sbm99/hldda_project/code/gatesrec_hw3/test.d   -I /work/zhang/common/tools/xilinx/SDSoC/2015.2.1/arm-xilinx-linux-gnueabi/include  -I /work/zhang/common/tools/xilinx/SDSoC/2015.2.1/Vivado_HLS/2015.2/include /home/student/sbm99/hldda_project/code/gatesrec_hw3/test.cpp -o test.o
+arm-xilinx-linux-gnueabi-objcopy --add-section .xdsdata=/home/student/sbm99/hldda_project/code/gatesrec_hw3/_sds/swstubs/test.o.xml test.o
+sds++ log file saved as /home/student/sbm99/hldda_project/code/gatesrec_hw3/_sds/reports/sds_test.log
+sds++ completed at Sat Nov 28 21:07:31 EST 2015

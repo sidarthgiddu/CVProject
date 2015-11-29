@@ -1,0 +1,32 @@
+/home/student/sbm99/hldda_project/code/gatesrec_hw3/_sds/.llvm/test.s: \
+  /home/student/sbm99/hldda_project/code/gatesrec_hw3/test.cpp \
+  /home/student/sbm99/hldda_project/code/gatesrec_hw3/images.h \
+  /work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/include/c++/4.9.1/iostream \
+  /work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/libc/usr/include/assert.h \
+  /work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/include/c++/4.9.1/iomanip \
+  /home/student/sbm99/hldda_project/code/gatesrec_hw3/typedefs.h \
+  /home/student/sbm99/hldda_project/code/gatesrec_hw3/cnn.h \
+  /home/student/sbm99/hldda_project/code/gatesrec_hw3/utils/read_mnist.h \
+  /work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/include/c++/4.9.1/fstream \
+  /work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/include/c++/4.9.1/cstdlib \
+  /work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/include/c++/4.9.1/vector
+
+/home/student/sbm99/hldda_project/code/gatesrec_hw3/images.h:
+
+/work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/include/c++/4.9.1/iostream:
+
+/work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/libc/usr/include/assert.h:
+
+/work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/include/c++/4.9.1/iomanip:
+
+/home/student/sbm99/hldda_project/code/gatesrec_hw3/typedefs.h:
+
+/home/student/sbm99/hldda_project/code/gatesrec_hw3/cnn.h:
+
+/home/student/sbm99/hldda_project/code/gatesrec_hw3/utils/read_mnist.h:
+
+/work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/include/c++/4.9.1/fstream:
+
+/work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/include/c++/4.9.1/cstdlib:
+
+/work/zhang/common/tools/xilinx/SDSoC/2015.2.1/SDK/2015.2/gnu/arm/lin/arm-xilinx-linux-gnueabi/include/c++/4.9.1/vector:

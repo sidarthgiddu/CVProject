@@ -1,0 +1,5 @@
+test
+.DS_Store
+*.o
+*~
+data/mnist/layer_params.tar.gz

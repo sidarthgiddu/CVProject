@@ -1,0 +1,18 @@
+CFLAGS=-g#-Wall #-std=c++11
+
+all: clean test run_test
+
+run_test:
+	./test
+
+test.o: test.cpp
+	g++ $(CFLAGS) $< -c
+
+cnn.o: cnn.cpp
+	g++ $(CFLAGS) $< -c
+
+test: test.o cnn.o
+	g++ $(CFLAGS) test.o cnn.o -o $@
+
+clean:
+	rm -rf test *.o *~ */*~
