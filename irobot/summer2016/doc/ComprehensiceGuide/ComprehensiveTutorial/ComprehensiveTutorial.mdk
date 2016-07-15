@@ -1,0 +1,700 @@
+Title         : _eye_ROBOT -­ HETEROGENEOUS ROBOTIC PLATFORM FOR REAL-­TIME COMPUTER VISION
+Subtitle      : A Comprehensive Tutorial For Small Robot
+Heading Base  : 2
+Logo          : false
+Author        : Chengxuan Bai
+
+[TITLE]
+
+# Introduction
+## Motivation
+The motivation of this project is to explore the field of heterogeneous computing using High-Level Digital Synthesis (HLS). We wanted to build a system which can use FPGA as an accelerator along with the main processor and communicate with the outside world. As a specific application, we have programmed the FPGA to detect the video gesture from HDMI camera and send the commands to iRobot to drive in desired direction. As video processing on real-time HD video stream is slow on normal processor, we used FPGA as an accelerator to offload some of the work from processor. This project involves many aspects of hardware-software co-designing like HLS, Embedded Programming, Computer Vision and FPGA prototyping, making it an ideal project for students in Electrical and Computer Engineering field.
+
+## Overview
+In our design, the camera input is fed to the processing unit, which can either be a computer running software or an FPGA running heterogeneous programs. This processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to Intel Galileo. Intel Galileo has a wireless receptor named Intel N135, which is responsible to receive the commands sent by access point. Intel Galileo receives the command from the wireless receptor and sends it to the robot over UART serial link operating at 57600 baud rate for iRobot and 9600 for the small robot.
+\
+\
+The overall high-level design of the project is shown in Figure [#fig-overview].
+~ Center
+~~ Figure { #fig-overview caption="Abstract Design of Project Objective." }
+![overview]
+~~
+~
+[overview]: images/overview.jpg "overview" { width=auto max-width=90% }
+As the processing unit can either be a computer or an FPGA, which involves fair amount of complexity, we divided the project into 2 major categories: (1) Software Implementation and (2) Hardware Implementation. We first successfully carried out both implementations on the iRobot before continuing with the small robot, on which we managed to complete the software implementation.
+\
+\
+Software Implementation was meant to develop the software version of camera capture, gesture recognition and command sending on Intel i3 processor. The hardware implementation was meant to develop heterogeneous core, which replaces software version of video capture, gesture recognition and command sending units. 
+\
+\
+The incremental development approach from pure software to software-hardware co-design for the iRobot is demonstrated in Figure [#fig-figure2].
+~ Center
+~~ Figure  { #fig-figure2 caption="Incremental Development Approach" } 
+![figure2]
+~~
+~
+[figure2]: images/figure2.jpg "figure2" { width=auto max-width=90% }
+\
+For both cases, the camera capture, gesture recognition and command sending algorithms are coded in Visual Studio while programming Intel Galileo to receive the command and send it to the robots for driving are done in the Arduino IDE. As the steps in both the software and hardware implementations are the same, the algorithms involve a significant share of similarities. 
+\
+\
+In the following sections, you will see detailed instructions on how to proceed from each step to the next, including how to download and setup the required softwares and hardwares, how to operate on them, how to run the codes, along with screenshots and important notices for troubleshooting.
+
+# Tutorials
+Before we proceed to explain the algorithms involved in the software and hardware implementations, this section will guide you through how to set up the various programs needed for this project.
+
+## Getting to know your board
+To begin with, you might find it very helpful to learn about the basics of your board before we start. Figure [#fig-image008] shows an overview of Intel Galileo.
+~ Center
+~~ Figure { #fig-image008 caption="Overview of Intel Galileo" }
+![image008]
+~~
+~
+[image008]: images/image008.jpg "image008" { width=auto max-width=90% }
+\
+Intel Galileo is a microcontroller board based on Intel x86 architecture and featuring the Intel Quark SoC X1000 Application Processor. Developed by Intel Corporation, Galileo is the first Arduino-certified development board that combines Intel technology and the support for Arduino hardware expansion cards called "sheilds" designed for the Arduino Uno R3. From a hardware perspective, this means that all of its major pins and headers are in the same locations as on the Arduino Uno R3; from a software perspective, this means that Intel Galileo, running an open-source Linux operating system, can be programmed through the Arduino Integrated Development Environment (IDE) and make use of the existing libraries and software programs (usually called "sketches"). A full-sized mini-PCI Express slot, 100 Mb Ethernet port, Micro-SD slot, 6-pin 3.3V USB TTL UART header, USB host port, USB client port, and 8 Mbyte NOR Flash come standard on the board. Galileo has a number of facilities for communicating with a computer, another Arduino, or other microcontrollers. Galileo provides UART TTL (5V/3.3V) serial communication, which is available on digital pin 0 (RX) and 1 (TX). In addition, a second UART provides RS-232 support and is connected via a 3.5mm jack. The USB Device ports allows for serial (CDC) communications over USB. This provides a serial connection to the Serial Monitor or other applications on your computer. 
+\
+\
+You can find some important information about its properties from here: \
+General Overview: [Arduino - Intel Galileo] \
+Datasheet and Schematics: [Galileo Schematic] \
+Starter Guide: [Galileo Getting Started Guide]
+[Arduino - Intel Galileo]: http://www.arduino.cc/en/ArduinoCertified/IntelGalileo 
+[Galileo Schematic]: http://download.intel.com/support/galileo/sb/galileo_schematic.pdf
+[Galileo Getting Started Guide]: https://learn.sparkfun.com/tutorials/galileo-getting-started-guide#software-downloadsetup
+
+## Software Setup: Arduino IDE
+In order to upload Arduino sketches to Intel Galileo, we need the Arduino IDE (integrated development environment). Unfortunately, the Galileo will not work with the standard IDEs, so we will have to download and install one of the specialized versions that is compatible with Galileo. Qualified versions include 1.5.3 and 1.6.0 or newer ones.
+\
+\
+The tutorial below is mainly based on Windows system. You can see a comprehensive collection of instructions for all OS and IDE in the [Getting Started Guide] on the website of Intel. Once you open this website, choose your OS in the first drop-down menu and select "Arduino" as IDE in the second drop-down menu to proceed. 
+[Getting Started Guide]: https://software.intel.com/en-us/iot/library/galileo-getting-started 
+
+1. Go to the [Arduino's official website] and download the latest version of Arduino. \
+Note: version 1.5.3 has a limitation with the language of OS. If your computer is running on an OS that uses a language other than English, try changing it to English from Control Panel, or you can download version 1.6.0 or newer, as shown in Figure [#fig-arduino_ide_download].
+
+[Arduino's official website]: https://www.arduino.cc/en/Main/Software
+~ Center
+~~ Figure { #fig-arduino_ide_download caption="Arduino Software download" }
+![arduino_ide_download]
+~~
+~
+[arduino_ide_download]: images/arduino_ide_download.jpg "arduino_ide_download" { width=auto max-width=90% }
+
+2. To enable the Wi-Fi drivers and sketch persistent, go to [download center] and download the software for SD-card Linux Image as shown in Figure [#fig-linuxcard].
+
+[download center]: https://downloadcenter.intel.com/download/24355/Intel-Galileo-Board-Software-Package
+~ Center 
+~~ Figure { #fig-linuxcard caption="Software for SD-card Linux Image" }
+![linuxcard]
+~~
+~
+[linuxcard]: images/linuxcard.jpg "linuxcard" { width=auto max-width=90%}
+
+3. To install Arduino IDE, we need to unzip all files to C:\ directory. Make sure to preserve the folder structure. Figure [#fig-arduinofolder] is a screenshot based on Windows machine.
+~ Center
+~~ Figure { #fig-arduinofolder caption="Install Arduino IDE" }
+![arduinofolder]
+~~
+~
+[arduinofolder]: images/arduinofolder.jpg "arduinofolder" { width=auto max-width=90% }
+
+4. Now we are connecting the board to your computer. If you have a micro-SD card in your board, remove it. Connect the power and USB Client port (the USB port closest to Ethernet) to your computer through serial cable, as shown in Figure [#fig-setup_plug]. Remember to always plug in the power supply before the USB cable, and wait until USB LED lights up to connect the cable, otherwise you may damage the board.
+~ Center
+~~Figure { #fig-setup_plug caption="Connecting Intel Galileo to Your Computer" }
+![setup_plug]
+~~
+~
+[setup_plug]: images/setup_plug.jpg "setup_plug" { width=auto max-width=90%}
+
+5. Install and Run Firmware Updater tool
+\
+\
+In your computer, follow **Start > Control Panel > System > Device Manager**. 
+\
+\
+Go down to find **Ports (COM & LPT)**. If not, go to **Other Devices**.
+\
+\
+You should see an open port named **Gadget Serial V2.4** (if the board contains an old release like v0.7.5), or simply **Galileo** on newer releases. Right click and select "**Update Driver Software**". 
+\
+\
+Note: if you do not see any new device neither in **Ports (COM & LPT)** nor in **Other Devices**, download [Galileo Firmware Updater and Drivers]
+[Galileo Firmware Updater and Drivers]: https://downloadcenter.intel.com/download/24748/Intel-Galileo-Firmware-Updater-and-Drivers-1-0-4
+\
+Choose "**Browse my computer for driver software**". Navigate to **hardware/arduino/x86/tools** directory. Once it is installed properly, you should see something similar to Figure [#fig-image010].
+~Center
+~~ Figure { #fig-image010 caption="Update Driver Software" }
+![image010]
+~~
+~
+[image010]: images/image010.jpg "image010" { width=auto max-width=90% }
+You can also find more information from this link: "[Intel Galileo Board Assembly using Arduino]".
+[Intel Galileo Board Assembly using Arduino]: https://software.intel.com/en-us/articles/intel-galileo-board-assembly 
+
+6. Update firmware.
+\
+\
+Launch the Arduino IDE. It is under the directory "C:\Arduino", double click "**arduino.exe**"". You should see the interface shown in Figure [#fig-arduino_interface].
+~Center 
+~~ Figure { #fig-arduino_interface caption="Firmware Update" }
+![arduino_interface]d
+~~
+~
+[arduino_interface]: images/arduino_interface.jpg "arduino_interface" { width=auto max-width=90% }
+Under **Help** tab, select "**Firmware Update**". It will take few minutes to update firmware on board, and you should have power connected all the time. The board itself usually comes with an older version, which may have unexpected outcomes in the future if you do not update it. 
+
+7. Upload programs
+\
+\
+Under the **Tools** tab, select the type of board you are using (in this case, Intel Galileo) in **Board** and "COMx" ("x"" is a number depending on the USB port on your computer that the serial cable is plugged into) in **Port** . 
+You can go to "**Files > Examples**" for numerous sample sketches including helpful comments already provided for you. You can also upload them to Intel Galileo in order to see how things work if you are not familiar with Arduino IDE yet. It is a great way to introduce yourself to Arduino. With reference to Figure [#fig-arduino_upload]: To upload, click on the **Upload** button. Programs will automatically compile. To compile without uploading, click on the **Verify** button instead. 
+~Center
+~~ Figure { #fig-arduino_upload caption="Upload programs onto Arduino Board" }
+![arduino_upload]
+~~
+~
+[arduino_upload]: images/arduino_upload.jpg "arduino_upload" { width=auto max-width=90% }
+Note: If you want to add libraries to Arduino IDE, you can just download libraries in a zip file and add libraries by Sketch>Import Library>Add Library. You can use either zip file or folders. If you need more detailed information about how to add additional libraries, you can refer go here.
+\
+\
+Note: Intel Galileo has more than one Serial ports.
+\
+\
+Serial refers to USB Client port. It is responsible to send programs from other devices to Intel Galileo board, and Serial.write() will print out results in Serial Monitor, which can be found in the upper right corner of Arduino IDE. 
+\
+\
+
+## Software Setup: Visual Studio and the OpenCV library
+1. Download [Visual Studio] and install. Note: Use Visual Studio 2013 or 2012.
+ [Visual Studio]: https://www.visualstudio.com/products/visual-studio-community-vs 
+
+2. Download [OpenCV] and extract to C:\ directory.
+[OpenCV]: http://opencv.org/downloads.html
+~Center
+~~ Figure { #fig-image031 caption="OpenCV library download" }
+![image031]
+~~
+~
+[image031]: images/image031.jpg "image031" { width=auto max-width=90% }
+We suggest that you download the version of OpenCV shown in Figure [#fig-image031], since the code we provide along with this tutorial is configured with OpenCV files in this version of release. If you choose to download another version, make sure to change the "Path" property (which tells the program how to find the library files) before running it. 
+\
+\
+For the following steps, you can also refer to this tutorial "[OpenCV on Visual Studio 2013]".
+[OpenCV on Visual Studio 2013]: http://blog.amastaneh.com/2014/03/opencv-on-visual-studio-2013.html 
+3. Change Environment Variables. 
+\
+\
+Follow the path "**My Computer** > **Properties** > **Advanced System Settings** > **Environment Variables** > **New**" and add a new system variable: 
+\
+\
+Name: **OPENCV_DIR**
+\
+Value: **C:\opencv\build** (or a similar name if your OpenCV directory has a different name such as opencv2.4.9)
+\
+\
+Go to "**My Computer** > **Properties** > **Advanced System Settings** > **Environment Variables...** > **System variables**", 
+select "**Path**" and press "**Edit**" button and add "**_;%OPENCV_DIR%\x86\vc12\bin_**" 
+\
+\
+Notes: for Visual Studio 2013 add "**_;%OPENCV_DIR%\x86\vc12\bin_**", for Visual Studio 2012 add "**_;%OPENCV_DIR%\x86\vc11\bin_**" 
+
+4. Configure the program.
+\
+\
+Go to "**Tools** > **Options** > **Debugging** > **Symbols**" and select "**Microsoft Symbol servers**".
+Go to "**File** > **Open** > **Project/Solution...**" and select "**outreach\irobot\summer2016\code\Visual_Studio_Object_Detection_Code\\
+openCV_code\Small_Robot_OpenCV.sln**". After the program is loaded, go to "**Build** > **Build Solution**". 
+Go to "**Solution Explorer**", right click on "**Small_Robot_OpenCV**", select "**Properties**". In "**Configuration Properties** > **VC++ Dictionaries**", add "**C:\opencv\build\x86\vc12\bin**" to "**Executable Directories**", add "**C:\opencv\build\x86\vc12\lib**" to "**Library Directories**". In "**Configuration Properties** > **C/C++** > **General**", add "**C:\opencv\build\include**" to "**Additional Include Directories**". In "**Configuration Properties** > **Linker** > **General**", add "**C:\opencv\build\x86\vc12\lib**" to "**Additional Library Directories**". In "**Configuration Properties** > **Linker** > **Input**", add "**opencv_calib3d249d.lib
+opencv_contrib249d.lib
+opencv_core249d.lib
+opencv_features2d249d.lib
+opencv_flann249d.lib
+opencv_gpu249d.lib
+opencv_highgui249d.lib
+opencv_imgproc249d.lib
+opencv_legacy249d.lib
+opencv_ml249d.lib
+opencv_nonfree249d.lib
+opencv_objdetect249d.lib
+opencv_ocl249d.lib
+opencv_photo249d.lib
+opencv_stitching249d.lib
+opencv_superres249d.lib
+opencv_ts249d.lib
+opencv_video249d.lib
+opencv_videostab249d.lib
+**" to "**Additional Dependencies**".
+
+## WiFi Setup
+After configuring Intel Galileo with your computer via serial port, we can now advance to enabling wireless communication. This section will walk you through the process of setting up the SD card, installing the WiFi card, creating a locally hosted network on your computer, and connecting the board to it. 
+
+* **Hardware Requirements:**
+  - SD card
+  - Intel N13 WiFi / Bluetooth 1/2 Length PCI Card
+  - Half to Full Height Mini PCI Express (PCI-E) Card Bracket Adapter
+  - Two Antennas
+
+* **WiFi Card Setup**
+\
+\
+You can find more detailed instructions from [Intel Galileo: Setting Up WiFi]. The essential steps are as follows.
+[Intel Galileo: Setting Up WiFi]: http://ionospherics.com/intel-galileo-setting-up-wifi/ 
+
+
+1. Insert two screws to put together _Half to Full Height Mini PCIE Bracket Adapter_ with Intel WiFi card N-135.
+\
+\
+Note: WiFi card N-135 and N-6205 already has their drivers included in the Linux image provided. If you are using other WiFi cards, you have to download drivers separately from [here].
+[here]: http://wireless.kernel.org/en/users/Drivers/iwlwifi 
+2. When your download is complete, Unpack with "tar -xvzf iwlwifi-XXX.tgz", then copy files from your PC to the SD card.
+3. Insert card into PCIE connector slot 45 degrees up. Press gently but firmly on the N135 Adapter to seat it on the two hooks on the PCI Connector. Attach antennas to the WiFi card. Insert card into PCIE connector slot 45 degrees up and then pull all the way down. These steps are shown in Figures [#fig-image017] and [#fig-image040].
+~ Center
+~~ Figure { #fig-image017 caption="WiFi card Setup" }
+![image017]
+~~
+~
+[image017]: images/image017.jpg "image017" { width=auto max-width=90% }
+~ Center
+~~ Figure { #fig-image040 caption="Attach Antennas" }
+![image040]
+~~
+~
+[image040]: images/image040.jpg "image040" { width=auto max-width=90% }
+
+4. **SD Card Setup**
+\
+\
+Since the Flash memory on Intel Galileo, holding the version of Linux used when there is no SD card, is too small to include WiFi drivers, you must have an SD card with Linux image to use WiFi. 
+\
+\
+Unzip the Linux image we downloaded in the last section. Plug the SD card into your computer and transfer everything to SD card. Again, preserve the folder structure as shown in Figure [#fig-image018].
+~Center
+~~ Figure { #fig-image018 caption="SD Card Setup" }
+![image018]
+~~
+~ 
+[image018]: images/image018.jpg "image018" { width=auto max-width=90% }
+After booting SD card, we can plug it into Intel Galileo, and then we can power on the board through 5V power cable. 
+\
+\
+As mentioned in Section [#sec-overview], Figure [#fig-overview] shows how the commands generated by the processing unit are received over the wireless network using the Intel N-135 wireless receptor that is connected to the Galileo board (Ref. to appendix E.3) and these commands are then transmitted to the iRobot via serial communication. 
+\
+\
+Now we are ready to create the wireless access point on your computer to complete this communication flow. In order to do that, you have to set up network and upload programs through serial port to make Intel Galileo ready for WiFi.
+
+5. **WPA Network Setup** 
+\
+\
+The following steps will guide you through how to set up a hostednetwork on your computer.
+
+
+i. In Windows, as shown in Figure [#fig-run_as_admin], search "cmd" (the command prompt) and right click on the icon to "run as administrator", or you will not be able to set up a new network. \
+~ Center
+~~ Figure {#fig-run_as_admin caption="A screenshot from Windows 8.1" }
+![run_as_admin]
+~~
+~
+[run_as_admin]: images/run_as_admin.png "run_as_admin" { width=auto max-width=90% }
+For Windows 7/Vista, find information from here: [Run a Command as Administrator from the Windows 7 / Vista]. 
+[Run a Command as Administrator from the Windows 7 / Vista]: http://www.howtogeek.com/howto/windows-vista/run-a-command-as-administrator-from-the-windows-vista-run-box/
+\
+ii. In the pop-up window that asks "Do you want to allow the following program to make changes to this computer", click "Yes" to proceed. You will then see the command prompt show up. 
+\
+iii. Enter: **netsh wlan set hostednetwork mode=allow ssid=yourssid key=yourkey**
+\
+\
+Change "**yourssid**" above to the name of the network you are setting up. You can name it whatever you want. 
+Change "**yourkey**" above to the password. It should be at least 8 characters long. 
+For example, in my case  I set the ssid to "irobot" and key to "irobotirobot".
+\
+\
+Then, enter: **netsh wlan start hostednetwork** 
+\
+\
+Refer to Figure [#fig-image021] for more details.
+~Center
+~~ Figure { #fig-image021 caption="Setup hosted network" }
+![image021]
+~~
+~
+[image021]: images/image021.jpg "image021" { width=auto max-width=90% }
+\
+Note: after you set up this network once on your computer, you can simply enter the last line to activate the network that you have previously set up in the future. 
+\
+iv. You can now check status of network in **Network and Sharing Center**, as shown in Figure [#fig-image023]. \
+~Center
+~~ Figure { #fig-image023 caption="Status of hosted network" }
+![image023]
+~~
+~
+[image023]: images/image023.jpg "image023" { width=auto max-width=90% }
+v. Share WiFi with the network that you just created, as shown in Figure [#fig-image025].
+\
+\
+In the left sidebar, choose **Change adapter settings**. Right click on your current network. It is "eduroam 3" WiFi in my case. Click **Properties**. Go to tab **Sharing** and share the network with the network you created. 
+~Center 
+~~ Figure { #fig-image025 caption="Change adapter settings" }
+![image025]
+~~
+~
+[image025]: images/image025.jpg "image025" { width=auto max-width=90% }
+\
+If you run into problems, you can refer to this site for instructions and trouble shooting: 
+[Create WiFi hotspot].
+[Create WiFi hotspot]: http://www.talkofweb.com/creating-wi-fi-hotspot-in-windows-8-share-laptop-internet-connection/
+\
+vi. Open Arduino IDE. Go to **File>Examples>WiFi>ConnectWithWPA**
+\
+\
+In **char ssid[]**, change "yourNetwork" to your ssid of the network we just set up. In **char pass[]**, change "secretPassword" to your password of network. 
+\
+vii. Upload the program to Intel Galileo. Then click on **Serial Monitor** in the upper right corner to check status of connection.
+\
+viii.	You can find the IP Address in Serial Monitor. It will be used later.
+
+
+6. **Static IP Setup**
+\
+\
+As you may notice, the IP address that Intel Galileo obtain varies every time it was printed out in the serial monitor. We want to make it static, since we are sending commands via wireless network to a single IP address specific to the board. In order to do that, you have to download PuTTY (or any SSH client that you prefer). 
+
+
+i. Download PuTTY from [here] and install it as shown in Figure [#fig-PuTTY_download]. \
+[here]: http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html 
+~Center
+~~ Figure { #fig-PuTTY_download caption="PuTTY download" }
+![PuTTY_download]
+~~
+~
+[PuTTY_download]: images/PuTTY_download.jpg "PuTTY_download" { width=auto max-width=90% }
+ii. Upload this program to Intel Galileo.
+\
+\
+iii. Then we can use PuTTY for communication between computer and linux image on Intel Galileo. 
+\
+\
+We have to first connect an Ethernet cable from computer to Intel Galileo. Next we will open PuTTY to connect to Intel Galileo. Figure [#fig-PuTTY] is a screenshot of my PuTTY configuration.
+~Center
+~~Figure  {#fig-PuTTY caption="Configuration of Intel Galileo with PuTTY" }
+![PuTTY]
+~~
+~
+[PuTTY]: images/PuTTY.png "PuTTY" { width=auto max-width=90% }
+\
+You need to manually type in the IP address 169.254.1.1, save it to "Saved Sessions" and load it.
+\
+iv.	Click "Open" and a command shell will pop out. Log in as "root". Create a backup of your /etc/network/interfaces file by typing: \
+"cp /etc/network/interfaces  /etc/network/interfaces.backup"
+\
+v. Type "vi /etc/network/interfaces". Press "i" to enter edition mode. Change "dhcp" in the "iface wlan0 inet dhcp" line to "static". Comment out all the lines below and add the following lines as shown in Figure [#fig-image029]. \
+~Center
+~~Figure {#fig-image029 caption="A Screenshot of PuTTY" }
+![image029]
+~~
+~
+[image029]: images/image029.jpg "image029" { width=auto max-width=90% }
+In my case, I set the static IP address to be 192.168.137.10 
+\
+vi.	Save the file, and restart the wlan0: \
+ifdown wlan0 \
+ifup wlan0 \
+You can type ":wq" to save and exit vi. 
+
+For more information, you can look at "[How to setup your galileo to have a static IP on a LAN]". 
+[How to setup your galileo to have a static IP on a LAN]: https://communities.intel.com/thread/49348 
+\
+Note: If you are unable to setup hosted network on your computer, you can use a router instead but make sure you setup static IP for your computer, the router and the board. 
+
+## Running the program
+Now we are ready to run the program. 
+
+1. Connect Intel Galileo to your computer with a serial cable. Upload the file 
+"*Small_Robot_revised.ino*" to it. (refer to **Section [#sec-software-setup--arduino-ide] Step 7**)
+\
+\
+The board will always remember the most recently uploaded sketch. You only need to upload the same file to the board once, if you don't overwrite the sketch afterwards. Every time you power the board on, it starts running the stored sketch.
+
+2. Unplug Intel Galileo from your computer.
+
+3. Start the hosted WPA network on your computer (be sure to run the command prompt as Administrator to do so). (refer to **Section [#sec-wifi-setup], Step 5**)
+
+4. Power on the Small Robot.
+
+5. Power on the Intel Galileo.
+\
+\
+_Important Notice_: When the Galileo board is powered on, it automatically starts to run the sketch uploaded to it most recently. 
+In the Arduino code, the commands that writes to the Small Robot (Op codes to start I/O and set the Small Robot in full mode) are in the setup() method, which is executed at the very beginning for only once before proceeding to the loop() method. If the Small Robot is not powered on before the Galileo board, it will miss the setup() and we would not be able to write to Small Robot. We should power on the Small Robot first, then the Galileo board, wait for the power LED on Small Robot to turn off (which indicates it has been set to Full Mode), and send commands from the processing unit on our computer.
+\
+\
+You might want to check the status of the WiFi connection when you try this for the first time. To do so, connect Intel Galileo to your computer through serial cable and open "Serail Monitor" in Arduino IDE to look at the print statements. The sketch prints out the ssid and signal strength of the network. A negative value (instead of 0 dBm) would indicate that the board is successfully connected to the network. The smaller the absolute value is, the stronger the connection.
+
+6. After Intel Galileo has joined the network, Open *Visual Studio*, go to "**Debug**" and select "**Start without Debugging**". If you have the Arduino serial monitor open at this time, you should be able to see a new print statement "We have a new client". If all the connections are fine, four windows will pop up and you will be able to control the small robot now. 
+
+# Implementation
+For both software and hardware implementations, algorithms are separated into the Arduino code, as well as the Visual Studio code. 
+\
+\
+For Arduino, the code for both the software and hardware implementation remains unchanged. Hence, we will only cover it in software implementation Section [#sec-arduino]. However, the Arduino code for iRobot and the small robot differs slightly and the right set of code needs to be uploaded onto Intel Arduino depending on the robot being driven. This is because the former has built-in commands and we simply need to program Intel Galileo to send the respective drive command codes. For the latter, the Arduino code is slightly more involved as we need to individually configure 4 motors connected to the robot’s 4 wheels.
+\
+\
+For Visual Studio, although the code for both software and hardware implementation differ slightly, the fundamental idea behind the algorithms are essentially the same. Hence, we will cover the broader ideas in software implementation Section [#sec-software-implementation] and mention the differences for hardware implementation in Section [#sec-hls-implementation]. The same set of code works for both the iRobot and the small robot.
+
+## Software Implementation
+### Arduino
+As the Arduino code for the small robot is more involved, we will be explaining the Arduino code for the small robot in this section. For the Arduino code, we installed an additional Adafruit (AF) Motor Shield V2 library, which interfaces with the motor hardware.
+\
+\
+In our code, server refers to Intel Galileo while client may refer to Processing, Visual Studio or FPGA. Both the server and the client are connected to the same access point with the client continuously sending data to Intel Galileo over this network. The data sent will be used to set the robot’s speed, direction and turning, and 4 bytes of the data will be needed per configuration. As the data is read byte by byte, the bytes are stored in an array and only used when we have received 4 bytes. After the necessary information to configure the motor is extracted, the data will be replaced by the new data sent by the client.
+\
+\
+To ensure that the robot will stop moving immediately after the user removes the red box used to control the robot, it is important there is no delay between the sending of data from the client and the reading of data by Intel Galileo. Hence, the reading of data, _client.read()_, must happen right after the _if (client.available() > 0)_ statement.
+\
+\
+To control the robot’s speed, direction and turning, we need to control the spin speed and direction of each of the individual motors attached to the robot’s wheels. However, we want motors on the same side to all have the same speed and direction. Hence, the problem reduces to configuring the left and right side motors.
+\
+\
+The motor’s speed is determined by a technique called PulseWidthModulation (PWM) and the AF Motor Shield library expects a PWM value ranging from 0 to 255. A higher PWM value indicates higher spin speed while a lower PWM value indicates otherwise. The motor’s spin direction can be decided simply by setting the motor to run either forward or backward.
+\
+\
+To calculate the PWM value for each of the motors, we need to read the 4 bytes of data sent from the client. The first two bytes of data are combined and assigned to the _speed_ variable. The last two bytes of data are also combined and assigned to the _radius_ variable. _speed_ is in two’s complements and is a value between -500 and 500 inclusive. _radius_, on the other hand, will be in the range -550 to 550. In our calculation of motor spin speed and direction, we look at both the magnitude and sign of _speed_ and _radius_.
+\
+\
+As the value of _speed_ is in the range of -500 and 500 while the PWM value only ranges from 0 to 255, the map function is used to map the absolute value of _speed_, which gives us a number in the range of 0 to 500, to the range of PWM values. For instance, a _speed_ magnitude of 500 will get mapped to the PWM value of 255. The value returned by the map function is assigned to the variable _pwm_. This _pwm_ value can be viewed as an average of the PWM values for the left and right motors and gives us an indication of the PWM value that the center of the robot should take on. As will be explained later on, the variable _pwm_, combined with _radius_ and the constant ROBOT_HALF_WIDTH, which is the half width of the robot, will help us in determining the PWM value to be assigned to each of the 4 motors controlling the robot’s wheels.
+\
+\
+The sign of _speed_ determines whether the motor runs forward or backward. A negative sign translates to backward, a positive sign translates to forward and a speed of 0 translates to release, which is the command to stop the motors. 
+\
+\
+The magnitude of _radius_ determines the turning angle. A smaller _radius_ magnitude indicates a sharper turn while a larger _radius_ magnitude indicates a more gradual turn. When the robot is turning, it can be viewed as traveling along an arc of a circle and _radius_ is thus the radius of the circle formed by this arc. The extreme magnitude of 550 is equivalent to no turning. However, having one fixed value to indicate no turning means that if the user does not want the robot to turn, the user will have to hold the red box in exactly the same position as when setting up the red box, which proves to be difficult. Hence, to account for the situation where the user controlling the robot might turn the red box unintentionally, rather than having one fixed value to indicate no turning, we set the range of magnitude from 500 to 550 to indicate no turning. When there is no turning involved, the left and right motors should take on the same PWM values. 
+\
+\
+The sign of _radius_ determines the direction of the turn. If the value of _radius_ is positive, the robot is turning left and if it is negative, the robot is turning right.
+\
+\
+Combining all these information, Figure [#fig-PWMvalues], which illustrates the case of a robot moving forward and turning left, will help to clarify the calculation of the PWM values for left and right motors.
+~Center
+~~ Figure { #fig-PWMvalues caption="Example of robot moving forward and turning left" }
+![PWMvalues]
+~~
+~
+[PWMvalues]: images/PWMvalues.jpg "PWMvalues" { width=auto max-width=90% }
+\
+Based on Figure [#fig-PWMvalues], we can use the general idea of ratio to calculate the left and right motor PWM values, as shown in Equation [#eq-PWMgeneral].
+~ Equation {#eq-PWMgeneral}
+\frac{distance \ of \ left \ or \ right \ motors \ from \ center \ of \ circle}{distance \ of \ center \ of \ robot \ from \ center \ of \ circle} \cdot PWM \ for \ center \ of \ robot
+~
+Hence, to calculate the PWM for the left motors, we use Equation [#eq-PWMLeftnoscale].
+~ Equation {#eq-PWMLeftnoscale}
+\frac{(radius - ROBOT\_HALF\_WIDTH)} {radius} \cdot pwm
+~
+Similarly, to calculate the PWM for the right motors, we use Equation [#eq-PWMRightnoscale].
+~ Equation {#eq-PWMRightnoscale}
+\frac{(radius \ + \ ROBOT\_HALF\_WIDTH)} {radius} \cdot pwm
+~
+However, the difference between the PWM values for the left and right motors is not significant to let the robot make a distinct turn. Hence, we scale the difference and the corresponding final equations for calculating the PWM of the left and right motors are given by Equations [#eq-PWMLeftscale] and [#eq-PWMRightscale].
+~ Equation {#eq-PWMLeftscale}
+\frac{(radius \ - \ 2 \cdot ROBOT\_HALF\_WIDTH)} {radius} \cdot pwm
+~
+~ Equation {#eq-PWMRightscale}
+\frac{(radius \ + \ 2 \cdot ROBOT\_HALF\_WIDTH)} {radius} \cdot pwm
+~
+The results from these equations are assigned to the variables _pwmLeft\_before_ and _pwmRight\_before_. Whenever _radius_ is negative, the fraction in Equation [#eq-PWMLeftscale] will return a value greater than 1. Whenever _radius_ is positive, the fraction in Equation [#eq-PWMRightscale] will return a value greater than 1. If _pwm_ is sufficiently large, there will be the situation when the results calculated from the two equations become greater than 255, which is the maximum PWM value that can be assigned to the motors. We took care of this issue using an if-statement and manually set the PWM value of the motor that exceeded this maximum value to 255. The PWM values for the left and right motors are thus represented by the variables _pwmLeft_ and _pwmRight_ respectively. These values are finally passed in as arguments to set the speed of the motors.
+
+###Visual Studio
+
+Visual Studio, together with OpenCV library, is responsible for converting the video captured by the web camera into information about the velocity, denoted by _velocitySpeed_, and rotation angle, denoted by _rotationAngle_, of the robot before sending the data to Intel Galileo over the network. _velocitySpeed_  and _rotationAngle_ are determined by looking at the size and orientation of the red box held by the user with reference to the startup calibration.
+\
+\
+For calculating _velocitySpeed_, we are considering the area of the red object, denoted by _currentArea_, and this is converted to the range of speed that the robot can move at. During the startup calibration, when the user places the red box close to the camera, the area of the red box, _mMax_, is mapped to _alphaMax_, which has the same value as the constant MAX_SPEED_FRONT = 500. Similarly, when the user places the red box further from the camera, the area of the red box, which is now smaller and denoted by _mMin_, is mapped to _alphaMin_, which has the same value as the constant MAX_SPEED_BACK = -500. Later on, when the user moves the box forward and backward to control the robot, _currentArea_ will be between _mMin_ and _mMax_ and is then converted into a value in the range of _alphaMin_ and _alphaMax_. If the area increases over time, then we increase the speed of the robot in frontal direction. If the area decreases over time, then we decrease the speed of the robot in frontal direction and eventually, we start issuing backward commands. The visual representation of this situation is represented in Figure [#fig-frontback] where the object is coming closer to the camera and hence we are increasing the speed of the robot. 
+~Center
+~~ Figure { #fig-frontback caption="Object movement in front and back direction corresponds to the robot's speed in front and back direction. (a) Area a1 = AB*AC of red object on any timestamp n, (b) Area a2 = AB*AC of red object on the next timestamp n+1. If a2 > a1 then object is coming closer to the camera and hence it should issue front driving direction command to the robot" }
+![frontback]
+~~
+~
+[frontback]: images/frontback.jpg "frontback" { width=auto max-width=90% }
+\
+The conversion from (_mMin_, _mMax_) to (_alphaMin_, _alphaMax_) is done via Equation [#eq-anglemap], [7].
+~ Equation {#eq-anglemap}
+velocitySpeed = \alpha_{min} + \frac{(\alpha_{max} - \alpha_{min})(currentArea - mMin)} {(mMax - mMin)}
+~
+where, \
+&alpha;~min~ = MAX_SPEED_BACK \
+&alpha;~max~ = MAX_SPEED_FRONT \
+\
+For calculating the rotation angle and direction, we made use of OpenCV’s RotatedRect class. The calculated angle, denoted by _l_, is measured from the positive x-axis anti-clockwise to the closest side. This angle increases from -90 to 0 when the box is being rotated left and decreases from 0 to -90 when the box is being rotated right. However, this angle does not tell us the direction of the rotation.
+\
+\
+To decide whether the red box is rotated to the left or right, we make use of the width and height of the rotated rectangle. The width of the rotated rectangle does not necessarily correspond to the longer side, but rather, OpenCV sets the side closest to the positive x-axis as the width and the other side as the height by default. Hence, when rotating left, the shorter side is set as the width but when rotating right, the longer side is set as the width. Figure [#fig-rotationangle] illustrates the cases for left and right rotation. 
+~Center
+~~ Figure { #fig-rotationangle caption="Left and Right rotation" }
+![rotationangle]
+~~
+~
+[rotationangle]: images/rotationangle.jpg "rotationangle" { width=auto max-width=90% }
+\
+As seen from Figure [#fig-rotationangle], for left rotation, the width is always shorter than the height whereas for right rotation, it is the other way round. Thus, we can compare the width and height of the rotated rectangle to determine if the red box is rotating left or right.
+\
+\
+With information about the rotation angle and direction, we can now convert _l_ to a value in the range of either MIN_TURN_LEFT = 550 to MAX_TURN_LEFT = 201 or MIN_TURN_RIGHT = -550 to MAX_TURN_RIGHT = -201 based on the rotation direction. The chosen range is assigned to the variables _betaMax_ and _betaMin_. For example, if the width of the rectangle is shorter than the height, we know that it is a left rotation. Thus, we would set _betaMin_ to MIN_TURN_LEFT and _betaMax_ to MAX_TURN_LEFT. Angle _l_ is then converted to a value between these two numbers using Equation [#eq-anglemap] but with _alphaMin_, _alphaMax_, _mMin_, _mMax_ and _currentArea_ replaced by _betaMin_, _betaMax_, -90, 0, and _l_ respectively. This converted value is then sent to Intel Galileo. 
+\
+\
+Moving on, in order to gather the above information, we need to detect only the red box from the captured video and eliminate all other distractions in the surrounding.
+\
+\
+Firstly, our program will convert the captured video from the RGB color space into the YCbCr color space. YCbCr is a color space that separates the luminance, i.e. light intensity, component of a frame from the hue components. Working in this color space is advantageous over the RGB color space because colors in YCbCr are represented independently from their relative brightness. Note that in a decoded 3-channel image, the channels are stored in the order B, G, R and Y, Cr, Cb. The standard equations for converting an 8-bit image from RGB to YCbCr are given by Equations [#eq-Y], [#eq-Cr] and [#eq-Cb].
+
+~ Equation {#eq-Y}
+Y = 0.299 \cdot R + 0.587 \cdot G + 0.114 \cdot B
+~
+
+~ Equation {#eq-Cr}
+Cr = (R-Y) \cdot 0.713 + 128
+~
+
+~Equation {#eq-Cb}
+Cb = (B-Y) \cdot 0.564 + 128
+~
+Next, we will calculate the threshold image using a range of Y, Cb and Cr values that our red box falls within and reject any color other than red.  In this case, the most suitable range for detecting the red box is 0<=Y<=255, 169<=Cr<=255 and 0<=Cb<=255. The input image will be the YCbCr image, which is a 3-channel 8-bit image. Our output image will be the threshold image, which is a 1-channel 8-bit image. This simply means that the output image will be gray scale. In our case, the output image will only consist of either black or white pixels. To find the threshold image, we extracted the YCbCr values of the individual pixels in the input image and compared them with the range of YCbCr values we wanted. If the pixel values fulfill the range, we set its corresponding pixel in the output image to white, represented by the value 255. If it does not fall within the given range, we set the corresponding output pixel to 0, which is black.
+\
+\
+In any video processing application, noise is the major component, which we have to deal with. As we are dealing with HD videos with 60 frames per second, noisy red pixels in the video drastically deteriorates the corner detection algorithm’s accuracy. To overcome this issue, we implemented median filter using a 5x5 window to reject the spurious red pixel on the screen. This time, the input image will be the 1-channel threshold image and the output will also be a 1-channel image. The median blur is achieved by taking the median value of a particular pixel and its neighboring 8 pixels. Since our input image is black and white, the median value will be either 0 or 255. We then assign this median value to the corresponding pixel in the output image. Whenever we encounter a corner pixel or a pixel along the borders, we take the nonexistent neighboring pixel values to be 0 before taking the median. This process is illustrated in Figure [#fig-medianfilter5].
+~Center
+~~ Figure { #fig-medianfilter5 caption="Median blur" }
+![medianfilter5]
+~~
+~
+[medianfilter5]: images/medianfilter5.jpg "medianfilter5" { width=auto max-width=90% }
+\
+Using the median filtered threshold image, we called the findContours function in OpenCV to detect the largest contour found in the image. The largest contour is chosen to ensure that we are analyzing the red box, and not any other objects of similar color that might be present in the background. From the contour, we used the minAreaRect function to return the minimum-area bounding rectangle, possibly rotated, and subsequently apply the aforementioned analysis to extract the details about the size and orientation of the rotated rectangle representing the red box.
+
+## HLS Implementation
+For the hardware implementation, we carried it out on the iRobot and it involves codes both on Arduino as well as Visual Studio. The iRobot Arduino code remains unchanged for the hardware implementation whereas some parts of the Visual Studio code are slightly altered. Algorithms in Visual Studio that are similar to those in the software implementation will only be briefly mentioned while those that more different will be elaborated.
+
+### High Level Design
+Our heterogeneous platform uses ARM Cortex 9 (@667 MHz) as the host processor and FPGA fabric as a video accelerator. The input frame from HDMI camera is first stored into video buffer hosted in main memory of FPGA. After the frame buffer is filled, PS invokes the FPGA fabric by passing the starting address of the frame. FPGA behaves as an accelerator and the moment PS gives a signal to FPGA, FPGA start processing the frame data in pixel­by­pixel manner. Once PL is done processing the whole frame, it raises a ready signal to PS informing that it’s done with the processing and PS can take the data from PL. (Note that in our design, PL is taking video frame as an input and gives detected corners as well as video frame as an output.) The PS senses the flag and starts receiving corners and video out information from PL. The video out of PL is written into the video frame buffer, which will be read by Video DMA to output into HDMI screen. The corners sent by the PL is consumed by the PS and it generates command out of it.
+~Center
+~~ Figure { #fig-HLSDesign caption="High level design of Heterogeneous core on Xilinx Zynq 702 FPGA" }
+![HLSDesign]
+~~
+~
+[HLSDesign]: images/HLSDesign.jpg "HLSDesign" { width=auto max-width=90% }
+~Center
+~~ Figure { #fig-PSPL caption="System Architecture of PS and PL in Xilinx Zynq FPGA. Adopted from Ref [15]." }
+![PSPL]
+~~
+~
+[PSPL]: images/PSPL.jpg "PSPL" { width=auto max-width=90% vertical-align=middle}
+\
+Figure [#fig-HLSDesign] shows the high level design which are connected with FPGA. In Figure [#fig-PSPL], the detail structure of the Xilinx FPGA is mentioned [15]. The processing system consists of DDR Processor, Memory controller and IO including Gigabit Ethernet. AMBA Switches are used for high speed interconnect between ARM Processor, PL and DDR Memory. Functionality of each of the components of Figure [#fig-HLSDesign] is explained in following sub topics.
+
+### HDMI Input Camera
+Our implementation supports HDMI 1920 x 1080 resolution with 60 frames per seconds. As an HDMI input, any source which can support that resolution can be considered. We have considered the HDMI output of laptop screen share to behave as a source of video, but it can be HDMI camera as well.
+
+### ARM Cortex 9 (PS)
+Xilinx Zynq 702 evaluation board supports dual ARM Cortex 9 as an embedded processor which runs at 667 MHz clock [3]. Processor is capable of running PetaLinux operating system [4]. The high level flow of running PetaLinux on ARM is as follows:
+
+* Store *.elf executable file along with the bootloader onto SD card [5].
+
+* Insert SD card into Zynq board, configure Zynq board to load image from SD card [6] and
+power on the board.
+
+* After power up, first stage boot loader will load the PetaLinux from SD card to RAM of FPGA. 
+
+* Bootloader will signal PS to boot the PetaLinux OS which is hosted purely on ARM.
+
+In our project, bootloader is automatically created by SDSoC when we build the project. This flow indicates that we can essentially run most of all the program which are supported by normal linux OS. With this information, we have decided to implement video frame management, ethernet programming and trigonometric arithmetic calculation on PS using ARM core. When we execute our .elf file from PetaLinux, the application starts acquiring HDMI frame from input and starts storing it into one of the three video frame buffers of main memory in circular fashion (explained in next subsection). After storing a frame, it invokes PL to start doing processing. Once PL is done processing the video and has written output video into one of the frame buffer, PS acquires the corner of the detected object from PL. PS then calculates the inclination of the detected object using basic trigonometric equation shown in Equation [#eq-angle]. This is slightly different from the angle _l_ calculation in the software implementation, Section [#sec-visual-studio]. In this case, we are always considering side AB whereas OpenCV measures the angle made by the side anti-clockwise nearest the positive x-axis. The visualization of the &theta; value can be interpreted from Figure [#fig-ObjIncline]. This value of &theta; is used to decide the turning radius of the robot.
+~ Equation {#eq-angle}
+\theta = \tan^{-1} \frac{(y_1 - y_2)} {(x_1 - x_2)}
+~
+
+~Center
+~~ Figure { #fig-ObjIncline caption="Object inclination Calculation using θ. Red object is the object which controls the iRobot." }
+![ObjIncline]
+~~
+~
+[ObjIncline]: images/ObjIncline.jpg "ObjIncline" { width=auto max-width=90% }
+\
+The calculated &theta; value ranges is between -­90 to 90 degree. This range is mapped into the actual turning radius required to control the robot's direction (for further information about iRobot command structure, refer to Appendix X). The conversion from (­-90, 90) degrees to (MAX_RIGHT_RADIUS, MAX_LEFT_RADIUS) is the same as Equation [#eq-anglemap] but with the respective variables changed accordingly.
+\
+\
+For the calculation of the robot's front and back speed, the method is the same as that of the software implementation, Section [#sec-visual-studio].
+
+### Xilinx FPGA fabric (PL)
+Programmable logic is developed to work as an video accelerator. The video with resolution 1920*1080 is fed into the PL module. PL logic is fully pipelined and it processes 1 pixel per cycle with Initiation Interval (II) = 1. The hardware modules for video processing is shown in Figure [#fig-cornerdetect]. In comparison to the software implementation, Section [#sec-visual-studio], the color conversion step is the same and will not be repeated in this section. The median filter over space is used in software implementation and the same idea is applied in hardware implementation albeit a little more complicated. Corner detect step serves the same function as OpenCV's findContours function but in hardware, we coded our own corner detect class. Median filter over time and history buffer are not involved in software implementation and will be explained in-depth in this section.
+
+~Center
+~~ Figure { #fig-cornerdetect caption="Corner Detection Algorithm on PL" }
+![cornerdetect]
+~~
+~
+[cornerdetect]: images/cornerdetect.jpg "cornerdetect" { width=auto max-width=90% }
+\
+_Median Filter over Space_: As in the case for software implementation, median filter over space in hardware also uses a 5x5 median filter window. However, in hardware, as median filter requires information of nearby pixels within the 5x5 window, we had to come up with a way to store the history. Naive way of doing this would be to store all the content of the input video frame and then iterate over entire frame to do the median filtering. But as it slows down the performance significantly, we did not use this approach. Instead, we used a concept of line buffering [12], [13] and windowing [14] to implement median filter in efficient manner, which not only saves the space for frame but also maintains II = 1. We kept the size of line buffer as 4 i.e. we store only last 4 rows of the frame from the current pixel. By doing that, we only require 4 * 1920 pixel line buffer and 5*5 pixel window buffer. The visual representation of how line buffering and windowing works for median filter is shown in Figure [#fig-spacemfilter]. Here, we keep on shifting line buffer down and window to the right side as and when the new input pixel keep on appending.
+~Center
+~~ Figure { #fig-spacemfilter caption="Line Buffering and 5x5 Windowing to process real­time video stream" }
+![spacemfilter]
+~~
+~
+[spacemfilter]: images/spacemfilter.jpg "spacemfilter" { width=auto max-width=90% }
+\
+_Median Filter over Time_: M​edian filter over space was not enough to get rid of most of the noise. So, we implemented median filter over time. In this filtering, we store the previous 8 frames of thresholded video on BRAM. While giving output from this module, we check the pixel value of past 8 frames at pixel (x, y) location. If majority of the pixels of last 8 frames is 1 then we output 1 otherwise we output 0. As an illustration, Figure [#fig-spacetfilter] displays median filtering over 4 frames. Current pixel under consideration is (x, y) and the past4 values of pixel (x, y) was 1, 1, 1, 0 respectively. So the output of the median filter over time module will be 1 for pixel (x, y), as there are majority of 1’s in the history.
+~Center
+~~ Figure { #fig-spacetfilter caption="Median Filtering over 4 frames for pixel (x, y). If the pattern is 1110 for last 4 frames, then output will be 1." }
+![spacetfilter]
+~~
+~
+[spacetfilter]: images/spacetfilter.jpg "spacetfilter" { width=auto max-width=90% }
+\
+_History Buffer_: ​History buffer is responsible for storing previous 8 frames on BRAM. The frames are stored in FIFO order.
+\
+\
+_Corner Detection_: ​Corner detection module detects the extreme corners of the frame by finding X_min, X_max, Y_min and Y_max. It is also responsible to send output video back to PS along with detected corners. To reject the outlier corners within the frame, we are maintaining 8 frames’ corner history and doing bubble sorting on those 8 frames’ corners. The mid point of all sorted corners (which is the median filter of corners) is given as an output corner along with video output.
+
+### DDR Memory and Controller
+The purpose of DDR memory is to (1) load the PetaLinux boot image after booting up from SD card and (2) maintain the video frame buffer which stores video frames coming from camera and going to monitor. In our design, we are using 3 video frame buffers to circulate the read/write access [15]. 3 frame buffers are used in such a way that while the PS is writing video frame into one buffer, PL will read the video frame from the previous buffer. Frame buffers, implemented in this way assures that there is not read/write contention between FPGA and ARM processor. To manage the DDR memory access HLS uses Memory controller which arbitrates reads/writes to the physical DDR memory when asked for data.
+
+### Video DMA
+Xilinx LogiCORE IP AXI DMA is a soft IP provided by Xilinx to manage high­bandwidth direct memory access between memory and AXI4­stream video specific target peripherals [16]. The high level block diagram of AXI VDMA is shown in Figure [#fig-AXIVDMA]. The Memory mapped DMA access gets initialized by ARM processor over AXI4­Lite bus. After ARM has registered all necessary data for transfer, Control and Status Module will start following orders by doing the data transfer to/from AXI4 Memory map to AXI­4 Stream.
+~Center
+~~ Figure { #fig-AXIVDMA caption="AXI VDMA Block Diagram. Adopted from Ref [16]." }
+![AXIVDMA]
+~~
+~
+[AXIVDMA]: images/AXIVDMA.jpg "AXIVDMA" { width=auto max-width=90% }
+\
+In the Write path, the AXI VDMA accepts frames on the AXI4­Stream Slave interface and writes it to system memory using the AXI4 Master interface.In the Read path, the AXI VDMA uses the AXI4 Master interface for reading frames from system memory and outputs it on the AXI4­Stream Master interface. Both write and read paths operate independently. The AXI VDMA also provides an option to synchronize the incoming/outgoing frames with an external synchronization signal.
+
+### Video Output Screen
+Once PL has written back the processed frame onto the video frame buffer, PS instructs VDMA to stream video frame to the output. As a result, the frame is transferred to the video output screen via HDMI port.
+
+### Network
+Once the PS is done calculating the orientation and speed of the iRobot, we use a​rpa [17] library and sys/socket.h header file to send a packet to the network. This code is executed on PetaLinux hosted on PS, so it’s similar to writing C++ code for sending network packets on linux. The network packets are sent to the TP­Link wireless access point using Ethernet connection. We hosted a private network for our communication on wireless access point. (See Appendix E.4 for further instruction on setting up network on TP­Link).
+
+### Design, Compilation and System Linking Flow
+We used Xilinx SDSoC Design suite to develop the application which can exploit both ARM core and FPGA. The design flow for developing heterogeneous system on SDSoC is summarized in Figure [#fig-SDSoC]. The step wise instruction for development is mentioned below.
+
+* Write normal C/C++ code which implements the functionality.
+
+* Offload some of the work load to FPGA by providing appropriate compilation flags in the makefile. It would be prudent to offload only the work which is more efficient on FPGA and not on ARM.
+
+* Compile the code using make script. On compilation, SDSoC invokes Xilinx Vivado HLS to cross compile the FPGA code. It compiles ARM code in native gcc compiler. If any error is found in the code, compilation exits with an error.
+
+* Once all the errors(if any arise) are fixed, compilation succeeds and then SDSoC does the code analysis and determines the communication and data pattern between FPGA and main memory.
+
+* After code analysis, it implements proprietary stub function to establish communication.
+
+* After stub implementation, SDSoC calls system linker which links appropriate IP modules and invokes Xilinx Vivado for synthesis.
+
+* After the successful synthesis, SDSoC places the final package including bootloader, .elf executable file on the sd_card folder.
+
+* We can copy the content of this folder onto SD card and boot Xilinx Zynq from SD card to run the application.
+
+* Based on the performance of the application, we can do further HLS optimization (more details in Appendix A) as well as function distribution between ARM and FPGA.
+~Center
+~~ Figure { #fig-SDSoC caption="Development Flow of Heterogeneous core using SDSoC." }
+![SDSoC]
+~~
+~
+[SDSoC]: images/SDSoC.jpg "SDSoC" { width=auto max-width=90% }
