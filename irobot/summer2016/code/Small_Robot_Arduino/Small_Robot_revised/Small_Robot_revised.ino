@@ -1,6 +1,6 @@
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
-#include "utility/Adafruit_PWMServoDriver.h"
+#include "utility/Adafruit_MS_PWMServoDriver.h"
 // Import the SPI library (Serial Peripheral Interface, to enable communication of Galileo with peripheral devices)
 #include <SPI.h>
 // Import the WiFi library. 
@@ -17,8 +17,8 @@
 #define ROBOT_HALF_WIDTH 73.0 // in milimeters
 
 // Declare the WiFi that Galileo should receive data from. 
-char ssid[] = "eyerobot"; //  your network SSID (name) 
-char pass[] = "eyerobot";    // your network password (use for WPA, or use as key for WEP)
+char ssid[] = "TP-LINK_C8CCF4"; //  your network SSID (name) 
+char pass[] = "02133348";    // your network password (use for WPA, or use as key for WEP)
 
 // Parameter for the current status of Galileo's WiFi radio 
 int status = WL_IDLE_STATUS;
