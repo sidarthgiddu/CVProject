@@ -1,8 +1,8 @@
 Title         : _eye_ROBOT -­ HETEROGENEOUS ROBOTIC PLATFORM FOR REAL-­TIME COMPUTER VISION
-Subtitle      : A Comprehensive Tutorial 
+Subtitle      : A Comprehensive Tutorial For Small Robot
 Heading Base  : 2
 Logo          : false
-Author        : Zhengning Han, Danlu Huang
+Author        : Chengxuan Bai
 
 [TITLE]
 
@@ -43,62 +43,7 @@ In the following sections, you will see detailed instructions on how to proceed 
 # Tutorials
 Before we proceed to explain the algorithms involved in the software and hardware implementations, this section will guide you through how to set up the various programs needed for this project.
 
-## Direct communication between iRobot and Computer
-Before using Intel Galileo to control the iRobot, we can first use a serial cable to control iRobot directly from our laptop by using Open Interface commands of iRobot. This will help you become familiar with the serial codes used for iRobot.
-
-
-1. Read [Owner's guide] and [Open Interface] to learn OI commands in iRobot. \
-Owner's guide provides some general introduction of iRobots and have some sample serial codes, while Open Interface serves as a reference of all serial codes and ports. You can also look at this tutorial "[iRobot Create: Getting Started]".
-[Owner's guide]: http://www.irobot.com/filelibrary/pdfs/hrd/create/Create%20Manual_Final.pdf
-[Open Interface]: http://www.irobot.com/filelibrary/pdfs/hrd/create/Create%20Open%20Interface_v2.pdf
-[iRobot Create: Getting Started]: http://projectsfromtech.blogspot.com/2013/11/irobot-create-getting-started.html
-
-2. Connect iRobot to your computer.
-\
-\
-In order to connect iRobot with the computer, we need to use the serial cable that comes with iRobot.
-\
-\
-If your laptop can only  connect to an USB port, you will need to connect the serial cable with another USB to RS-232 DB9 Serial Converter. The USB port should be connected with the Serial Port of iRobot, which is shown in Figure [#fig-iRobot_top_view].
-~ Center
-~~Figure { #fig-iRobot_top_view caption="Top View of iRobot" }
-![iRobot_top_view]
-~~
-~
-[iRobot_top_view]: images/iRobot_top_view.jpg "iRobot_top_view" { width=auto max-width=90% }
-
-3. For serial port control, download [Realterm]
-[Realterm]: http://sourceforge.net/projects/realterm/files/
-_Realterm_ is a serial terminal used for debugging and development of external devices. Figure [#fig-realterm] is a screenshot of the window.
-~ Center
-~~ Figure { #fig-realterm caption="Realterm Window" }
-![realterm]
-~~
-~
-[realterm]: images/realterm.jpg "realterm" { width=auto max-width=90% }
-
-4. Go to **Port** tab and select the port that iRobot is connected to.
-
-5. Configure the serial settings to 57600 baud, 8 data bits, 1 stop bit and no flow control. 
-\
-\
-Note: 57600 baud is the default baud rate for iRobot.
-
-6. Go to **Send** tab to enter OI commands as shown in Figure [#fig-realterm2].
-~ Center
-~~ Figure { #fig-realterm2 caption="Sending OI Commands" }
-![realterm2]
-~~
-~
-[realterm2]: images/realterm2.jpg "realterm2" { width=auto max-width=90% }
-7. Click **Send Numbers** to send the commands to iRobot.
-\
-\
-You can always refer to Open Interface for complete explanations of all serial codes and use the examples to test your iRobot.
-
-## Smooth controlling of iRobot with keyboard
-In this section, we are going to incorporate the Intel Galileo board and a local WPA network to control the iRobot with the direction keys on your keyboard and send commands wirelessly. 
-### Getting to know your board
+## Getting to know your board
 To begin with, you might find it very helpful to learn about the basics of your board before we start. Figure [#fig-image008] shows an overview of Intel Galileo.
 ~ Center
 ~~ Figure { #fig-image008 caption="Overview of Intel Galileo" }
@@ -118,17 +63,17 @@ Starter Guide: [Galileo Getting Started Guide]
 [Galileo Schematic]: http://download.intel.com/support/galileo/sb/galileo_schematic.pdf
 [Galileo Getting Started Guide]: https://learn.sparkfun.com/tutorials/galileo-getting-started-guide#software-downloadsetup
 
-### Software Setup: Arduino IDE
+## Software Setup: Arduino IDE
 In order to upload Arduino sketches to Intel Galileo, we need the Arduino IDE (integrated development environment). Unfortunately, the Galileo will not work with the standard IDEs, so we will have to download and install one of the specialized versions that is compatible with Galileo. Qualified versions include 1.5.3 and 1.6.0 or newer ones.
 \
 \
 The tutorial below is mainly based on Windows system. You can see a comprehensive collection of instructions for all OS and IDE in the [Getting Started Guide] on the website of Intel. Once you open this website, choose your OS in the first drop-down menu and select "Arduino" as IDE in the second drop-down menu to proceed. 
 [Getting Started Guide]: https://software.intel.com/en-us/iot/library/galileo-getting-started 
 
-1. Go to the [download center]. Select the download option for one of the qualified versions mentioned above and your computer's operating system. \
+1. Go to the [Arduino's official website] and download the latest version of Arduino. \
 Note: version 1.5.3 has a limitation with the language of OS. If your computer is running on an OS that uses a language other than English, try changing it to English from Control Panel, or you can download version 1.6.0 or newer, as shown in Figure [#fig-arduino_ide_download].
 
-[download center]: http://www.intel.com/support/galileo/sb/CS-035101.htm
+[Arduino's official website]: https://www.arduino.cc/en/Main/Software
 ~ Center
 ~~ Figure { #fig-arduino_ide_download caption="Arduino Software download" }
 ![arduino_ide_download]
@@ -136,7 +81,9 @@ Note: version 1.5.3 has a limitation with the language of OS. If your computer i
 ~
 [arduino_ide_download]: images/arduino_ide_download.jpg "arduino_ide_download" { width=auto max-width=90% }
 
-2. To enable the Wi-Fi drivers and sketch persistent, download the software for SD-card Linux Image as shown in Figure [#fig-linuxcard].
+2. To enable the Wi-Fi drivers and sketch persistent, go to [download center] and download the software for SD-card Linux Image as shown in Figure [#fig-linuxcard].
+
+[download center]: https://downloadcenter.intel.com/download/24355/Intel-Galileo-Board-Software-Package
 ~ Center 
 ~~ Figure { #fig-linuxcard caption="Software for SD-card Linux Image" }
 ![linuxcard]
@@ -169,8 +116,11 @@ In your computer, follow **Start > Control Panel > System > Device Manager**.
 Go down to find **Ports (COM & LPT)**. If not, go to **Other Devices**.
 \
 \
-You should see an open port named **Gadget Serial V2.4** (if the board contains an old release like v0.7.5), or simply **Galileo** on newer releases. Right click and select "**Update Driver Software**".
+You should see an open port named **Gadget Serial V2.4** (if the board contains an old release like v0.7.5), or simply **Galileo** on newer releases. Right click and select "**Update Driver Software**". 
 \
+\
+Note: if you do not see any new device neither in **Ports (COM & LPT)** nor in **Other Devices**, download [Galileo Firmware Updater and Drivers]
+[Galileo Firmware Updater and Drivers]: https://downloadcenter.intel.com/download/24748/Intel-Galileo-Firmware-Updater-and-Drivers-1-0-4
 \
 Choose "**Browse my computer for driver software**". Navigate to **hardware/arduino/x86/tools** directory. Once it is installed properly, you should see something similar to Figure [#fig-image010].
 ~Center
@@ -185,10 +135,10 @@ You can also find more information from this link: "[Intel Galileo Board Assembl
 6. Update firmware.
 \
 \
-Launch the Arduino IDE. It is under the directory "C:\arduino-1.6.0+Intel" (or a similar name if you have a different version installed), double click "**arduino.exe**"". You should see the interface shown in Figure [#fig-arduino_interface].
+Launch the Arduino IDE. It is under the directory "C:\Arduino", double click "**arduino.exe**"". You should see the interface shown in Figure [#fig-arduino_interface].
 ~Center 
 ~~ Figure { #fig-arduino_interface caption="Firmware Update" }
-![arduino_interface]
+![arduino_interface]d
 ~~
 ~
 [arduino_interface]: images/arduino_interface.jpg "arduino_interface" { width=auto max-width=90% }
@@ -214,15 +164,69 @@ Note: Intel Galileo has more than one Serial ports.
 Serial refers to USB Client port. It is responsible to send programs from other devices to Intel Galileo board, and Serial.write() will print out results in Serial Monitor, which can be found in the upper right corner of Arduino IDE. 
 \
 \
-Serial1 refers to Pin 0 and Pin 1 in Intel Galileo digital pins. Therefore, when you are programming iRobot using wires connecting Pin 0 and Pin 1 for TX and RX, you have to use Serial1 to talk to iRobot, while you need Serial to enable communication between computer and Intel Galileo. This can be better seen from the chart in Figure [#fig-image012].
+
+## Software Setup: Visual Studio and the OpenCV library
+1. Download [Visual Studio] and install. Note: Use Visual Studio 2013 or 2012.
+ [Visual Studio]: https://www.visualstudio.com/products/visual-studio-community-vs 
+
+2. Download [OpenCV] and extract to C:\ directory.
+[OpenCV]: http://opencv.org/downloads.html
 ~Center
-~~Figure { #fig-image012 caption="Corresponding Names of Serial Ports in Arduino IDE" }
-![image012]
+~~ Figure { #fig-image031 caption="OpenCV library download" }
+![image031]
 ~~
 ~
-[image012]: images/image012.jpg "image012" { width=auto max-width=90% }
+[image031]: images/image031.jpg "image031" { width=auto max-width=90% }
+We suggest that you download the version of OpenCV shown in Figure [#fig-image031], since the code we provide along with this tutorial is configured with OpenCV files in this version of release. If you choose to download another version, make sure to change the "Path" property (which tells the program how to find the library files) before running it. 
+\
+\
+For the following steps, you can also refer to this tutorial "[OpenCV on Visual Studio 2013]".
+[OpenCV on Visual Studio 2013]: http://blog.amastaneh.com/2014/03/opencv-on-visual-studio-2013.html 
+3. Change Environment Variables. 
+\
+\
+Follow the path "**My Computer** > **Properties** > **Advanced System Settings** > **Environment Variables** > **New**" and add a new system variable: 
+\
+\
+Name: **OPENCV_DIR**
+\
+Value: **C:\opencv\build** (or a similar name if your OpenCV directory has a different name such as opencv2.4.9)
+\
+\
+Go to "**My Computer** > **Properties** > **Advanced System Settings** > **Environment Variables...** > **System variables**", 
+select "**Path**" and press "**Edit**" button and add "**_;%OPENCV_DIR%\x86\vc12\bin_**" 
+\
+\
+Notes: for Visual Studio 2013 add "**_;%OPENCV_DIR%\x86\vc12\bin_**", for Visual Studio 2012 add "**_;%OPENCV_DIR%\x86\vc11\bin_**" 
 
-### WiFi Setup
+4. Configure the program.
+\
+\
+Go to "**Tools** > **Options** > **Debugging** > **Symbols**" and select "**Microsoft Symbol servers**".
+Go to "**File** > **Open** > **Project/Solution...**" and select "**outreach\irobot\summer2016\code\Visual_Studio_Object_Detection_Code\\
+openCV_code\Small_Robot_OpenCV.sln**". After the program is loaded, go to "**Build** > **Build Solution**". 
+Go to "**Solution Explorer**", right click on "**Small_Robot_OpenCV**", select "**Properties**". In "**Configuration Properties** > **VC++ Dictionaries**", add "**C:\opencv\build\x86\vc12\bin**" to "**Executable Directories**", add "**C:\opencv\build\x86\vc12\lib**" to "**Library Directories**". In "**Configuration Properties** > **C/C++** > **General**", add "**C:\opencv\build\include**" to "**Additional Include Directories**". In "**Configuration Properties** > **Linker** > **General**", add "**C:\opencv\build\x86\vc12\lib**" to "**Additional Library Directories**". In "**Configuration Properties** > **Linker** > **Input**", add "**opencv_calib3d249d.lib
+opencv_contrib249d.lib
+opencv_core249d.lib
+opencv_features2d249d.lib
+opencv_flann249d.lib
+opencv_gpu249d.lib
+opencv_highgui249d.lib
+opencv_imgproc249d.lib
+opencv_legacy249d.lib
+opencv_ml249d.lib
+opencv_nonfree249d.lib
+opencv_objdetect249d.lib
+opencv_ocl249d.lib
+opencv_photo249d.lib
+opencv_stitching249d.lib
+opencv_superres249d.lib
+opencv_ts249d.lib
+opencv_video249d.lib
+opencv_videostab249d.lib
+**" to "**Additional Dependencies**".
+
+## WiFi Setup
 After configuring Intel Galileo with your computer via serial port, we can now advance to enabling wireless communication. This section will walk you through the process of setting up the SD card, installing the WiFi card, creating a locally hosted network on your computer, and connecting the board to it. 
 
 * **Hardware Requirements:**
@@ -364,13 +368,9 @@ i. Download PuTTY from [here] and install it as shown in Figure [#fig-PuTTY_down
 ~~
 ~
 [PuTTY_download]: images/PuTTY_download.jpg "PuTTY_download" { width=auto max-width=90% }
-ii. Upload this program to Intel Galileo. The connection between Intel Galileo and iRobot is shown in Figure [#fig-image026]. \
-~Center
-~~ Figure { #fig-image026 caption="Connect Intel Galileo with iRobot" }
-![image026]
-~~
-~
-[image026]: images/image026.jpg "image026" { width=auto max-width=90% }
+ii. Upload this program to Intel Galileo.
+\
+\
 iii. Then we can use PuTTY for communication between computer and linux image on Intel Galileo. 
 \
 \
@@ -403,128 +403,34 @@ You can type ":wq" to save and exit vi.
 
 For more information, you can look at "[How to setup your galileo to have a static IP on a LAN]". 
 [How to setup your galileo to have a static IP on a LAN]: https://communities.intel.com/thread/49348 
+\
+Note: If you are unable to setup hosted network on your computer, you can use a router instead but make sure you setup static IP for your computer, the router and the board. 
 
-### Software Setup: Processing and the OpenCV library
-As explained in Figure [#fig-overview], we send the keyboard commands from a processing unit on the computer, which is then fetched by Intel Galileo and transfered to iRobot to make it moving. 
-\
-\
-Here we will be using Processing, an open source programming language and integrated development environment (IDE) built on the Java language but with a simplified syntax and graphics programming model, to serve as the processing unit that generates the keyboard commands. As you might have noticed from the startup window of the Arduino IDE software, its design is actually based on Processing, and their user interface is very similar, which makes it very convenient for you to use once you know about Arduino. You can refer to this site "[Connecting Arduino to Processing]"to familiarize yourself with the communication between Arduino IDE and Processing. 
-\
-\
-Let's first setup Processing.
-[Connecting Arduino to Processing]: https://learn.sparkfun.com/tutorials/connecting-arduino-to-processing/introduction 
-1. Download and install [Processing] as shown in Figure [#fig-image030]. \
-~Center 
-~~ Figure { #fig-image030 caption="Processing download" }
-![image030]
-~~
-~
-[image030]: images/image030.jpg "image030" { width=auto max-width=90% }
-[Processing]: https://www.processing.org/download/?processing
-The installation is similar to that of the Arduino IDE. Simply unzip all files to the C:\ directory.
-\
-2. Install both runtime components for Microsoft Visual Studio [x86] and [x64].
-[x86]:http://www.microsoft.com/en-us/download/details.aspx?id=5555
-[x64]: http://www.microsoft.com/en-us/download/details.aspx?id=14632
-
-Now you should be able to run the Processing code we provided. 
-
-### Connecting Intel Galileo to iRobot
-First, we will provide you a high-level interpretation of the data propagation shown in Figure [#fig-image041]. 
-~Center
-~~Figure {#fig-image041 caption="Command propagation from the wireless network to the iRobot via the Intel N 135 wireless receptor connected to Galileo board" }
-![image041]
-~~
-~
-[image041]: images/image041.png "image041" { width=auto max-width=90% }
-\
-For Intel Galileo, the pins are divided into several sections such as DIGITAL, ANALOG, etc. 
-If you refer to the picture in the first section, Pin 0 (RXD) and Pin 1 (TXD) are located in DIGITAL section, while the ground power pin is located Pin 6 or Pin 7 of the Power section. You can see these from the datasheet attached in Figure [#fig-image015]. \
-~Center
-~~Figure {#fig-image015 caption="iRobot Datasheet" }
-![image015]
-~~
-~
-[image015]: images/image015.jpg "image015" { width=auto max-width=90% }
-There are 25 pins on iRobot as shown in Figure [#fig-image013]. 
-~Center
-~~Figure {#fig-image013 caption="iRobot Pins" }
-![image013]
-~~
-~
-[image013]: images/image013.jpg "image013" { width=auto max-width=90% }
-\
-Connect Pin 0 (RXD) on Galileo to Pin 2 on iRobot (Pin 0 on Galileo receives data, while Pin 2 on iRobot sends data). 
-\
-\
-Connect Pin 1 (TXD) on Galileo to Pin 1 on iRobot (Pin 1 on Galileo sends data, while Pin 1 on iRobot receives data). 
-\
-\
-Connect the GND pin on Galileo to Pin 14 (GND) on iRobot. 
-\
-\
-Note: Pins on iRobot range from Pin 1 to Pin 25, while digital pins on Galileo start with Pin 0. There are more than 1 GND pins on iRobot. Both of them work. The connection between Galileo and iRobot is the same as that shown in Section [#sec-wifi-setup], Step 6.
-
-### Running the program
+## Running the program
 Now we are ready to run the program. 
 
 1. Connect Intel Galileo to your computer with a serial cable. Upload the file 
-"*arduinokeyboardControlReception_revised.ino*" to it. (refer to **Section [#sec-software-setup--arduino-ide] Step 7**)
+"*Small_Robot_revised.ino*" to it. (refer to **Section [#sec-software-setup--arduino-ide] Step 7**)
 \
 \
 The board will always remember the most recently uploaded sketch. You only need to upload the same file to the board once, if you don't overwrite the sketch afterwards. Every time you power the board on, it starts running the stored sketch.
 
-2. Unplug Intel Galileo from your computer and connect it to the iRobot. (refer to **Section [#sec-wifi-setup], Step 6**)
+2. Unplug Intel Galileo from your computer.
 
 3. Start the hosted WPA network on your computer (be sure to run the command prompt as Administrator to do so). (refer to **Section [#sec-wifi-setup], Step 5**)
 
-4. Power on the iRobot. You will see the power light blink and turn green, with a beep sound.
+4. Power on the Small Robot.
 
 5. Power on the Intel Galileo.
 \
 \
 _Important Notice_: When the Galileo board is powered on, it automatically starts to run the sketch uploaded to it most recently. 
-In the Arduino code, the commands that writes to the iRobot (Op codes to start I/O and set iRobot in full mode) are in the setup() method, which is executed at the very beginning for only once before proceeding to the loop() method. If the iRobot is not powered on before the Galileo board, it will miss the setup() and we would not be able to write to iRobot. We should power on the iRobot first, then the Galileo board, wait for the power LED on iRobot to turn off (which indicates it has been set to Full Mode), and send commands from the processing unit on our computer.
+In the Arduino code, the commands that writes to the Small Robot (Op codes to start I/O and set the Small Robot in full mode) are in the setup() method, which is executed at the very beginning for only once before proceeding to the loop() method. If the Small Robot is not powered on before the Galileo board, it will miss the setup() and we would not be able to write to Small Robot. We should power on the Small Robot first, then the Galileo board, wait for the power LED on Small Robot to turn off (which indicates it has been set to Full Mode), and send commands from the processing unit on our computer.
 \
 \
 You might want to check the status of the WiFi connection when you try this for the first time. To do so, connect Intel Galileo to your computer through serial cable and open "Serail Monitor" in Arduino IDE to look at the print statements. The sketch prints out the ssid and signal strength of the network. A negative value (instead of 0 dBm) would indicate that the board is successfully connected to the network. The smaller the absolute value is, the stronger the connection.
 
-6. After Intel Galileo has joined the network, open the file "*smoothkeyboardincrementer.pde*" in Processing. Click on the "run" button and wait for the socket to show up. If you have the Arduino serial monitor open at this time, you should be able to see a new print statement "We have a new client".
- 
-7. Select on the socket of Processing if you are currently selecting another window. Now you can drive the iRobot with the four direction keys on your keyboard!
-
-## C++ project for real-time video capture and gesture recognition using Visual Studio, OpenCV libraries and winsock
-### Software Setup: Visual Studio and the OpenCV library
-1. Download [Visual Studio] and install.
- [Visual Studio]: https://www.visualstudio.com/products/visual-studio-community-vs 
-
-2. Download [OpenCV] and extract to C:\ directory.
-[OpenCV]: http://opencv.org/downloads.html
-~Center
-~~ Figure { #fig-image031 caption="OpenCV library download" }
-![image031]
-~~
-~
-[image031]: images/image031.jpg "image031" { width=auto max-width=90% }
-We suggest that you download the version of OpenCV shown in Figure [#fig-image031], since the code we provide along with this tutorial is configured with OpenCV files in this version of release. If you choose to download another version, make sure to change the "Path" property (which tells the program how to find the library files) before running it. 
-
-For the following steps, you can also refer to this tutorial "[OpenCV on Visual Studio 2013]".
-[OpenCV on Visual Studio 2013]: http://blog.amastaneh.com/2014/03/opencv-on-visual-studio-2013.html 
-3. Change Environment Variables. 
-\
-\
-Follow the path "My Computer > Properties > Advanced System Settings > Environment Variables > New" and add a new system variable: \
-Name: OPENCV_DIR<br>
-Value: C:\opencv\build\ (or a similar name if your OpenCV directory has a different name such as opencv2.4.9)
-\
-\
-Go to "My Computer > Properties > Advanced System Settings > Environment Variables... > System variables", 
-select "**Path**" and press "**Edit**" button and add "_;%OPENCV_DIR%\x86\vc12\bin_" \
-
-PS: for Visual Studio 2013 add "_;%OPENCV_DIR%\x86\vc12\bin_" \
-PS: for Visual Studio 2012 add "_;%OPENCV_DIR%\x86\vc11\bin_" \
-
-4. \
+6. After Intel Galileo has joined the network, Open *Visual Studio*, go to "**Debug**" and select "**Start without Debugging**". If you have the Arduino serial monitor open at this time, you should be able to see a new print statement "We have a new client". If all the connections are fine, four windows will pop up and you will be able to control the small robot now. 
 
 # Implementation
 For both software and hardware implementations, algorithms are separated into the Arduino code, as well as the Visual Studio code. 
@@ -733,7 +639,7 @@ _Median Filter over Space_: As in the case for software implementation, median f
 ~
 [spacemfilter]: images/spacemfilter.jpg "spacemfilter" { width=auto max-width=90% }
 \
-_Median Filter over Time_: M​edian filter over space was not enough to get rid of most of the noise. So, we implemented median filter over time. In this filtering, we store the previous 8 frames of thresholded video on BRAM. While giving output from this module, we check the pixel value of past 8 frames at pixel (x, y) location. If majority of the pixels of last 8 frames is 1 then we output 1 otherwise we output 0. As an illustration, Figure [#fig-spacetfilter] displays median filtering over 4 frames. Current pixel under consideration is (x, y) and the past4 values of pixel (x, y) was 1, 1, 1, 0 respectively. So the output of the median filter over time module will be 1 for pixel (x, y), as there are majority of 1’s in the history.
+_Median Filter over Time_: Median filter over space was not enough to get rid of most of the noise. So, we implemented median filter over time. In this filtering, we store the previous 8 frames of thresholded video on BRAM. While giving output from this module, we check the pixel value of past 8 frames at pixel (x, y) location. If majority of the pixels of last 8 frames is 1 then we output 1 otherwise we output 0. As an illustration, Figure [#fig-spacetfilter] displays median filtering over 4 frames. Current pixel under consideration is (x, y) and the past4 values of pixel (x, y) was 1, 1, 1, 0 respectively. So the output of the median filter over time module will be 1 for pixel (x, y), as there are majority of 1’s in the history.
 ~Center
 ~~ Figure { #fig-spacetfilter caption="Median Filtering over 4 frames for pixel (x, y). If the pattern is 1110 for last 4 frames, then output will be 1." }
 ![spacetfilter]
@@ -741,10 +647,10 @@ _Median Filter over Time_: M​edian filter over space was not enough to get rid
 ~
 [spacetfilter]: images/spacetfilter.jpg "spacetfilter" { width=auto max-width=90% }
 \
-_History Buffer_: ​History buffer is responsible for storing previous 8 frames on BRAM. The frames are stored in FIFO order.
+_History Buffer_: History buffer is responsible for storing previous 8 frames on BRAM. The frames are stored in FIFO order.
 \
 \
-_Corner Detection_: ​Corner detection module detects the extreme corners of the frame by finding X_min, X_max, Y_min and Y_max. It is also responsible to send output video back to PS along with detected corners. To reject the outlier corners within the frame, we are maintaining 8 frames’ corner history and doing bubble sorting on those 8 frames’ corners. The mid point of all sorted corners (which is the median filter of corners) is given as an output corner along with video output.
+_Corner Detection_: Corner detection module detects the extreme corners of the frame by finding X_min, X_max, Y_min and Y_max. It is also responsible to send output video back to PS along with detected corners. To reject the outlier corners within the frame, we are maintaining 8 frames’ corner history and doing bubble sorting on those 8 frames’ corners. The mid point of all sorted corners (which is the median filter of corners) is given as an output corner along with video output.
 
 ### DDR Memory and Controller
 The purpose of DDR memory is to (1) load the PetaLinux boot image after booting up from SD card and (2) maintain the video frame buffer which stores video frames coming from camera and going to monitor. In our design, we are using 3 video frame buffers to circulate the read/write access [15]. 3 frame buffers are used in such a way that while the PS is writing video frame into one buffer, PL will read the video frame from the previous buffer. Frame buffers, implemented in this way assures that there is not read/write contention between FPGA and ARM processor. To manage the DDR memory access HLS uses Memory controller which arbitrates reads/writes to the physical DDR memory when asked for data.
@@ -764,7 +670,7 @@ In the Write path, the AXI VDMA accepts frames on the AXI4­Stream Slave interfa
 Once PL has written back the processed frame onto the video frame buffer, PS instructs VDMA to stream video frame to the output. As a result, the frame is transferred to the video output screen via HDMI port.
 
 ### Network
-Once the PS is done calculating the orientation and speed of the iRobot, we use a​rpa [17] library and sys/socket.h header file to send a packet to the network. This code is executed on PetaLinux hosted on PS, so it’s similar to writing C++ code for sending network packets on linux. The network packets are sent to the TP­Link wireless access point using Ethernet connection. We hosted a private network for our communication on wireless access point. (See Appendix E.4 for further instruction on setting up network on TP­Link).
+Once the PS is done calculating the orientation and speed of the iRobot, we use arpa [17] library and sys/socket.h header file to send a packet to the network. This code is executed on PetaLinux hosted on PS, so it’s similar to writing C++ code for sending network packets on linux. The network packets are sent to the TP­Link wireless access point using Ethernet connection. We hosted a private network for our communication on wireless access point. (See Appendix E.4 for further instruction on setting up network on TP­Link).
 
 ### Design, Compilation and System Linking Flow
 We used Xilinx SDSoC Design suite to develop the application which can exploit both ARM core and FPGA. The design flow for developing heterogeneous system on SDSoC is summarized in Figure [#fig-SDSoC]. The step wise instruction for development is mentioned below.
