@@ -163,7 +163,7 @@ You can also find more information from this link: "[Intel Galileo Board Assembl
 Launch the Arduino IDE. It is under the directory "C:\Arduino", double click "**arduino.exe**"". You should see the interface shown in Figure [#fig-arduino_interface].
 ~Center 
 ~~ Figure { #fig-arduino_interface caption="Firmware Update" }
-![arduino_interface]d
+![arduino_interface]
 ~~
 ~
 [arduino_interface]: images/arduino_interface.jpg "arduino_interface" { width=auto max-width=90% }
@@ -196,23 +196,23 @@ Serial refers to USB Client port. It is responsible to send programs from other 
 ### For Intel Edison
 
 1. Go to the [Arduino's official website] and download the latest version of Arduino. \
-Note: version 1.5.3 has a limitation with the language of OS. If your computer is running on an OS that uses a language other than English, try changing it to English from Control Panel, or you can download version 1.6.0 or newer, as shown in Figure [#fig-arduino_ide_download].
+Note: version 1.5.3 has a limitation with the language of OS. If your computer is running on an OS that uses a language other than English, try changing it to English from Control Panel, or you can download version 1.6.0 or newer, as shown in Figure [#fig-arduino_ide_download_edison].
 
 [Arduino's official website]: https://www.arduino.cc/en/Main/Software
 ~ Center
-~~ Figure { #fig-arduino_ide_download caption="Arduino Software download" }
-![arduino_ide_download]
+~~ Figure { #fig-arduino_ide_download_edison caption="Arduino Software download" }
+![arduino_ide_download_edison]
 ~~
 ~
-[arduino_ide_download]: images/arduino_ide_download.jpg "arduino_ide_download" { width=auto max-width=90% }
+[arduino_ide_download_edison]: images/arduino_ide_download_edison.jpg "arduino_ide_download_edison" { width=auto max-width=90% }
 
-2. To install Arduino IDE, we need to unzip all files to C:\ directory. Make sure to preserve the folder structure. Figure [#fig-arduinofolder] is a screenshot based on Windows machine.
+2. To install Arduino IDE, we need to unzip all files to C:\ directory. Make sure to preserve the folder structure. Figure [#fig-arduinofolder_edison] is a screenshot based on Windows machine.
 ~ Center
-~~ Figure { #fig-arduinofolder caption="Install Arduino IDE" }
-![arduinofolder]
+~~ Figure { #fig-arduinofolder_edison caption="Install Arduino IDE" }
+![arduinofolder_edison]
 ~~
 ~
-[arduinofolder]: images/arduinofolder.jpg "arduinofolder" { width=auto max-width=90% }
+[arduinofolder_edison]: images/arduinofolder_edison.jpg "arduinofolder_edison" { width=auto max-width=90% }
 
 3. To enable the Wi-Fi drivers and sketch persistent, go to [Edison download center] and download the software for SD-card Linux Image as shown in Figure [#fig-edisonlinuxcard].
 
@@ -243,7 +243,7 @@ In your computer, follow **Start > Control Panel > System > Device Manager**.
 Go down to find **Ports (COM & LPT)**. If not, go to **Other Devices**.
 \
 \
-You should see an open port named **Edison**. Right click and select "**Update Driver Software**". 
+You should see two open ports named "**Intel Edison USB Composite Device**" and "**Intel Edison Virtual Com Port**". Right click and select "**Update Driver Software**" for both of them. 
 \
 \
 Note: if you do not see any new device neither in **Ports (COM & LPT)** nor in **Other Devices**, download [Intel IoT Developer Kit]
@@ -262,13 +262,13 @@ You can also find more information from this link: "[Intel Edison Board Assembly
 6. Update firmware.
 \
 \
-Launch the Arduino IDE. It is under the directory "C:\Arduino", double click "**arduino.exe**"". You should see the interface shown in Figure [#fig-arduino_interface].
+Launch the Arduino IDE. It is under the directory "C:\Arduino", double click "**arduino.exe**"". You should see the interface shown in Figure [#fig-arduino_interface_edison].
 ~Center 
-~~ Figure { #fig-arduino_interface caption="Firmware Update" }
-![arduino_interface]
+~~ Figure { #fig-arduino_interface_edison caption="Firmware Update" }
+![arduino_interface_edison]
 ~~
 ~
-[arduino_interface]: images/arduino_interface.jpg "arduino_interface" { width=auto max-width=90% }
+[arduino_interface_edison]: images/arduino_interface_edison.jpg "arduino_interface_edison" { width=auto max-width=90% }
 Under **Help** tab, select "**Firmware Update**". It will take few minutes to update firmware on board, and you should have power connected all the time. The board itself usually comes with an older version, which may have unexpected outcomes in the future if you do not update it. 
 
 7. Upload programs
@@ -543,7 +543,7 @@ The board will always remember the most recently uploaded sketch. You only need 
 
 2. Unplug yhe board from your computer.
 
-3. Start the hosted WPA network on your computer (be sure to run the command prompt as Administrator to do so). (refer to **Section [#sec-wifi-setup], Step 5**)
+3. Start the hosted WPA network on your computer (be sure to run the command prompt as Administrator to do so).
 
 4. Power on the robot.
 
