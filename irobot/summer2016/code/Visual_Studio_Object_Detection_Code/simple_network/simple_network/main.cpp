@@ -108,7 +108,7 @@ getFILETIMEoffset()
 int clock_gettime(int X, struct timeval *tv)
 {
 	LARGE_INTEGER           t;
-	FILETIME            f;
+	FILETIME                f;
 	double                  microseconds;
 	static LARGE_INTEGER    offset;
 	static double           frequencyToMicroseconds;
