@@ -1,17 +1,17 @@
-Title         : _eye_ROBOT -­ HETEROGENEOUS ROBOTIC PLATFORM FOR REAL-­TIME COMPUTER VISION
+Title         : HETEROGENEOUS ROBOTIC PLATFORM FOR REAL-­TIME COMPUTER VISION
 Subtitle      : A Comprehensive Tutorial
 Heading Base  : 2
 Logo          : false
-Author        : Chengxuan Bai
+Author        : Charles Bai
 
 [TITLE]
 
 # Introduction
 ## Motivation
-The motivation of this project is to explore the field of heterogeneous computing using High-Level Digital Synthesis (HLS). We wanted to build a system which can use FPGA as an accelerator along with the main processor and communicate with the outside world. As a specific application, we have programmed the FPGA to detect the video gesture from HDMI camera and send the commands to iRobot to drive in desired direction. As video processing on real-time HD video stream is slow on normal processor, we used FPGA as an accelerator to offload some of the work from processor. This project involves many aspects of hardware-software co-designing like HLS, Embedded Programming, Computer Vision and FPGA prototyping, making it an ideal project for students in Electrical and Computer Engineering field.
+The motivation of this project is to explore the field of heterogeneous computing using High-Level Digital Synthesis (HLS). We wanted to build a system which can use FPGA as an accelerator along with the main processor and communicate with the outside world. As a specific application, we have programmed the FPGA to detect the video gesture from HDMI camera and send the commands to a robot to drive in desired direction. As video processing on real-time HD video stream is slow on normal processor, we used FPGA as an accelerator to offload some of the work from processor. This project involves many aspects of hardware-software co-designing like HLS, Embedded Programming, Computer Vision and FPGA prototyping, making it an ideal project for students in Electrical and Computer Engineering field.
 
 ## Overview
-In our design, the camera input is fed to the processing unit, which can either be a computer running software or an FPGA running heterogeneous programs. This processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to an Arduino board. The board receives the command from the wireless receptor and sends it to the robot over UART serial link.
+In our design, the camera input is fed to the processing unit, which can either be a computer running software or an FPGA running heterogeneous programs. This processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to an Arduino board. The board receives the command, which indicates the speed and the direction of the robot, from the wireless receptor, interprets the information, translates it into different speeds of different wheels and sends it to the motor shield. The motor shiled will then send the information to different motors using different voltage.
 \
 \
 The overall high-level design of the project is shown in Figure [#fig-overview].
@@ -27,10 +27,9 @@ As the processing unit can either be a computer or an FPGA, which involves fair 
 Software Implementation was meant to develop the software version of camera capture, gesture recognition and command sending. The hardware implementation was meant to develop heterogeneous core, which replaces software version of video capture, gesture recognition and command sending units. 
 \
 \
-\
-In the following sections, you will see detailed instructions on how to proceed from each step to the next, including how to download and setup the required softwares and hardwares, how to operate on them, how to run the codes, along with screenshots and important notices for troubleshooting.
+In the following sections, you will see detailed instructions on how to proceed from each step to the next, including how to download and set up the required softwares and hardwares, how to operate on them, how to run the codes, along with screenshots and important notices for troubleshooting.
 
-# Tutorials
+# Setup
 Before we proceed to explain the algorithms involved in the software and hardware implementations, this section will guide you through how to set up the various programs needed for this project.
 
 ## Getting to know your board
@@ -65,7 +64,7 @@ Figure [#fig-image009] shows an overview of Intel Edison.
 ~
 [image009]: images/image009.jpg "image009" { width=auto max-width=90% }
 \
-The Intel Edison development platform is the first in a series of low-cost, product-ready, general purpose compute platforms that help lower the barriers to entry for entrepreneurs of all sizes-from pro-makers to consumer electronics and companies working in the Internet of Things. Intel Edison packs a robust set of features into its small size, delivering great performance, durability, and a broad spectrum of I/O and software support. Those versatile features help meet the needs of a wide range of customers. The unique combination of small size, power, rich capabilities, and ecosystem support inspires creativity and enables rapid innovation from prototype to production for entrepreneurs of all sizes. Intel Atom system-on-a-chip (SoC) based on leading-edge 22 nm Silver Mont microarchitecture including a dual-core CPU and single core microcontroller (MCU) Integrated Wi-Fi, Bluetooth LE, memory, and storage Support for more than 30 industry-standard I/O interfaces via a 70-pin connector A series of Intel & partner created expansion boards to support the long tail of innovation Support for Yocto Linux, Arduino, Python, and Node.js Open source community software tools enabling ease of adoption that will inspire developers Integrates with cloud platforms providing visualization of streamed data, dynamic rule evaluation/alerting and analytics.
+The Intel Edison module is a "System on Chip" module which includes an Intel Atom 500MHz dual-core, a dual-threaded CPU and an Intel Quark 100MHz microcontroller. Intel Edison is the newer version of Intel Galileo and it is an Arduino-certified development board. So just like Intel Galileo, it is compatible with "motor shields" designed for the Arduino Uno R3. From a hardware perspective, again, Edison's major pins and headers are in the same locations as those on Arduino Uno R3. From software perspective, Edison is able to be programmed through Arduino Integrated Development Environment(IDE) and make use of the existing Arduino IDE libraries and programs. Intel Edison, compared to Intel Galileo, has built-in WiFi card and built-in open-source Linux Iamge, which makes it more user-friendly. 
 \
 \
 You can find some important information about its properties from here: \
@@ -77,7 +76,7 @@ Starter Guide: [Edison Getting Started Guide]
 [Edison Getting Started Guide]: https://software.intel.com/en-us/get-started-edison-windows
 
 ## Software Setup: Arduino IDE
-In order to upload Arduino sketches to Intel Galileo, we need the Arduino IDE (integrated development environment). Unfortunately, the Galileo will not work with the standard IDEs, so we will have to download and install one of the specialized versions that is compatible with Galileo. Qualified versions include 1.5.3 and 1.6.0 or newer ones.
+In order to upload Arduino sketches to the Arduino board, we need the Arduino IDE (integrated development environment). Unfortunately, Intel boards will not work with the standard IDEs, so we will have to download and install one of the specialized versions that is compatible with Intel boards. Qualified versions include 1.5.3 and 1.6.0 or newer ones.
 \
 \
 The tutorial below is mainly based on Windows system. You can see a comprehensive collection of instructions for all OS and IDE in the [Getting Started Guide] on the website of Intel. Once you open this website, choose your OS in the first drop-down menu and select "Arduino" as IDE in the second drop-down menu to proceed. 
@@ -170,7 +169,7 @@ You can go to "**Files > Examples**" for numerous sample sketches including help
 ~~
 ~
 [arduino_upload_galileo]: images/arduino_upload_galileo.jpg "arduino_upload_galileo" { width=auto max-width=90% }
-Note: Upload the DFRobot_2A_Motor_Shield_For_Arduino_Twin.ino to Intel Galileo and use the DFRobot 2A Motor Shield with Intel Galileo since this motor shield is not compatible with Intel Edison.
+Note: Upload the DFRobot_2A_Motor_Shield_For_Arduino_Twin.ino to Intel Galileo and use the DFRobot 2A Motor Shield with Intel Galileo. For more information, go to [#sec-intel-edison-design-flaw].
 \
 \
 Note: If you want to add libraries to Arduino IDE, you can just download libraries in a zip file and add libraries by Sketch>Import Library>Add Library. You can use either zip file or folders. If you need more detailed information about how to add additional libraries, you can refer go here.
@@ -272,7 +271,7 @@ You can go to "**Files > Examples**" for numerous sample sketches including help
 ~~
 ~
 [arduino_upload_edison]: images/arduino_upload_edison.jpg "arduino_upload_edison" { width=auto max-width=90% }
-Note: Upload Adafruit_Motor_Shield to Intel Edison and use the Adafruit Motor Shield with Intel Edison.
+Note: Upload Adafruit_Motor_Shield to Intel Edison and use the Adafruit Motor Shield with Intel Edison. For more information, go to [#sec-Intel-Edison-design-flaw].
 \
 \
 Note: If you want to add libraries to Arduino IDE, you can just download libraries in a zip file and add libraries by Sketch>Import Library>Add Library. You can use either zip file or folders. If you need more detailed information about how to add additional libraries, you can refer go here.
@@ -287,7 +286,7 @@ Serial refers to USB Client port. It is responsible to send programs from other 
 
 
 ## Software Setup: Visual Studio and the OpenCV library
-1. Download [Visual Studio] and install. Note: Use Visual Studio 2013 or 2012.
+1. Download [Visual Studio] and install. Note: Use Visual Studio 2013 or 2012. For more information, go to [#sec-opencv-code-compatible-issue].
  [Visual Studio]: https://www.visualstudio.com/products/visual-studio-community-vs 
 
 2. Download [OpenCV] and extract to C:\ directory.
@@ -398,7 +397,7 @@ Unzip the Linux image we downloaded in the last section. Plug the SD card into y
 After booting SD card, we can plug it into Intel Galileo, and then we can power on the board through 5V power cable. 
 \
 \
-As mentioned in Section [#sec-overview], Figure [#fig-overview] shows how the commands generated by the processing unit are received over the wireless network using the Intel N-135 wireless receptor that is connected to the Galileo board (Ref. to appendix E.3) and these commands are then transmitted to the iRobot via serial communication. 
+As mentioned in Section [#sec-overview], Figure [#fig-overview] shows how the commands generated by the processing unit are received over the wireless network using the Intel N-135 wireless receptor that is connected to the Galileo board and these commands are then transmitted to the robot via serial communication. 
 \
 \
 Now we are ready to create the wireless access point on your computer to complete this communication flow. In order to do that, you have to set up network and upload programs through serial port to make Intel Galileo ready for WiFi.
@@ -548,7 +547,7 @@ You might want to check the status of the WiFi connection when you try this for 
 
 6. After the board has joined the network, Open *Visual Studio*, go to "**Debug**" and select "**Start without Debugging**". If you have the Arduino serial monitor open at this time, you should be able to see a new print statement "We have a new client". If all the connections are fine, four windows will pop up and you will be able to control the small robot now. 
 
-# Implementation
+# Algorithm
 For both software and hardware implementations, algorithms are separated into the Arduino code, as well as the Visual Studio code. 
 \
 \
@@ -814,3 +813,10 @@ We used Xilinx SDSoC Design suite to develop the application which can exploit b
 ~~
 ~
 [SDSoC]: images/SDSoC.jpg "SDSoC" { width=auto max-width=90% }
+
+#Troubleshooting and modification
+##Intel Edison design flaw
+Intel Edison is not compatible with DFRobot Motor Shield due to power supply design flaw. So use the Adafruit motor shield with Edison instead.
+
+##OpenCV code compatible issue
+Our OpenCV code is only compatible with OpenCV 2.4.9 and Microsoft Visual Studio 2012 or 2013.
