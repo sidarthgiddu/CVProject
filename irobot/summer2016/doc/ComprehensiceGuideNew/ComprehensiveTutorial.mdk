@@ -551,10 +551,10 @@ You might want to check the status of the WiFi connection when you try this for 
 For both software and hardware implementations, algorithms are separated into the Arduino code, as well as the Visual Studio code. 
 \
 \
-For Arduino, the code for both the software and hardware implementation remains unchanged. Hence, we will only cover it in software implementation Section [#sec-arduino]. However, the Arduino code for iRobot and the small robot differs slightly and the right set of code needs to be uploaded onto Intel Arduino depending on the robot being driven. This is because the former has built-in commands and we simply need to program Intel Galileo to send the respective drive command codes. For the latter, the Arduino code is slightly more involved as we need to individually configure 4 motors connected to the robot’s 4 wheels.
+For Arduino, the code for both the software and hardware implementation remains unchanged. Hence, we will only cover it in software implementation Section [#sec-arduino]. However, the Arduino code for different motor shield differs slightly and the right set of code needs to be uploaded onto the board. This is because the DFRobot motor shield has two motors connected and the Adafruit motor shield has four.
 \
 \
-For Visual Studio, although the code for both software and hardware implementation differ slightly, the fundamental idea behind the algorithms are essentially the same. Hence, we will cover the broader ideas in software implementation Section [#sec-software-implementation] and mention the differences for hardware implementation in Section [#sec-hls-implementation]. The same set of code works for both the iRobot and the small robot.
+For Visual Studio, although the code for both software and hardware implementation differ slightly, the fundamental idea behind the algorithms are essentially the same. Hence, we will cover the broader ideas in software implementation Section [#sec-software-implementation] and mention the differences for hardware implementation in Section [#sec-hls-implementation].
 
 ## Software Implementation
 ### Arduino
