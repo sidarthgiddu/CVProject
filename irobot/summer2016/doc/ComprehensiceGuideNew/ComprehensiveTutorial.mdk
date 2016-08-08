@@ -554,17 +554,17 @@ For both software and hardware implementations, algorithms are separated into th
 For Arduino, the code for both the software and hardware implementation remains unchanged. Hence, we will only cover it in software implementation Section [#sec-arduino]. However, the Arduino code for different motor shield differs slightly and the right set of code needs to be uploaded onto the board. This is because the DFRobot motor shield has two motors connected and the Adafruit motor shield has four.
 \
 \
-For Visual Studio, although the code for both software and hardware implementation differ slightly, the fundamental idea behind the algorithms are essentially the same. Hence, we will cover the broader ideas in software implementation Section [#sec-software-implementation] and mention the differences for hardware implementation in Section [#sec-hls-implementation].
+For Visual Studio, although the code for both software and hardware implementation differ slightly, the fundamental idea behind the algorithms are essentially the same. Hence, we will cover the broader ideas in software implementation Section [#sec-software-implementation] and mention the differences for hardware implementation in Section [#sec-hardware-implementation].
 
 ## Software Implementation
 ### Arduino
-As the Arduino code for the small robot is more involved, we will be explaining the Arduino code for the small robot in this section. For the Arduino code, we installed an additional Adafruit (AF) Motor Shield V2 library, which interfaces with the motor hardware.
+As the Arduino code for both motor shields are similar , we will be explaining the Arduino code for Adafruit motor shield in this section. For the Arduino code, we installed an additional Adafruit (AF) Motor Shield V2 library, which interfaces with the motor hardware.
 \
 \
-In our code, server refers to Intel Galileo while client may refer to Processing, Visual Studio or FPGA. Both the server and the client are connected to the same access point with the client continuously sending data to Intel Galileo over this network. The data sent will be used to set the robot’s speed, direction and turning, and 4 bytes of the data will be needed per configuration. As the data is read byte by byte, the bytes are stored in an array and only used when we have received 4 bytes. After the necessary information to configure the motor is extracted, the data will be replaced by the new data sent by the client.
+In our code, server refers to Arduino board while client may refer to Processing, Visual Studio or FPGA. Both the server and the client are connected to the same access point with the client continuously sending data to the Arduino board over this network. The data sent will be used to set the robot’s speed, direction and turning, and 4 bytes of the data will be needed per configuration. As the data is read byte by byte, the bytes are stored in an array and only used when we have received 4 bytes. After the necessary information to configure the motor is extracted, the data will be replaced by the new data sent by the client.
 \
 \
-To ensure that the robot will stop moving immediately after the user removes the red box used to control the robot, it is important there is no delay between the sending of data from the client and the reading of data by Intel Galileo. Hence, the reading of data, _client.read()_, must happen right after the _if (client.available() > 0)_ statement.
+To ensure that the robot will stop moving immediately after the user removes the red box used to control the robot, it is important there is no delay between the sending of data from the client and the reading of data by the Arduino board. Hence, the reading of data, _client.read()_, must happen right after the _if (client.available() > 0)_ statement.
 \
 \
 To control the robot’s speed, direction and turning, we need to control the spin speed and direction of each of the individual motors attached to the robot’s wheels. However, we want motors on the same side to all have the same speed and direction. Hence, the problem reduces to configuring the left and right side motors.
@@ -619,7 +619,7 @@ The results from these equations are assigned to the variables _pwmLeft\_before_
 
 ###Visual Studio
 
-Visual Studio, together with OpenCV library, is responsible for converting the video captured by the web camera into information about the velocity, denoted by _velocitySpeed_, and rotation angle, denoted by _rotationAngle_, of the robot before sending the data to Intel Galileo over the network. _velocitySpeed_  and _rotationAngle_ are determined by looking at the size and orientation of the red box held by the user with reference to the startup calibration.
+Visual Studio, together with OpenCV library, is responsible for converting the video captured by the web camera into information about the velocity, denoted by _velocitySpeed_, and rotation angle, denoted by _rotationAngle_, of the robot before sending the data to the Arduino board over the network. _velocitySpeed_  and _rotationAngle_ are determined by looking at the size and orientation of the red box held by the user with reference to the startup calibration.
 \
 \
 For calculating _velocitySpeed_, we are considering the area of the red object, denoted by _currentArea_, and this is converted to the range of speed that the robot can move at. During the startup calibration, when the user places the red box close to the camera, the area of the red box, _mMax_, is mapped to _alphaMax_, which has the same value as the constant MAX_SPEED_FRONT = 500. Similarly, when the user places the red box further from the camera, the area of the red box, which is now smaller and denoted by _mMin_, is mapped to _alphaMin_, which has the same value as the constant MAX_SPEED_BACK = -500. Later on, when the user moves the box forward and backward to control the robot, _currentArea_ will be between _mMin_ and _mMax_ and is then converted into a value in the range of _alphaMin_ and _alphaMax_. If the area increases over time, then we increase the speed of the robot in frontal direction. If the area decreases over time, then we decrease the speed of the robot in frontal direction and eventually, we start issuing backward commands. The visual representation of this situation is represented in Figure [#fig-frontback] where the object is coming closer to the camera and hence we are increasing the speed of the robot. 
@@ -652,7 +652,7 @@ To decide whether the red box is rotated to the left or right, we make use of th
 As seen from Figure [#fig-rotationangle], for left rotation, the width is always shorter than the height whereas for right rotation, it is the other way round. Thus, we can compare the width and height of the rotated rectangle to determine if the red box is rotating left or right.
 \
 \
-With information about the rotation angle and direction, we can now convert _l_ to a value in the range of either MIN_TURN_LEFT = 550 to MAX_TURN_LEFT = 201 or MIN_TURN_RIGHT = -550 to MAX_TURN_RIGHT = -201 based on the rotation direction. The chosen range is assigned to the variables _betaMax_ and _betaMin_. For example, if the width of the rectangle is shorter than the height, we know that it is a left rotation. Thus, we would set _betaMin_ to MIN_TURN_LEFT and _betaMax_ to MAX_TURN_LEFT. Angle _l_ is then converted to a value between these two numbers using Equation [#eq-anglemap] but with _alphaMin_, _alphaMax_, _mMin_, _mMax_ and _currentArea_ replaced by _betaMin_, _betaMax_, -90, 0, and _l_ respectively. This converted value is then sent to Intel Galileo. 
+With information about the rotation angle and direction, we can now convert _l_ to a value in the range of either MIN_TURN_LEFT = 550 to MAX_TURN_LEFT = 201 or MIN_TURN_RIGHT = -550 to MAX_TURN_RIGHT = -201 based on the rotation direction. The chosen range is assigned to the variables _betaMax_ and _betaMin_. For example, if the width of the rectangle is shorter than the height, we know that it is a left rotation. Thus, we would set _betaMin_ to MIN_TURN_LEFT and _betaMax_ to MAX_TURN_LEFT. Angle _l_ is then converted to a value between these two numbers using Equation [#eq-anglemap] but with _alphaMin_, _alphaMax_, _mMin_, _mMax_ and _currentArea_ replaced by _betaMin_, _betaMax_, -90, 0, and _l_ respectively. This converted value is then sent to the Arduino board. 
 \
 \
 Moving on, in order to gather the above information, we need to detect only the red box from the captured video and eliminate all other distractions in the surrounding.
@@ -684,8 +684,7 @@ In any video processing application, noise is the major component, which we have
 \
 Using the median filtered threshold image, we called the findContours function in OpenCV to detect the largest contour found in the image. The largest contour is chosen to ensure that we are analyzing the red box, and not any other objects of similar color that might be present in the background. From the contour, we used the minAreaRect function to return the minimum-area bounding rectangle, possibly rotated, and subsequently apply the aforementioned analysis to extract the details about the size and orientation of the rotated rectangle representing the red box.
 
-## HLS Implementation
-For the hardware implementation, we carried it out on the iRobot and it involves codes both on Arduino as well as Visual Studio. The iRobot Arduino code remains unchanged for the hardware implementation whereas some parts of the Visual Studio code are slightly altered. Algorithms in Visual Studio that are similar to those in the software implementation will only be briefly mentioned while those that more different will be elaborated.
+## Hardware Implementation
 
 ### High Level Design
 Our heterogeneous platform uses ARM Cortex 9 (@667 MHz) as the host processor and FPGA fabric as a video accelerator. The input frame from HDMI camera is first stored into video buffer hosted in main memory of FPGA. After the frame buffer is filled, PS invokes the FPGA fabric by passing the starting address of the frame. FPGA behaves as an accelerator and the moment PS gives a signal to FPGA, FPGA start processing the frame data in pixel­by­pixel manner. Once PL is done processing the whole frame, it raises a ready signal to PS informing that it’s done with the processing and PS can take the data from PL. (Note that in our design, PL is taking video frame as an input and gives detected corners as well as video frame as an output.) The PS senses the flag and starts receiving corners and video out information from PL. The video out of PL is written into the video frame buffer, which will be read by Video DMA to output into HDMI screen. The corners sent by the PL is consumed by the PS and it generates command out of it.
@@ -725,13 +724,13 @@ In our project, bootloader is automatically created by SDSoC when we build the p
 ~
 
 ~Center
-~~ Figure { #fig-ObjIncline caption="Object inclination Calculation using θ. Red object is the object which controls the iRobot." }
+~~ Figure { #fig-ObjIncline caption="Object inclination Calculation using θ. Red object is the object which controls the robot." }
 ![ObjIncline]
 ~~
 ~
 [ObjIncline]: images/ObjIncline.jpg "ObjIncline" { width=auto max-width=90% }
 \
-The calculated &theta; value ranges is between -­90 to 90 degree. This range is mapped into the actual turning radius required to control the robot's direction (for further information about iRobot command structure, refer to Appendix X). The conversion from (­-90, 90) degrees to (MAX_RIGHT_RADIUS, MAX_LEFT_RADIUS) is the same as Equation [#eq-anglemap] but with the respective variables changed accordingly.
+The calculated &theta; value ranges is between -­90 to 90 degree. This range is mapped into the actual turning radius required to control the robot's direction. The conversion from (­-90, 90) degrees to (MAX_RIGHT_RADIUS, MAX_LEFT_RADIUS) is the same as Equation [#eq-anglemap] but with the respective variables changed accordingly.
 \
 \
 For the calculation of the robot's front and back speed, the method is the same as that of the software implementation, Section [#sec-visual-studio].
@@ -785,7 +784,7 @@ In the Write path, the AXI VDMA accepts frames on the AXI4­Stream Slave interfa
 Once PL has written back the processed frame onto the video frame buffer, PS instructs VDMA to stream video frame to the output. As a result, the frame is transferred to the video output screen via HDMI port.
 
 ### Network
-Once the PS is done calculating the orientation and speed of the iRobot, we use arpa [17] library and sys/socket.h header file to send a packet to the network. This code is executed on PetaLinux hosted on PS, so it’s similar to writing C++ code for sending network packets on linux. The network packets are sent to the TP­Link wireless access point using Ethernet connection. We hosted a private network for our communication on wireless access point. (See Appendix E.4 for further instruction on setting up network on TP­Link).
+Once the PS is done calculating the orientation and speed of the robot, we use arpa [17] library and sys/socket.h header file to send a packet to the network. This code is executed on PetaLinux hosted on PS, so it’s similar to writing C++ code for sending network packets on linux. The network packets are sent to the TP­Link wireless access point using Ethernet connection. We hosted a private network for our communication on wireless access point. (See Appendix E.4 for further instruction on setting up network on TP­Link).
 
 ### Design, Compilation and System Linking Flow
 We used Xilinx SDSoC Design suite to develop the application which can exploit both ARM core and FPGA. The design flow for developing heterogeneous system on SDSoC is summarized in Figure [#fig-SDSoC]. The step wise instruction for development is mentioned below.
