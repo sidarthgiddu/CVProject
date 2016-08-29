@@ -855,10 +855,20 @@ Note: The 3D printed frame was designed by Scout from Thingiverse -- opensource 
 \
 For this project, we will be using the RASPBIAN operating system with Jessie. [Download the OS] and [follow this tutorial] to set up the Pi properly. Connect the HDMI monitor, keyboard, and mouse to the Pi to help facilitate the setup process.
 [Download the OS]:https://www.raspberrypi.org/downloads/raspbian/
-\
 [follow this tutorial]:https://www.howtoforge.com/tutorial/howto-install-raspbian-on-raspberry-pi/
-\
 Once the setup process is complete, we can proceed to connect to the shared Wi-fi as the laptop. Upload the python code for the Pi via USB flashdrive. Launch the python file from the terminal and execute the Visual Studio program similarly to explained in previous sections above.
+
+##Python Code
+The robot control in Python file is simplified from the Arduino-based control. The two parameters, speed and angle, passed wirelessly to the robot operate in a more intuitive range. The speed parameter is scaled linearly from [0, 255] and the angle parameter is scaled linearly from [-90, 90]. These parameters are then converted to a range that operates the Parallex continuous servos from [1.3, 1.7] milliseconds with 10 millisecond periodic pulses. Refer to the [Parallex Servo datasheet] for details.
+[Parallex Servo datasheet]:https://www.parallax.com/sites/default/files/downloads/900-00008-Continuous-Rotation-Servo-Documentation-v2.2.pdf
+~Center
+~~ Figure { #fig-Rpi caption="waveform capture of servo PWM." }
+![servoPWM]
+~~
+~
+[servoPWM]: images/pwmWaveForm.PNG "PWM Waveform to operate the servo" { width=auto max-width=60% }
+
+The angle parameter affects the rotational speed of the specified servo in a sinusoidal behavior. 90 degrees of the detected red-box corresponds to a full rotational speed of both servos. With increasing incline in either direction, the corresponding wheel speed is delayed by the sinusoidal multiplication of that angle to the matching area speed.    
 
 #Troubleshooting and modification
 ##Intel Edison design flaw
