@@ -1,8 +1,8 @@
-Title         : HETEROGENEOUS ROBOTIC PLATFORM FOR REAL-­TIME COMPUTER VISION
+Title         : VISION BASED ROBOT CONTROL ON A HETEROGENEOUS PLATFORM 
 Subtitle      : A Comprehensive Tutorial
 Heading Base  : 2
 Logo          : false
-Author        : Charles Bai
+Author        : Zhengning Han, Danlu Huang, Charles Bai, Moonyoung Lee
 
 [TITLE]
 
@@ -11,7 +11,7 @@ Author        : Charles Bai
 The motivation of this project is to explore the field of heterogeneous computing using High-Level Digital Synthesis (HLS). We wanted to build a system which can use FPGA as an accelerator along with the main processor and communicate with the outside world. As a specific application, we have programmed the FPGA to detect the video gesture from HDMI camera and send the commands to a robot to drive in desired direction. As video processing on real-time HD video stream is slow on normal processor, we used FPGA as an accelerator to offload some of the work from processor. This project involves many aspects of hardware-software co-designing like HLS, Embedded Programming, Computer Vision and FPGA prototyping, making it an ideal project for students in Electrical and Computer Engineering field.
 
 ## Overview
-In our design, the camera input is fed to the processing unit, which can either be a computer running software or an FPGA running heterogeneous programs. This processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to a controller board on a robot. The board receives the command, which indicates the speed and the direction of the robot, from the wireless receptor, interprets the information, translates it into different speeds of different wheels and sends it to the motor shield. The motor shield will then send the information to different motors using different voltage. To keep this outreach project versatile and available to people, we implemented the project in two most popular controller boards: Arduino and RaspberryPi.
+In our design, the camera input is fed to the processing unit, which can either be a computer running software or an FPGA running heterogeneous programs. This processing unit interprets the commands from the input video and sends it to the wireless access point. The wireless access point is used to broadcast the commands to a controller board on a robot. The board receives the command, which indicates the speed and the direction of the robot, from the wireless receptor, interprets the information, translates it into different speeds of different wheels and sends it to the motor shield. The motor shield will then send the information to different motors using different voltage. To keep this outreach project versatile and available to people, we implemented the project in two most popular controller boards: Arduino and RaspberryPi. The microcontroller section is interchangeable between Galileo, Edison, and RaspberryPi. Arduino-based setup is used to explain the project, and the RaspberryPi setup is explained in a separate section.
 \
 \
 The overall high-level design of the project is shown in Figure [#fig-overview].
@@ -21,7 +21,7 @@ The overall high-level design of the project is shown in Figure [#fig-overview].
 ~~
 ~
 [overview]: images/design_flow_v2.jpg "overview" { width=auto max-width=90% }
-As the processing unit can either be a computer or an FPGA, which involves fair amount of complexity, we divided the project into 2 major categories: (1) Software Implementation and (2) Hardware Implementation.
+As the processing unit can either be a computer or an FPGA, which involves fair amount of complexity, we divided the project into 2 major categories: (1) Software Implementation and (2) Hardware Implementation. 
 \
 \
 Software Implementation was meant to develop the software version of camera capture, gesture recognition and command sending. The hardware implementation was meant to develop heterogeneous core, which replaces software version of video capture, gesture recognition and command sending units. 
