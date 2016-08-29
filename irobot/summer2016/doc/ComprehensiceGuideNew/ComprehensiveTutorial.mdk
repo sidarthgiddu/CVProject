@@ -813,6 +813,37 @@ We used Xilinx SDSoC Design suite to develop the application which can exploit b
 ~
 [SDSoC]: images/SDSoC.jpg "SDSoC" { width=auto max-width=90% }
 
+#Implementation with RaspberryPi 
+To minimize the cost of the project, we greatly simplified the Robot design by utilizing the more commonly used RaspberryPi and 3D printing the robot frame. We take advantage of the built-in Wi-fi feature in RaspberryPi3 and  
+
+##Required Parts
+1. [RaspberryPi Model 3]
+[RaspberryPi Model 3]: https://www.amazon.com/Raspberry-Pi-RASP-PI-3-Model-Motherboard/dp/B01CD5VC92/ref=sr_1_4?s=pc&ie=UTF8&qid=1470435229&sr=1-4&keywords=raspberry+pi+3 
+\
+2. [5V Battery Pack]
+[5V Battery Pack]: https://www.amazon.com/Mobility-Power-Bank-black-Output/dp/B01BN0RYQ8/ref=sr_1_1?ie=UTF8&qid=1470434103&sr=8-1&keywords=5000Mah+Small+Dual+USB+Power+Bank 
+\
+3. [microSD card]
+[microSD card]: https://www.amazon.com/Samsung-Class-Adapter-MB-MP32DA-AM/dp/B00IVPU786/ref=sr_1_4?ie=UTF8&qid=1472443357&sr=8-4&keywords=micro+sd+card+amazon
+\
+4. [Continuous Servo]
+[Continuous Servo]: https://www.amazon.com/Generic-SpringRC-SM-S4303R-Rotating-Robotics/dp/B01DG8G6JG/ref=sr_1_1?ie=UTF8&qid=1470593373&sr=8-1&keywords=SpringRC+SM-S4303R 
+\
+5. [O-ring 2-1/8"]
+[O-ring 2-1/8"]: https://www.amazon.com/227-Buna-N-O-Ring-Durometer-Black/dp/B000FN0X0E/ref=sr_1_1?ie=UTF8&qid=1470593473&sr=8-1&keywords=o-ring+2-1%2F8%22 
+\
+6. [Marble]
+[Marble]: https://www.amazon.com/Mega-Marbles-SET-24-ASSORTED/dp/B001U6DGKE/ref=sr_1_3?ie=UTF8&qid=1470593503&sr=8-3&keywords=marble+1%2F2%22 
+\
+7. [MicroUSB Cord]
+[MicroUSB Cord]: https://www.amazon.com/Premium-Charging-Samsung-Motorola-Android/dp/B00UFG5GVM/ref=sr_1_3?ie=UTF8&qid=1470593635&sr=8-3&keywords=micro+usb+cable
+\
+
+
+Note: if you do not see any new device neither in **Ports (COM & LPT)** nor in **Other Devices**, download [Intel IoT Developer Kit]
+[Intel IoT Developer Kit]: https://software.intel.com/en-us/iot/hardware/edison/downloads
+\
+
 #Troubleshooting and modification
 ##Intel Edison design flaw
 Intel Edison is not compatible with DFRobot Motor Shield due to power supply design flaw. So use the Adafruit motor shield with Edison instead.
