@@ -816,6 +816,13 @@ We used Xilinx SDSoC Design suite to develop the application which can exploit b
 #Implementation with RaspberryPi 
 To minimize the cost of the project, we greatly simplified the Robot design by utilizing the more commonly used RaspberryPi and 3D printing the robot frame. We take advantage of the built-in Wi-fi feature in RaspberryPi3 and  
 
+~Center
+~~ Figure { #fig-Rpi caption="RaspberryPi3 based robot." }
+![Rpi]
+~~
+~
+[Rpi]: images/smallRobotRPi.jpg "RaspberryPi3 based robot" { width=auto max-width=60% }
+
 ##Required Parts
 1. [RaspberryPi Model 3]
 [RaspberryPi Model 3]: https://www.amazon.com/Raspberry-Pi-RASP-PI-3-Model-Motherboard/dp/B01CD5VC92/ref=sr_1_4?s=pc&ie=UTF8&qid=1470435229&sr=1-4&keywords=raspberry+pi+3 
@@ -838,11 +845,20 @@ To minimize the cost of the project, we greatly simplified the Robot design by u
 7. [MicroUSB Cord]
 [MicroUSB Cord]: https://www.amazon.com/Premium-Charging-Samsung-Motorola-Android/dp/B00UFG5GVM/ref=sr_1_3?ie=UTF8&qid=1470593635&sr=8-3&keywords=micro+usb+cable
 \
+8. [3D Printed frame]
+[3D Printed frame]: https://www.thingiverse.com/thing:13042
+\ 
 
+Note: The 3D printed frame was designed by Scout from Thingiverse -- opensource CAD community.
 
-Note: if you do not see any new device neither in **Ports (COM & LPT)** nor in **Other Devices**, download [Intel IoT Developer Kit]
-[Intel IoT Developer Kit]: https://software.intel.com/en-us/iot/hardware/edison/downloads
+##Setting up Pi
 \
+For this project, we will be using the RASPBIAN operating system with Jessie. [Download the OS] and [follow this tutorial] to set up the Pi properly. Connect the HDMI monitor, keyboard, and mouse to the Pi to help facilitate the setup process.
+[Download the OS]:https://www.raspberrypi.org/downloads/raspbian/
+\
+[follow this tutorial]:https://www.howtoforge.com/tutorial/howto-install-raspbian-on-raspberry-pi/
+\
+Once the setup process is complete, we can proceed to connect to the shared Wi-fi as the laptop. Upload the python code for the Pi via USB flashdrive. Launch the python file from the terminal and execute the Visual Studio program similarly to explained in previous sections above.
 
 #Troubleshooting and modification
 ##Intel Edison design flaw
