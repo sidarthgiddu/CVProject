@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Client">
+      <UniqueIdentifier>{1d91dc04-4dc2-4602-876c-8c22bad3e451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Network">
+      <UniqueIdentifier>{9a8b3596-aa1f-4967-b7b7-0c9970445bea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Server">
+      <UniqueIdentifier>{f3c48865-f294-498c-ab9c-af933b3fa71a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ClientNetwork">
+      <UniqueIdentifier>{01d10354-8987-4ff6-96a1-204cb94e0cc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Network">
+      <UniqueIdentifier>{4347ce5b-094c-4fb4-b2a1-e9738e44460a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ServerNetwork">
+      <UniqueIdentifier>{222d1778-ff8e-4e5e-b0b5-a9118c6394ec}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="apr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="apr_errno.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="apr_lib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientNetwork.h">
+      <Filter>Header Files\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientGame.h">
+      <Filter>Header Files\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkData.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkServices.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerGame.h">
+      <Filter>Header Files\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerNetwork.h">
+      <Filter>Header Files\Server</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ClientGame.cpp">
+      <Filter>Source Files\ClientNetwork</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientNetwork.cpp">
+      <Filter>Source Files\ClientNetwork</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkServices.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerGame.cpp">
+      <Filter>Source Files\ServerNetwork</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerNetwork.cpp">
+      <Filter>Source Files\ServerNetwork</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
