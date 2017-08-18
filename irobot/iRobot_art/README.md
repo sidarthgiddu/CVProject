@@ -1,11 +1,14 @@
 # iRobotArt
 
-This project makes Raspberry Pi Robots paint a picture using a central, vision-based localization system. In this case, the central vision-based
+This project makes Raspberry Pi Robots paint a selected image using a central, vision-based localization system. In this case, the central vision-based
 system is a laptop.
 
 The robots themselves need not be aware of their locations and orientations, only the laptop. Visual C code, running on the laptop, takes the videostream input from 
 a camera, identifies the robots, then calculates their positions and orientations. Given this information, it sends a right, left, straight, or stop 
 command to each robot. Each robot has a python script running on it which interprets this command and tells the robot to move accordingly. 
+
+To "paint" a picture, a robot's relative position in the camera's viewing window is used to calculate the x,y coordinates of a 
+pixel in the selected image. Then, this pixel is displayed in another window. It updates as the robot moves. 
 
 Currently, this system only works for one robot.
 Feel free to download this code and expand it however you like! 
